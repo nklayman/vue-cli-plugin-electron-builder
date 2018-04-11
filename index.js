@@ -58,4 +58,35 @@ module.exports = api => {
       });
     }
   );
+  api.registerCommand(
+    'serve:electron',
+    {
+      description: 'serve app with electron-webpack',
+      usage: 'vue-cli-service serve:electron',
+      details: `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details.`
+    },
+    () => {
+      api.setMode('dev');
+
+      const execa = require('execa');
+      const electronWebpackPath =
+        api.resolve('.') + '\\node_modules\\.bin\\electron-webpack';
+      return new Promise((resolve, reject) => {
+        const child = execa(electronWebpackPath, ['dev'], {
+          cwd: api.resolve('.'),
+          stdio: 'inherit'
+        });
+        child.on('error', err => {
+          reject(err);
+        });
+        child.on('exit', code => {
+          if (code !== 0) {
+            reject(`electron-webpack exited with code ${code}.`);
+          } else {
+            resolve;
+          }
+        });
+      });
+    }
+  );
 };
