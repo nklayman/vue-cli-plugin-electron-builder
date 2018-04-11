@@ -1,11 +1,9 @@
 {
   "name": "vue-cli-plugin-electron-builder",
-  "version": "0.0.1",
-  "description":
-    "A Vue Cli 3 plugin for Electron with no required configuration",
+  "version": "0.1.0",
+  "description": "A Vue Cli 3 plugin for Electron with no required configuration",
   "main": "index.js",
-  "repository":
-    "https://github.com/nklayman/vue-cli-plugin-electron-builder.git",
+  "repository": "https://github.com/nklayman/vue-cli-plugin-electron-builder.git",
   "author": "Noah Klayman <noahklayman@gmail.com>",
   "license": "MIT",
   "private": false,
