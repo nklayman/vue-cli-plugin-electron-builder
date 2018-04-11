@@ -1,7 +1,6 @@
 # Vue CLI Plugin Electron Builder
 
-A Vue Cli 3 plugin for Electron with no required configuration
-
+A Vue Cli 3 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/) and [Electron Webpack](https://webpack.electron.build/).
 **IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)**
 
 ## Quick Start:
@@ -49,11 +48,12 @@ Initial configuration is already set for you in your app's package.json, but it 
 
 ### Electron Builder:
 
-As per Electron Builder's documentation:
+To see avalible options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
 
-> electron-builder [configuration](https://www.electron.build/configuration/configuration#configuration) can be defined
->
+As per Electron Builder's documentation, they can be applied:
+
 > * in the `package.json` file of your project using the `build` key on the top level:
+>
 >
 > ```
 >  "build": {
@@ -62,6 +62,7 @@ As per Electron Builder's documentation:
 > ```
 >
 > * or through the `--config <path/to/yml-or-json5-or-toml>` option (defaults to `electron-builder.yml`(or `json`, or [json5](http://json5.org/), or [toml](https://github.com/toml-lang/toml))).
+>
 >
 > ```
 >  appId: "com.example.app"
@@ -73,6 +74,8 @@ As per Electron Builder's documentation:
 
 ### Electron Webpack:
 
-As per Electron Webpack's documentation:
+To see avalible options, check out [Electron Webpack Configuration Options](https://webpack.electron.build/configuration)
+
+As per Electron Webpack's documentation, they can be applied:
 
 > Configurations can be applied in `package.json` at `electronWebpack` or in a separate `electron-webpack.(json|json5|yml)`.
