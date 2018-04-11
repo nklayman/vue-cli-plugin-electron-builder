@@ -3,7 +3,8 @@ module.exports = api => {
     'build:electron',
     {
       description: 'build app with electron-builder',
-      usage: 'vue-cli-service build:electron [options]',
+      usage:
+        'vue-cli-service build:electron [electron-builder options] --webpack [electron-webpack options]',
       details:
         `All electron-builder and electron-webpack command line options are supported.\n` +
         `Args before --webpack will be sent to electron-builder, after --webpack will be sent to electron-webpack\n` +
