@@ -5,10 +5,7 @@ module.exports = (api, opts) => {
     'electron-webpack': '^1.13.0',
     electron: '^1.8.4'
   };
-  if (opts.useTypescript) {
-    devDependencies['electron-webpack-ts'] = '^2.0.0';
-    devDependencies['typescript'] = '^2.8.1';
-  }
+  if (opts.useTypescript) devDependencies['electron-webpack-ts'] = '^2.0.0';
   api.extendPackage({
     scripts: {
       'build:electron': 'vue-cli-service build:electron',
