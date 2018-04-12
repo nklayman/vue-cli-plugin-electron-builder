@@ -1,7 +1,8 @@
 # Vue CLI Plugin Electron Builder
 
 A Vue Cli 3 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/) and [Electron Webpack](https://webpack.electron.build/).
-**IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)**
+
+**IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
 
 ## Quick Start:
 
@@ -34,6 +35,26 @@ or with NPM:
 
 ## Further Configuration:
 
+### Folder Structure:
+
+```
+├── dist/                      # where electron-webpack outputs compiled files (this will overwrite normal build files)
+│   └── ...
+├── dist_electron/
+│   ├── [target platform]-unpacked               # unpacked Electron app (main exe and supporting files)
+|   ├── [application name] setup [version].[target binary (exe|dmg|rpm...)]               # installer for Electron app
+│   └── ...
+├── src/
+|   ├─── main/
+|   |    └── [main|index].[js|ts]	# Electron entry file (for Electron's main process)
+|   ├── [main|index].[js|ts]		# your app's entry file (for Electron's render process)
+│   └── ...
+├── electron-builder.[json|yml]		# electron-builder configuration options (can also be placed in package.json under the "build" key)
+├── electron-webpack.[json|yml]		# electron-webpack configuration options (can also be placed in package.json under the "electronWebpack" key)
+├── package.json		# your app's package.json file
+├── ...
+```
+
 ### CLI Options
 
 When building your app, any arguments will be passed to electron-builder. To pass an argument/arguments to electron-webpack, place them after --webpack.
@@ -42,7 +63,7 @@ When building your app, any arguments will be passed to electron-builder. To pas
 
     yarn build:electron [electron-builder options] --webpack [electron-webpack options]
 
-### Configuration Files:
+### Configuration:
 
 Initial configuration is already set for you in your app's package.json, but it you want to modify it:
 
@@ -79,3 +100,7 @@ To see avalible options, check out [Electron Webpack Configuration Options](http
 As per Electron Webpack's documentation, they can be applied:
 
 > Configurations can be applied in `package.json` at `electronWebpack` or in a separate `electron-webpack.(json|json5|yml)`.
+
+#### Adding TypeScript Support:
+
+When you invoke/add vue-cli-plugin-electron-builder, it will ask you if you use TypeScript and configure accordingly. However, if you answered no and decide to add TypeScript later on, you must install electron-webpack-ts: `yarn add electron-webpack-ts --dev` (or with NPM: `npm install --save-dev electron-webpack-ts`).
