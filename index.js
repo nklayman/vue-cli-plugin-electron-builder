@@ -15,9 +15,9 @@ module.exports = api => {
 
       const execa = require('execa');
       const electronWebpackPath =
-        api.resolve('.') + '\\node_modules\\.bin\\electron-webpack';
+        api.resolve('.') + '/node_modules/.bin/electron-webpack';
       const electronBuilderPath =
-        api.resolve('.') + '\\node_modules\\.bin\\electron-builder';
+        api.resolve('.') + '/node_modules/.bin/electron-builder';
       let index = rawArgs.indexOf('--webpack');
       let builderArgs;
       let webpackArgs;
@@ -71,7 +71,7 @@ module.exports = api => {
 
       const execa = require('execa');
       const electronWebpackPath =
-        api.resolve('.') + '\\node_modules\\.bin\\electron-webpack';
+        api.resolve('.') + '/node_modules/.bin/electron-webpack';
       return new Promise((resolve, reject) => {
         const child = execa(electronWebpackPath, ['dev'], {
           cwd: api.resolve('.'),
