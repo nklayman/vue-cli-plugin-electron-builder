@@ -33,8 +33,6 @@ or with NPM:
 
     npm run build:electron
 
-## Further Configuration:
-
 ### Folder Structure:
 
 ```
@@ -55,17 +53,17 @@ or with NPM:
 ├── ...
 ```
 
-### CLI Options
+## Further Configuration:
+
+Initial configuration is already set for you in your app's package.json, but it you want to modify it:
+
+### CLI Options:
 
 When building your app, any arguments will be passed to electron-builder. To pass an argument/arguments to electron-webpack, place them after --webpack.
 
 **Example:**
 
     yarn build:electron [electron-builder options] --webpack [electron-webpack options]
-
-### Configuration:
-
-Initial configuration is already set for you in your app's package.json, but it you want to modify it:
 
 ### Electron Builder:
 
