@@ -1,6 +1,6 @@
 {
   "name": "vue-cli-plugin-electron-builder",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A Vue Cli 3 plugin for Electron with no required configuration",
   "main": "index.js",
   "keywords": [
