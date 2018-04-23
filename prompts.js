@@ -6,4 +6,4 @@ module.exports = [
     default: false,
     when: true
   }
-];
+]

@@ -11,54 +11,54 @@ module.exports = api => {
         `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details.`
     },
     (args, rawArgs) => {
-      api.setMode('production');
+      api.setMode('production')
 
-      const execa = require('execa');
+      const execa = require('execa')
       const electronWebpackPath =
-        api.resolve('.') + '/node_modules/.bin/electron-webpack';
+        api.resolve('.') + '/node_modules/.bin/electron-webpack'
       const electronBuilderPath =
-        api.resolve('.') + '/node_modules/.bin/electron-builder';
-      let index = rawArgs.indexOf('--webpack');
-      let builderArgs;
-      let webpackArgs;
+        api.resolve('.') + '/node_modules/.bin/electron-builder'
+      let index = rawArgs.indexOf('--webpack')
+      let builderArgs
+      let webpackArgs
       if (index !== -1) {
-        builderArgs = rawArgs.slice(index + 1);
-        webpackArgs = rawArgs.slice(0, index);
+        builderArgs = rawArgs.slice(index + 1)
+        webpackArgs = rawArgs.slice(0, index)
       } else {
-        builderArgs = rawArgs;
-        webpackArgs = '';
+        builderArgs = rawArgs
+        webpackArgs = ''
       }
       return new Promise((resolve, reject) => {
         const child = execa(electronWebpackPath, webpackArgs, {
           cwd: api.resolve('.'),
           stdio: 'inherit'
-        });
+        })
         child.on('error', err => {
-          reject(err);
-        });
+          reject(err)
+        })
         child.on('exit', code => {
           if (code !== 0) {
-            reject(`electron-webpack exited with code ${code}.`);
+            reject(`electron-webpack exited with code ${code}.`)
           } else {
             const child = execa(electronBuilderPath, builderArgs, {
               cwd: api.resolve('.'),
               stdio: 'inherit'
-            });
+            })
             child.on('error', err => {
-              reject(err);
-            });
+              reject(err)
+            })
             child.on('exit', code => {
               if (code !== 0) {
-                reject(`electron-builder exited with code ${code}.`);
+                reject(`electron-builder exited with code ${code}.`)
               } else {
-                resolve();
+                resolve()
               }
-            });
+            })
           }
-        });
-      });
+        })
+      })
     }
-  );
+  )
   api.registerCommand(
     'serve:electron',
     {
@@ -67,27 +67,27 @@ module.exports = api => {
       details: `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details.`
     },
     () => {
-      api.setMode('dev');
+      api.setMode('dev')
 
-      const execa = require('execa');
+      const execa = require('execa')
       const electronWebpackPath =
-        api.resolve('.') + '/node_modules/.bin/electron-webpack';
+        api.resolve('.') + '/node_modules/.bin/electron-webpack'
       return new Promise((resolve, reject) => {
         const child = execa(electronWebpackPath, ['dev'], {
           cwd: api.resolve('.'),
           stdio: 'inherit'
-        });
+        })
         child.on('error', err => {
-          reject(err);
-        });
+          reject(err)
+        })
         child.on('exit', code => {
           if (code !== 0) {
-            reject(`electron-webpack exited with code ${code}.`);
+            reject(`electron-webpack exited with code ${code}.`)
           } else {
-            resolve;
+            resolve
           }
-        });
-      });
+        })
+      })
     }
-  );
-};
+  )
+}
