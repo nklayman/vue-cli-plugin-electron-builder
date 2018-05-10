@@ -18,7 +18,8 @@ module.exports = (api, opts) => {
     devDependencies,
     electronWebpack: {
       renderer: {
-        sourceDirectory: 'src'
+        sourceDirectory: 'src',
+        webpackConfig: 'dist_electron/webpack.renderer.additions.js'
       }
     },
     build: {

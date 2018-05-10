@@ -1,4 +1,4 @@
-module.exports = api => {
+module.exports = (api, options) => {
   api.registerCommand(
     'build:electron',
     {
@@ -12,7 +12,7 @@ module.exports = api => {
     },
     (args, rawArgs) => {
       api.setMode('production')
-
+      setWebpackOptions(api, options)
       const execa = require('execa')
       const electronWebpackPath =
         api.resolve('.') + '/node_modules/.bin/electron-webpack'
@@ -68,7 +68,7 @@ module.exports = api => {
     },
     () => {
       api.setMode('dev')
-
+      setWebpackOptions(api, options)
       const execa = require('execa')
       const electronWebpackPath =
         api.resolve('.') + '/node_modules/.bin/electron-webpack'
@@ -89,5 +89,35 @@ module.exports = api => {
         })
       })
     }
+  )
+}
+function setWebpackOptions (api, options) {
+  const fs = require('fs')
+  let config
+  if (
+    options.pluginOptions &&
+    options.pluginOptions.electronBuilder &&
+    options.pluginOptions.electronBuilder.webpackConfig
+  ) {
+    config = options.pluginOptions.electronBuilder.webpackConfig
+  } else {
+    config = {}
+  }
+  alias = config.resolve
+    ? config.resolve.alias
+      ? config.resolve.alias
+      : {}
+    : {}
+  if (!config.resolve) config.resolve = {}
+  config.resolve.alias = {
+    ...alias,
+    ...api.resolveWebpackConfig().resolve.alias
+  }
+  if (!fs.existsSync(api.resolve('.') + '/dist_electron')) {
+    fs.mkdirSync(api.resolve('.') + '/dist_electron')
+  }
+  fs.writeFileSync(
+    api.resolve('.') + '/dist_electron/webpack.renderer.additions.js',
+    'module.exports=' + JSON.stringify(config)
   )
 }
