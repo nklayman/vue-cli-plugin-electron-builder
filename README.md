@@ -10,7 +10,7 @@ Open a terminal in the directory of your app created with Vue-CLI 3.
 
 Then, install and invoke the generator of vue-cli-plugin-electron-builder by running:
 
-vue add electron-builder
+`vue add electron-builder`
 
 That's It! Your ready to go!
 
@@ -18,21 +18,21 @@ That's It! Your ready to go!
 
 If you use [Yarn](https://yarnpkg.com/en/) (strongly recommended):
 
-yarn serve:electron
+`yarn serve:electron`
 
 or if you use NPM:
 
-npm run serve:electron
+`npm run serve:electron`
 
 ### To build your app:
 
 With yarn:
 
-yarn build:electron
+`yarn build:electron`
 
 or with NPM:
 
-npm run build:electron
+`npm run build:electron`
 
 ### Folder Structure:
 
@@ -78,7 +78,7 @@ When building your app, any arguments will be passed to electron-builder. To pas
 
 **Example:**
 
-yarn build:electron [electron-builder options] --webpack [electron-webpack options]
+`yarn build:electron [electron-builder options] --webpack [electron-webpack options]`
 
 ### Electron Builder:
 
