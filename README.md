@@ -136,4 +136,4 @@ module.exports  = {
 
 #### Adding TypeScript Support:
 
-When you invoke/add vue-cli-plugin-electron-builder, it will ask you if you use TypeScript and configure accordingly. However, if you answered no and decide to add TypeScript later on, you must install electron-webpack-ts: `yarn add electron-webpack-ts --dev` (or with NPM: `npm install --save-dev electron-webpack-ts`).
+When you invoke/add vue-cli-plugin-electron-builder, it will ask you if you use TypeScript and configure accordingly. However, if you answered no and decide to add TypeScript later on, you must install electron-webpack-ts@1.4.0: `yarn add electron-webpack-ts@1.4.0 --dev` (or with NPM: `npm install --save-dev electron-webpack-ts@1.4.0`).
