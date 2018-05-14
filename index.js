@@ -113,11 +113,22 @@ function setWebpackOptions (api, options) {
     ...alias,
     ...api.resolveWebpackConfig().resolve.alias
   }
+  function replacer (key, value) {
+    if (value instanceof RegExp) return '__REGEXP ' + value.toString()
+    else return value
+  }
+  function toRegex (match, p1, regex) {
+    return regex.replace('\\\\', '\\')
+  }
+  let stringConfig = JSON.stringify(config, replacer).replace(
+    /("__REGEXP)(.+?)(")(?=,)/,
+    toRegex
+  )
   if (!fs.existsSync(api.resolve('.') + '/dist_electron')) {
     fs.mkdirSync(api.resolve('.') + '/dist_electron')
   }
   fs.writeFileSync(
     api.resolve('.') + '/dist_electron/webpack.renderer.additions.js',
-    'module.exports=' + JSON.stringify(config)
+    'module.exports=' + stringConfig
   )
 }
