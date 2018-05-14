@@ -4,6 +4,8 @@ A Vue Cli 3 plugin for Electron with no required configuration that uses [Electr
 
 **IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
 
+**IMPORTANT: This plugin only works with @vue/cli-service@3.0.0-beta.9 or lower, not with beta.10 or greater. Set @vue/cli-service to 3.0.0-beta.9 in the devDependencies of your package.json.**
+
 ## Quick Start:
 
 Open a terminal in the directory of your app created with Vue-CLI 3.
