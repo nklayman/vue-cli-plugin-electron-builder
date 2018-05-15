@@ -121,7 +121,7 @@ function setWebpackOptions (api, options) {
     return regex.replace('\\\\', '\\')
   }
   let stringConfig = JSON.stringify(config, replacer).replace(
-    /("__REGEXP)(.+?)(")(?=,)/,
+    /("__REGEXP)(.+?)(")(?=,?)/g,
     toRegex
   )
   if (!fs.existsSync(api.resolve('.') + '/dist_electron')) {
