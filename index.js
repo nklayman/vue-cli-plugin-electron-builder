@@ -11,7 +11,6 @@ module.exports = (api, options) => {
         `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details.`
     },
     (args, rawArgs) => {
-      api.setMode('production')
       setWebpackOptions(api, options)
       const execa = require('execa')
       const electronWebpackPath =
@@ -67,7 +66,6 @@ module.exports = (api, options) => {
       details: `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details.`
     },
     () => {
-      api.setMode('dev')
       setWebpackOptions(api, options)
       const execa = require('execa')
       const electronWebpackPath =
@@ -131,4 +129,8 @@ function setWebpackOptions (api, options) {
     api.resolve('.') + '/dist_electron/webpack.renderer.additions.js',
     'module.exports=' + stringConfig
   )
+}
+module.exports.defaultModes = {
+  'build:electron': 'production',
+  'serve:electron': 'dev'
 }

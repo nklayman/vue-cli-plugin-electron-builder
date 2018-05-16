@@ -4,11 +4,11 @@ module.exports = (api, opts) => {
     'source-map-support': '^0.5.4'
   }
   let devDependencies = {
-    'electron-builder': '^20.8.1',
-    'electron-webpack': '^1.13.0',
-    electron: '^1.8.4'
+    'electron-builder': '^20.13.4',
+    'electron-webpack': '^2.1.1',
+    electron: '^2.0.1'
   }
-  if (opts.useTypescript) devDependencies['electron-webpack-ts'] = '^1.4.0'
+  if (opts.useTypescript) devDependencies['electron-webpack-ts'] = '^2.0.2'
   api.extendPackage({
     scripts: {
       'build:electron': 'vue-cli-service build:electron',
