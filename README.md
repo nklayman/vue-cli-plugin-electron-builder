@@ -4,7 +4,7 @@ A Vue Cli 3 plugin for Electron with no required configuration that uses [Electr
 
 **IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
 
-**IMPORTANT: This plugin only works with @vue/cli-service@3.0.0-beta.9 or lower, not with beta.10 or greater. Set @vue/cli-service to 3.0.0-beta.9 in the devDependencies of your package.json.**
+**IMPORTANT: This plugin only works with @vue/cli-service@3.0.0-beta.10 or greater, not with beta.9 or lower. Set @vue/cli-service to ^3.0.0-beta.10 in the devDependencies of your package.json if build/serve:electron fails. If you still need beta.9 support, use v0.2.5 of vue-cli-plugin-electron-builder.**
 
 ## Quick Start:
 
@@ -40,33 +40,19 @@ or with NPM:
 
 ```
 ├── dist/ # where electron-webpack outputs compiled files (this will overwrite normal build files)
-
 │ └── ...
-
 ├── dist_electron/
-
 │ ├── [target platform]-unpacked # unpacked Electron app (main exe and supporting files)
-
 │ ├── [application name] setup [version].[target binary (exe|dmg|rpm...)] # installer for Electron app
-
 │ └── ...
-
 ├── src/
-
 │ ├─── main/
-
 │ │ └── [main|index].[js|ts] # Electron entry file (for Electron's main process)
-
 │ ├── [main|index].[js|ts] # your app's entry file (for Electron's render process)
-
 │ └── ...
-
 ├── electron-builder.[json|yml] # electron-builder configuration options (can also be placed in package.json under the "build" key)
-
 ├── electron-webpack.[json|yml] # electron-webpack configuration options (can also be placed in package.json under the "electronWebpack" key)
-
 ├── package.json # your app's package.json file
-
 ├── ...
 ```
 
