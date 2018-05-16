@@ -37,7 +37,7 @@ module.exports = (api, options) => {
         })
         child.on('exit', code => {
           if (code !== 0) {
-            reject(`electron-webpack exited with code ${code}.`)
+            reject(new Error(`electron-webpack exited with code ${code}.`))
           } else {
             const child = execa(electronBuilderPath, builderArgs, {
               cwd: api.resolve('.'),
@@ -48,7 +48,7 @@ module.exports = (api, options) => {
             })
             child.on('exit', code => {
               if (code !== 0) {
-                reject(`electron-builder exited with code ${code}.`)
+                reject(new Error(`electron-builder exited with code ${code}.`))
               } else {
                 resolve()
               }
@@ -80,9 +80,9 @@ module.exports = (api, options) => {
         })
         child.on('exit', code => {
           if (code !== 0) {
-            reject(`electron-webpack exited with code ${code}.`)
+            reject(new Error(`electron-webpack exited with code ${code}.`))
           } else {
-            resolve
+            resolve()
           }
         })
       })
@@ -101,7 +101,7 @@ function setWebpackOptions (api, options) {
   } else {
     config = {}
   }
-  alias = config.resolve
+  let alias = config.resolve
     ? config.resolve.alias
       ? config.resolve.alias
       : {}
