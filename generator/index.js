@@ -4,9 +4,9 @@ module.exports = (api, opts) => {
     'source-map-support': '^0.5.4'
   }
   let devDependencies = {
-    'electron-builder': '^20.13.4',
-    'electron-webpack': '^2.1.1',
-    electron: '^2.0.1'
+    'electron-builder': '^20.14.7',
+    'electron-webpack': '^2.1.2',
+    electron: '^2.0.2'
   }
   if (opts.useTypescript) devDependencies['electron-webpack-ts'] = '^2.0.2'
   api.extendPackage({
