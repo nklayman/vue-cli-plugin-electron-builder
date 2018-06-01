@@ -100,20 +100,23 @@ As per Electron Webpack's documentation, they can be applied:
 
 > in `package.json` at `electronWebpack` or in a separate `electron-webpack.(json|json5|yml)`.
 
-To modify the webpack config for electron builds only, use the webpackConfig object under vue-cli-plugin-electron-builder's plugin options in `vue.config.js`.
+To modify the webpack config for the electron render process only, use the webpackConfig object under vue-cli-plugin-electron-builder's plugin options in `vue.config.js`. To modify for the main process, use the webpackMainConfig object.
 
-```
+```javascript
 // vue.config.js
 
-module.exports  = {
+module.exports = {
   configureWebpack: {
     // Non-electron build/serve configuration
-	// Aliases will be automatically copied from standard config to electron config
+    // Aliases will be automatically copied from standard config to electron render config
   },
   pluginOptions: {
     electronBuilder: {
       webpackConfig: {
-        // your electron-only webpack config
+        // your webpack config for electron render process
+      },
+      webpackMainConfig: {
+        // your webpack config for electron main procees
       }
     }
   }

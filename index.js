@@ -129,6 +129,26 @@ function setWebpackOptions (api, options) {
     api.resolve('.') + '/dist_electron/webpack.renderer.additions.js',
     'module.exports=' + stringConfig
   )
+  if (
+    options.pluginOptions &&
+    options.pluginOptions.electronBuilder &&
+    options.pluginOptions.electronBuilder.webpackMainConfig
+  ) {
+    let mainConfig = options.pluginOptions.electronBuilder.webpackMainConfig
+    let stringMainConfig = JSON.stringify(mainConfig, replacer).replace(
+      /("__REGEXP)(.+?)(")(?=,?)/g,
+      toRegex
+    )
+    fs.writeFileSync(
+      api.resolve('.') + '/dist_electron/webpack.main.additions.js',
+      'module.exports=' + stringMainConfig
+    )
+  } else {
+    fs.writeFileSync(
+      api.resolve('.') + '/dist_electron/webpack.main.additions.js',
+      'module.exports={}'
+    )
+  }
 }
 module.exports.defaultModes = {
   'build:electron': 'production',
