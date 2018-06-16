@@ -6,8 +6,14 @@ module.exports = (api, options) => {
     options.pluginOptions && options.pluginOptions.electronBuilder
       ? options.pluginOptions.electronBuilder
       : {}
+  const usesTypescript = pluginOptions.disableBackgroundTypescript
+    ? false
+    : api.hasPlugin('typescript')
+  const backgroundTypeChecking = pluginOptions.backgroundTypeChecking || false
   const outputDir = pluginOptions.outputDir || 'dist_electron'
-  const backgroundFile = pluginOptions.backgroundFile || 'src/background.js'
+  const backgroundFile =
+    pluginOptions.backgroundFile ||
+    (usesTypescript ? 'src/background.ts' : 'src/background.js')
   api.registerCommand(
     'build:electron',
     {
@@ -54,6 +60,15 @@ module.exports = (api, options) => {
         .plugin('env')
         .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'production' }])
       mainConfig.entry('background').add(api.resolve(backgroundFile))
+      if (usesTypescript) {
+        mainConfig.resolve.extensions.merge(['.ts'])
+        mainConfig.module
+          .rule('ts')
+          .test(/\.ts$/)
+          .use('ts-loader')
+          .loader('ts-loader')
+          .options({ transpileOnly: !backgroundTypeChecking })
+      }
 
       console.log('Bundling render process:')
       rendererConfig.target('electron-renderer').output.publicPath('./')
@@ -144,6 +159,16 @@ module.exports = (api, options) => {
         .plugin('env')
         .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'development' }])
       mainConfig.entry('background').add(api.resolve(backgroundFile))
+      if (usesTypescript) {
+        mainConfig.resolve.extensions.merge(['.ts'])
+        mainConfig.module
+          .rule('ts')
+          .test(/\.ts$/)
+          .use('ts-loader')
+          .loader('ts-loader')
+          .options({ transpileOnly: !backgroundTypeChecking })
+      }
+
       const bundle = webpack(mainConfig.toConfig())
 
       console.log('Bundling main process:\n')
