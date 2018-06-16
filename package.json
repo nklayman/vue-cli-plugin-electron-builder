@@ -26,5 +26,12 @@
     "webpack": "^4.12.0",
     "webpack-chain": "^4.8.0",
     "webpack-target-electron-renderer": "^0.4.0"
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0"
   }
 }
