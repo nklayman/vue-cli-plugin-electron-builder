@@ -2,6 +2,11 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const webpack = require('webpack')
 const Config = require('webpack-chain')
 module.exports = (api, options) => {
+  const pluginOptions =
+    options.pluginOptions && options.pluginOptions.electronBuilder
+      ? options.pluginOptions.electronBuilder
+      : {}
+  const outputDir = pluginOptions.outputDir || 'dist_electron'
   api.registerCommand(
     'build:electron',
     {
@@ -14,29 +19,22 @@ module.exports = (api, options) => {
         `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details.`
     },
     async () => {
-      const buildRenderer = require('@vue/cli-service/lib/commands/build')
-        .build
+      const buildRenderer = require('@vue/cli-service/lib/commands/build').build
       const fs = require('fs-extra')
       const builder = require('electron-builder')
       const rendererConfig = api.resolveChainableWebpackConfig()
       const defaultBuildConfig = {
         directories: {
-          output: 'dist_electron'
+          output: outputDir
         },
-        files: ['dist/**/*', 'node_modules/**/*', 'package.json'],
+        files: [
+          outputDir + '/bundled/**/*',
+          'node_modules/**/*',
+          'package.json'
+        ],
         extends: null
       }
-      const userBuildConfig = (function () {
-        if (
-          options.pluginOptions &&
-          options.pluginOptions.electronBuilder &&
-          options.pluginOptions.electronBuilder.builderConfig
-        ) {
-          return options.pluginOptions.electronBuilder.builderConfig
-        } else {
-          return {}
-        }
-      })()
+      const userBuildConfig = pluginOptions.userBuildConfig || {}
       const mainConfig = new Config()
       mainConfig
         .mode('production')
@@ -44,7 +42,9 @@ module.exports = (api, options) => {
         .target('electron-main')
         .node.set('__dirname', false)
         .set('__filename', false)
-      mainConfig.output.path(api.resolve('./dist')).filename('background.js')
+      mainConfig.output
+        .path(api.resolve(outputDir + '/bundled'))
+        .filename('background.js')
       mainConfig.plugin('uglify').use(UglifyJSPlugin, [
         {
           parallel: true,
@@ -58,12 +58,17 @@ module.exports = (api, options) => {
 
       console.log('Bundling render process:')
       rendererConfig.target('electron-renderer').output.publicPath('./')
-      await buildRenderer({ _: [] }, api, options, rendererConfig)
+      await buildRenderer(
+        { _: [], dest: outputDir + '/bundled' },
+        api,
+        options,
+        rendererConfig
+      )
       if (fs.existsSync(api.resolve('./dist/fonts'))) {
         fs.mkdirSync(api.resolve('./dist/css/fonts'))
         fs.copySync(
-          api.resolve('./dist/fonts'),
-          api.resolve('./dist/css/fonts')
+          api.resolve(outputDir + '/bundled/fonts'),
+          api.resolve(outputDir + '/bundled/css/fonts')
         )
       }
       const bundle = webpack(mainConfig.toConfig())
@@ -131,9 +136,7 @@ module.exports = (api, options) => {
         .target('electron-main')
         .node.set('__dirname', false)
         .set('__filename', false)
-      mainConfig.output
-        .path(api.resolve('./dist_electron'))
-        .filename('background.js')
+      mainConfig.output.path(api.resolve(outputDir)).filename('background.js')
       mainConfig.plugin('uglify').use(UglifyJSPlugin, [
         {
           parallel: true,
@@ -179,7 +182,7 @@ module.exports = (api, options) => {
         api.service.run('serve').then(server => {
           console.log('\nLaunching Electron...\n')
           const child = execa(
-            './node_modules/.bin/electron dist_electron/background.js',
+            `./node_modules/.bin/electron ${outputDir}/background.js`,
             {
               cwd: api.resolve('.'),
               stdio: 'inherit',

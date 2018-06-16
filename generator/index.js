@@ -8,6 +8,6 @@ module.exports = api => {
     devDependencies: {
       electron: '^2.0.2'
     },
-    main: 'dist/background.js'
+    main: 'dist_electron/bundled/background.js'
   })
 }
