@@ -7,6 +7,7 @@ module.exports = (api, options) => {
       ? options.pluginOptions.electronBuilder
       : {}
   const outputDir = pluginOptions.outputDir || 'dist_electron'
+  const backgroundFile = pluginOptions.backgroundFile || 'src/background.js'
   api.registerCommand(
     'build:electron',
     {
@@ -52,7 +53,7 @@ module.exports = (api, options) => {
       mainConfig
         .plugin('env')
         .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'production' }])
-      mainConfig.entry('background').add(api.resolve('./src/background.js'))
+      mainConfig.entry('background').add(api.resolve(backgroundFile))
 
       console.log('Bundling render process:')
       rendererConfig.target('electron-renderer').output.publicPath('./')
@@ -142,7 +143,7 @@ module.exports = (api, options) => {
       mainConfig
         .plugin('env')
         .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'development' }])
-      mainConfig.entry('background').add(api.resolve('./src/background.js'))
+      mainConfig.entry('background').add(api.resolve(backgroundFile))
       const bundle = webpack(mainConfig.toConfig())
 
       console.log('Bundling main process:\n')
