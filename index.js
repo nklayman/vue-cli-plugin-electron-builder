@@ -38,7 +38,6 @@ module.exports = (api, options) => {
       const mainConfig = new Config()
       mainConfig
         .mode('production')
-        .devtool('source-map')
         .target('electron-main')
         .node.set('__dirname', false)
         .set('__filename', false)
@@ -47,8 +46,7 @@ module.exports = (api, options) => {
         .filename('background.js')
       mainConfig.plugin('uglify').use(UglifyJSPlugin, [
         {
-          parallel: true,
-          sourceMap: true
+          parallel: true
         }
       ])
       mainConfig
@@ -132,15 +130,13 @@ module.exports = (api, options) => {
       const mainConfig = new Config()
       mainConfig
         .mode('development')
-        .devtool('source-map')
         .target('electron-main')
         .node.set('__dirname', false)
         .set('__filename', false)
       mainConfig.output.path(api.resolve(outputDir)).filename('background.js')
       mainConfig.plugin('uglify').use(UglifyJSPlugin, [
         {
-          parallel: true,
-          sourceMap: true
+          parallel: true
         }
       ])
       mainConfig
