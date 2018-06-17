@@ -80,8 +80,8 @@ module.exports = (api, options) => {
         options,
         rendererConfig
       )
-      if (fs.existsSync(api.resolve('./dist/fonts'))) {
-        fs.mkdirSync(api.resolve('./dist/css/fonts'))
+      if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
+        fs.mkdirSync(api.resolve(outputDir + '/bundled/css/fonts'))
         fs.copySync(
           api.resolve(outputDir + '/bundled/fonts'),
           api.resolve(outputDir + '/bundled/css/fonts')
