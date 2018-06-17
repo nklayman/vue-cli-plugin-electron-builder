@@ -43,7 +43,7 @@ module.exports = (api, options) => {
         ],
         extends: null
       }
-      const userBuildConfig = pluginOptions.userBuildConfig || {}
+      const userBuildConfig = pluginOptions.builderOptions || {}
       const mainConfig = new Config()
       mainConfig
         .mode('production')
