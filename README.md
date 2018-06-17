@@ -15,7 +15,7 @@ Open a terminal in the directory of your app created with Vue-CLI 3.
 
 Then, install and invoke the generator of vue-cli-plugin-electron-builder by running:
 
-`vue add electron-builder`
+`vue add electron-builder@alpha`
 
 That's It! You're ready to go!
 
