@@ -1,8 +1,11 @@
+
 # Vue CLI Plugin Electron Builder
 
-A Vue Cli 3 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/) and [Electron Webpack](https://webpack.electron.build/).
+A Vue Cli 3 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/).
 
 **IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
+
+**IMPORTANT: This is the alpha version of vue-cli-plugin-electron-builder! It is only recommended that you use this if you want to test it out and report bugs, not in production. Check back soon for a beta release.**
 
 ## Quick Start:
 
@@ -12,7 +15,7 @@ Then, install and invoke the generator of vue-cli-plugin-electron-builder by run
 
 `vue add electron-builder`
 
-That's It! Your ready to go!
+That's It! You're ready to go!
 
 ### To start a development server:
 
@@ -26,7 +29,7 @@ or if you use NPM:
 
 ### To build your app:
 
-With yarn:
+With Yarn:
 
 `yarn build:electron`
 
@@ -37,101 +40,105 @@ or with NPM:
 ### Folder Structure:
 
 ```
-├── dist/ # where electron-webpack outputs compiled files (this will overwrite normal build files)
-
-│ └── ...
-
 ├── dist_electron/
-
-│ ├── [target platform]-unpacked # unpacked Electron app (main exe and supporting files)
-
-│ ├── [application name] setup [version].[target binary (exe|dmg|rpm...)] # installer for Electron app
-
+│ ├── bundled/..  # where webpack outputs compiled files
+│ ├── [target platform]-unpacked/..  # unpacked Electron app (main app and supporting files)
+│ ├── [application name] setup [version].[target binary (exe|dmg|rpm...)]  # installer for Electron app
+│ ├── background.js  # compiled background file used for serve:electron
 │ └── ...
-
 ├── src/
-
-│ ├─── main/
-
-│ │ └── [main|index].[js|ts] # Electron entry file (for Electron's main process)
-
-│ ├── [main|index].[js|ts] # your app's entry file (for Electron's render process)
-
+│ ├── background.[js|ts]  # electron entry file (for Electron's main process)
+│ ├── [main|index].[js|ts]  # your app's entry file (for Electron's render process)
 │ └── ...
-
-├── electron-builder.[json|yml] # electron-builder configuration options (can also be placed in package.json under the "build" key)
-
-├── electron-webpack.[json|yml] # electron-webpack configuration options (can also be placed in package.json under the "electronWebpack" key)
-
-├── package.json # your app's package.json file
-
+├── package.json  # your app's package.json file
 ├── ...
 ```
 
-## Further Configuration:
+## Configuration:
 
-Initial configuration is already set for you in your app's package.json, but if you want to modify it:
-
-### CLI Options:
-
-When building your app, any arguments will be passed to electron-builder. To pass an argument/arguments to electron-webpack, place them after --webpack.
-
-**Example:**
-
-`yarn build:electron [electron-builder options] --webpack [electron-webpack options]`
-
-### Electron Builder:
+### Configuring Electron Builder:
 
 To see avalible options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
 
-As per Electron Builder's documentation, they can be applied:
-
-> * in the `package.json` file of your project using the `build` key on the top level:
->
-> ```
->  "build": {
->    "appId": "com.example.app"
->  }
-> ```
->
-> * or through the `--config <path/to/yml-or-json5-or-toml>` option (defaults to `electron-builder.yml`(or `json`, or [json5](http://json5.org/), or [toml](https://github.com/toml-lang/toml))).
->
-> ```
->  appId: "com.example.app"
-> ```
->
-> If you want to use [toml](https://en.wikipedia.org/wiki/TOML), please install `yarn add toml --dev`.
->
-> Most of the options accept `null` — for example, to explicitly set that DMG icon must be default volume icon from the OS and default rules must be not applied (i.e. use application icon as DMG icon), set `dmg.icon` to `null`
-
-### Electron Webpack:
-
-To see avalible options, check out [Electron Webpack Configuration Options](https://webpack.electron.build/configuration)
-
-As per Electron Webpack's documentation, they can be applied:
-
-> in `package.json` at `electronWebpack` or in a separate `electron-webpack.(json|json5|yml)`.
-
-To modify the webpack config for electron builds only, use the webpackConfig object under vue-cli-plugin-electron-builder's plugin options in `vue.config.js`.
-
-```
+They can be placed under the `builderOptions` key in vue-cli-plugin-electron-builder's plugin options in `vue.config.js`
+```javascript
 // vue.config.js
 
-module.exports  = {
+module.exports= {
+	pluginOptions: {
+		electronBuilder: {
+			builderOptions: {
+				// options placed here will be merged with default configuration and passed to electron-builder
+			}
+		}
+	}
+}
+``` 
+### Webpack configuration:
+Your regular config is used for bundling the renderer process (your app). To modify the webpack config for the electron main process only, use the `chainWebpackMainProcess` function under vue-cli-plugin-electron-builder's plugin options in `vue.config.js`. To learn more about webpack chaining, see [webpack-chain](https://github.com/mozilla-neutrino/webpack-chain). The function should take a config argument, modify it through webpack-chain, and then return it.
+
+**Note: Do NOT change the webpack output directory for the main process! See changing output directory below for more info. To change the entry point for the main process, use the `mainProcessFile` key, DO NOT modify it in through chaining.**
+
+```javascript
+// vue.config.js
+
+module.exports = {
   configureWebpack: {
-    // Non-electron build/serve configuration
-	// Aliases will be automatically copied from standard config to electron config
+    // Configuration applied to all builds
   },
   pluginOptions: {
     electronBuilder: {
-      webpackConfig: {
-        // your electron-only webpack config
-      }
+      chainWebpackMainProcess: (config) => {
+        // Chain webpack config for electron main process only
+      },
+      mainProcessFile: 'src/myBackgroundFile.js'
     }
   }
 };
 ```
 
-#### Adding TypeScript Support:
+### Changing the output directory:
+If you don't want your files outputted into dist_electron, you can choose a custom folder in vue-cli-plugin-electron-builder's plugin options.
+**Note: after changing this, you MUST update the main field of your `package.json` to `[new dir]/bundled/background.js`. It is also recommended to add the new directory to your .gitignore file.**
+```javascript
+// vue.config.js
 
-When you invoke/add vue-cli-plugin-electron-builder, it will ask you if you use TypeScript and configure accordingly. However, if you answered no and decide to add TypeScript later on, you must install electron-webpack-ts: `yarn add electron-webpack-ts --dev` (or with NPM: `npm install --save-dev electron-webpack-ts`).
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      outputDir: 'electron-builder-output-dir'
+    }
+  }
+};
+```
+### Adding TypeScript Support:
+Typescript support is automatic and requires no configuration, just add the `@vue/typescript` cli plugin. There are a few options for configuring typescript if necessary:
+
+```javascript
+// vue.config.js
+
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      disableMainProcessTypescript: false, // Manually disable typescript plugin for main process. Enable if you want to use regular js for the main process (src/background.js by default).
+      mainProcessTypeChecking: false // Manually enable type checking during webpck bundling for background file.
+    }
+  }
+};
+```
+You may also want to set `mainWindow`'s type to `any` and change `process.env.WEBPACK_DEV_SERVER_URL` to `process.env.WEBPACK_DEV_SERVER_URL  as  string` to fix type errors.
+
+## How it works:
+### Build command:
+The build command consists of three main phases: render build, main build, and electron-builder build:
+
+ 1. Render build: This phase calls `vue-cli-service build` with some custom configuration so it works properly with electron. (The render process is your standard app.)
+ 2. Main build: This phase is where vue-cli-plugin-electron-builder bundles your background file for the main process (`src/background.js`).
+ 3. Electron-builder build: This phase uses [electron-builder](https://www.electron.build) to turn your web app code into an desktop app powered by [Electron](https://electronjs.org).
+
+### Serve command:
+The serve command also consists of 3 main phases: main build, dev server launch, and electron launch:
+
+ 1. Main build: This phase, like in the build command, bundles your app's main process, but in development mode.
+ 2. Dev server launch: This phase starts the built in dev server with no special arguments, just hosting your app as normal.
+ 3. Electron launch: This phase launches electron and tells it to load the url of the above dev server.
