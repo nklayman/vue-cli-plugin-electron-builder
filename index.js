@@ -6,13 +6,13 @@ module.exports = (api, options) => {
     options.pluginOptions && options.pluginOptions.electronBuilder
       ? options.pluginOptions.electronBuilder
       : {}
-  const usesTypescript = pluginOptions.disableBackgroundTypescript
+  const usesTypescript = pluginOptions.disableMainProcessTypescript
     ? false
     : api.hasPlugin('typescript')
-  const backgroundTypeChecking = pluginOptions.backgroundTypeChecking || false
+  const mainProcessTypeChecking = pluginOptions.mainProcessTypeChecking || false
   const outputDir = pluginOptions.outputDir || 'dist_electron'
-  const backgroundFile =
-    pluginOptions.backgroundFile ||
+  const mainProcessFile =
+    pluginOptions.mainProcessFile ||
     (usesTypescript ? 'src/background.ts' : 'src/background.js')
   api.registerCommand(
     'build:electron',
@@ -59,7 +59,7 @@ module.exports = (api, options) => {
       mainConfig
         .plugin('env')
         .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'production' }])
-      mainConfig.entry('background').add(api.resolve(backgroundFile))
+      mainConfig.entry('background').add(api.resolve(mainProcessFile))
       if (usesTypescript) {
         mainConfig.resolve.extensions.merge(['.ts'])
         mainConfig.module
@@ -67,7 +67,7 @@ module.exports = (api, options) => {
           .test(/\.ts$/)
           .use('ts-loader')
           .loader('ts-loader')
-          .options({ transpileOnly: !backgroundTypeChecking })
+          .options({ transpileOnly: !mainProcessTypeChecking })
       }
 
       console.log('Bundling render process:')
@@ -158,7 +158,7 @@ module.exports = (api, options) => {
       mainConfig
         .plugin('env')
         .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'development' }])
-      mainConfig.entry('background').add(api.resolve(backgroundFile))
+      mainConfig.entry('background').add(api.resolve(mainProcessFile))
       if (usesTypescript) {
         mainConfig.resolve.extensions.merge(['.ts'])
         mainConfig.module
@@ -166,7 +166,7 @@ module.exports = (api, options) => {
           .test(/\.ts$/)
           .use('ts-loader')
           .loader('ts-loader')
-          .options({ transpileOnly: !backgroundTypeChecking })
+          .options({ transpileOnly: !mainProcessTypeChecking })
       }
 
       const bundle = webpack(mainConfig.toConfig())
