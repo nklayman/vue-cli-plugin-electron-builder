@@ -14,6 +14,8 @@ module.exports = (api, options) => {
   const mainProcessFile =
     pluginOptions.mainProcessFile ||
     (usesTypescript ? 'src/background.ts' : 'src/background.js')
+  const mainProcessChain =
+    pluginOptions.chainWebpackMainProcess || (config => config)
   api.registerCommand(
     'build:electron',
     {
@@ -85,7 +87,7 @@ module.exports = (api, options) => {
           api.resolve(outputDir + '/bundled/css/fonts')
         )
       }
-      const bundle = webpack(mainConfig.toConfig())
+      const bundle = webpack(mainProcessChain(mainConfig).toConfig())
       console.log('Bundling main process:\n')
       bundle.run((err, stats) => {
         if (err) {
@@ -169,7 +171,7 @@ module.exports = (api, options) => {
           .options({ transpileOnly: !mainProcessTypeChecking })
       }
 
-      const bundle = webpack(mainConfig.toConfig())
+      const bundle = webpack(mainProcessChain(mainConfig).toConfig())
 
       console.log('Bundling main process:\n')
       bundle.run((err, stats) => {
