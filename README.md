@@ -7,6 +7,8 @@ A Vue Cli 3 plugin for Electron with no required configuration that uses [Electr
 
 **IMPORTANT: This is the alpha version of vue-cli-plugin-electron-builder! It is only recommended that you use this if you want to test it out and report bugs, not in production. Check back soon for a beta release.**
 
+**IMPORTANT: If you were previously using an older version of vue-cli-plugin-electron-builder, please see the [upgrade guide](https://github.com/nklayman/vue-cli-plugin-electron-builder/blob/v1-dev/UPGRADING.md).**
+
 ## Quick Start:
 
 Open a terminal in the directory of your app created with Vue-CLI 3.
@@ -65,13 +67,13 @@ They can be placed under the `builderOptions` key in vue-cli-plugin-electron-bui
 // vue.config.js
 
 module.exports= {
-	pluginOptions: {
-		electronBuilder: {
-			builderOptions: {
-				// options placed here will be merged with default configuration and passed to electron-builder
-			}
-		}
-	}
+  pluginOptions: {
+    electronBuilder: {
+      builderOptions: {
+        // options placed here will be merged with default configuration and passed to electron-builder
+      }
+    }
+  }
 }
 ``` 
 ### Webpack configuration:
