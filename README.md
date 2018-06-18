@@ -113,7 +113,11 @@ module.exports = {
   }
 };
 ```
-### Adding TypeScript Support:
+### Cli Options:
+
+Arguments passed to `build:electron` are sent to electron-builder. To see available cli options, see [electron-builder's cli options](https://www.electron.build/cli). `serve:electron` takes no arguments.
+
+### TypeScript Support:
 Typescript support is automatic and requires no configuration, just add the `@vue/typescript` cli plugin. There are a few options for configuring typescript if necessary:
 
 ```javascript
@@ -122,6 +126,7 @@ Typescript support is automatic and requires no configuration, just add the `@vu
 module.exports = {
   pluginOptions: {
     electronBuilder: {
+	  // option: default // description
       disableMainProcessTypescript: false, // Manually disable typescript plugin for main process. Enable if you want to use regular js for the main process (src/background.js by default).
       mainProcessTypeChecking: false // Manually enable type checking during webpck bundling for background file.
     }
