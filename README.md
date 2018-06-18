@@ -142,5 +142,5 @@ The build command consists of three main phases: render build, main build, and e
 The serve command also consists of 3 main phases: main build, dev server launch, and electron launch:
 
  1. Main build: This phase, like in the build command, bundles your app's main process, but in development mode.
- 2. Dev server launch: This phase starts the built in dev server with no special arguments, just hosting your app as normal.
+ 2. Dev server launch: This phase starts the built in dev server with a few modifications to work properly with electron.
  3. Electron launch: This phase launches electron and tells it to load the url of the above dev server.

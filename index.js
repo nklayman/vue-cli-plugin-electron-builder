@@ -145,6 +145,9 @@ module.exports = (api, options) => {
     },
     () => {
       const execa = require('execa')
+      const serve = require('@vue/cli-service/lib/commands/serve').serve
+      const rendererConfig = api.resolveChainableWebpackConfig()
+      rendererConfig.target('electron-renderer')
       const mainConfig = new Config()
       mainConfig
         .mode('development')
@@ -203,7 +206,7 @@ module.exports = (api, options) => {
 
         console.log('\nStarting development server:\n')
 
-        api.service.run('serve').then(server => {
+        serve({ _: [] }, api, options, rendererConfig).then(server => {
           console.log('\nLaunching Electron...\n')
           const child = execa(
             `./node_modules/.bin/electron ${outputDir}/background.js`,
