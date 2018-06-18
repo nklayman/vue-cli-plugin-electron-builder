@@ -21,9 +21,9 @@
   version "3.0.0-rc.2"
   resolved "https://registry.yarnpkg.com/@vue/cli-overlay/-/cli-overlay-3.0.0-rc.2.tgz#6ed6938bff3b45e01ecfae01a2f8b7debccdd387"
 
-"@vue/cli-service@https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/v1-dev/vue-cli-service-v3.0.0-rc.2.tgz":
+"@vue/cli-service@https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/v1-dev/vue-cli-service-custom-1.tgz":
   version "3.0.0-rc.2"
-  resolved "https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/v1-dev/vue-cli-service-v3.0.0-rc.2.tgz#268b98bf46a20f2804e8cb956532a6cb4b64662f"
+  resolved "https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/v1-dev/vue-cli-service-custom-1.tgz#eafb9935cf747113999462d349eb6b1dc624a10f"
   dependencies:
     "@vue/cli-overlay" "^3.0.0-rc.2"
     "@vue/cli-shared-utils" "^3.0.0-rc.2"
