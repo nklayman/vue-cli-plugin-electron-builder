@@ -20,14 +20,13 @@ module.exports = (api, options) => {
     'build:electron',
     {
       description: 'build app with electron-builder',
-      usage:
-        'vue-cli-service build:electron [electron-builder options] --webpack [electron-webpack options]',
+      usage: 'vue-cli-service build:electron [electron-builder options]',
       details:
-        `All electron-builder and electron-webpack command line options are supported.\n` +
-        `Args before --webpack will be sent to electron-builder, after --webpack will be sent to electron-webpack\n` +
-        `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details.`
+        `All electron-builder command line options are supported.\n` +
+        `See https://www.electron.build/cli for cli options\n` +
+        `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details about this plugin.`
     },
-    async () => {
+    async args => {
       const buildRenderer = require('@vue/cli-service/lib/commands/build').build
       const fs = require('fs-extra')
       const builder = require('electron-builder')
@@ -123,7 +122,8 @@ module.exports = (api, options) => {
             config: {
               ...defaultBuildConfig,
               ...userBuildConfig
-            }
+            },
+            ...args
           })
           .then(() => {
             // handle result
@@ -139,9 +139,9 @@ module.exports = (api, options) => {
   api.registerCommand(
     'serve:electron',
     {
-      description: 'serve app with electron-webpack',
+      description: 'serve app and launch electron',
       usage: 'vue-cli-service serve:electron',
-      details: `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details.`
+      details: `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details about this plugin.`
     },
     () => {
       const execa = require('execa')
