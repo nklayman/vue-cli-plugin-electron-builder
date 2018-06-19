@@ -73,6 +73,7 @@ module.exports = (api, options) => {
 
       console.log('Bundling render process:')
       rendererConfig.target('electron-renderer').output.publicPath('./')
+      rendererConfig.node.set('__dirname', false).set('__filename', false)
       await buildRenderer(
         { _: [], dest: outputDir + '/bundled' },
         api,
@@ -147,7 +148,10 @@ module.exports = (api, options) => {
       const execa = require('execa')
       const serve = require('@vue/cli-service/lib/commands/serve').serve
       const rendererConfig = api.resolveChainableWebpackConfig()
-      rendererConfig.target('electron-renderer')
+      rendererConfig
+        .target('electron-renderer')
+        .node.set('__dirname', false)
+        .set('__filename', false)
       const mainConfig = new Config()
       mainConfig
         .mode('development')
@@ -214,6 +218,7 @@ module.exports = (api, options) => {
               cwd: api.resolve('.'),
               stdio: 'inherit',
               env: {
+                ...process.env,
                 WEBPACK_DEV_SERVER_URL: server.url
               }
             }
