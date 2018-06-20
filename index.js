@@ -48,6 +48,11 @@ module.exports = (api, options) => {
         ],
         extends: null
       }
+      const vueArgs = {
+        _: [],
+        dashboard: args.dashboard,
+        dest: outputDir + '/bundled'
+      }
       const userBuildConfig = pluginOptions.builderOptions || {}
       const mainConfig = new Config()
       mainConfig
@@ -80,12 +85,7 @@ module.exports = (api, options) => {
       console.log('Bundling render process:')
       rendererConfig.target('electron-renderer').output.publicPath('./')
       rendererConfig.node.set('__dirname', false).set('__filename', false)
-      await buildRenderer(
-        { _: [], dest: outputDir + '/bundled' },
-        api,
-        options,
-        rendererConfig
-      )
+      await buildRenderer(vueArgs, api, options, rendererConfig)
       if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
         fs.mkdirSync(api.resolve(outputDir + '/bundled/css/fonts'))
         fs.copySync(
@@ -150,7 +150,7 @@ module.exports = (api, options) => {
       usage: 'vue-cli-service serve:electron',
       details: `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details about this plugin.`
     },
-    () => {
+    args => {
       const execa = require('execa')
       const serve = require('@vue/cli-service/lib/commands/serve').serve
       const rendererConfig = api.resolveChainableWebpackConfig()
@@ -216,7 +216,12 @@ module.exports = (api, options) => {
 
         console.log('\nStarting development server:\n')
 
-        serve({ _: [] }, api, options, rendererConfig).then(server => {
+        serve(
+          { _: [], dashboard: args.dashboard },
+          api,
+          options,
+          rendererConfig
+        ).then(server => {
           console.log('\nLaunching Electron...\n')
           const child = execa(
             `./node_modules/.bin/electron ${outputDir}/background.js`,
