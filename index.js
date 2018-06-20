@@ -26,10 +26,16 @@ module.exports = (api, options) => {
         `See https://www.electron.build/cli for cli options\n` +
         `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details about this plugin.`
     },
-    async args => {
+    async (args, rawArgs) => {
       const buildRenderer = require('@vue/cli-service/lib/commands/build').build
       const fs = require('fs-extra')
       const builder = require('electron-builder')
+      const yargs = require('yargs')
+      const configureBuildCommand = require('electron-builder/out/builder')
+        .configureBuildCommand
+      const builderArgs = yargs
+        .command(['build', '*'], 'Build', configureBuildCommand)
+        .parse(rawArgs)
       const rendererConfig = api.resolveChainableWebpackConfig()
       const defaultBuildConfig = {
         directories: {
@@ -124,7 +130,7 @@ module.exports = (api, options) => {
               ...defaultBuildConfig,
               ...userBuildConfig
             },
-            ...args
+            ...builderArgs
           })
           .then(() => {
             // handle result
