@@ -14,7 +14,7 @@ Then, install and invoke the generator of vue-cli-plugin-electron-builder by run
 
 `vue add electron-builder`
 
-That's It! Your ready to go!
+That's It! You're ready to go!
 
 ### To start a development server:
 
