@@ -70,7 +70,7 @@ When building your app, any arguments will be passed to electron-builder. To pas
 
 ### Electron Builder:
 
-To see avalible options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
+To see available options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
 
 As per Electron Builder's documentation, they can be applied:
 
