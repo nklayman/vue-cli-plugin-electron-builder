@@ -94,7 +94,7 @@ As per Electron Builder's documentation, they can be applied:
 
 ### Electron Webpack:
 
-To see avalible options, check out [Electron Webpack Configuration Options](https://webpack.electron.build/configuration)
+To see available options, check out [Electron Webpack Configuration Options](https://webpack.electron.build/configuration)
 
 As per Electron Webpack's documentation, they can be applied:
 
