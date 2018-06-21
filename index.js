@@ -126,11 +126,11 @@ module.exports = (api, options) => {
 
         builder
           .build({
+            ...builderArgs,
             config: {
               ...defaultBuildConfig,
               ...userBuildConfig
-            },
-            ...builderArgs
+            }
           })
           .then(() => {
             // handle result
