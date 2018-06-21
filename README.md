@@ -14,7 +14,7 @@ Then, install and invoke the generator of vue-cli-plugin-electron-builder by run
 
 `vue add electron-builder`
 
-That's It! Your ready to go!
+That's It! You're ready to go!
 
 ### To start a development server:
 
@@ -70,7 +70,7 @@ When building your app, any arguments will be passed to electron-builder. To pas
 
 ### Electron Builder:
 
-To see avalible options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
+To see available options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
 
 As per Electron Builder's documentation, they can be applied:
 
@@ -94,7 +94,7 @@ As per Electron Builder's documentation, they can be applied:
 
 ### Electron Webpack:
 
-To see avalible options, check out [Electron Webpack Configuration Options](https://webpack.electron.build/configuration)
+To see available options, check out [Electron Webpack Configuration Options](https://webpack.electron.build/configuration)
 
 As per Electron Webpack's documentation, they can be applied:
 
