@@ -222,9 +222,10 @@ module.exports = (api, options) => {
           options,
           rendererConfig
         ).then(server => {
-          console.log('\nLaunching Electron...\n')
+          console.log('\nLaunching Electron...')
           const child = execa(
-            `./node_modules/.bin/electron ${outputDir}/background.js`,
+            './node_modules/.bin/electron',
+            [`${outputDir}/background.js`],
             {
               cwd: api.resolve('.'),
               stdio: 'inherit',
