@@ -1,11 +1,14 @@
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const webpack = require('webpack')
 const Config = require('webpack-chain')
+
 module.exports = (api, options) => {
+  // If plugin options are provided in vue.config.js, those will be used. Otherwise it is empty object
   const pluginOptions =
     options.pluginOptions && options.pluginOptions.electronBuilder
       ? options.pluginOptions.electronBuilder
       : {}
+  // If option is not set in pluginOptions, default is used
   const usesTypescript = pluginOptions.disableMainProcessTypescript
     ? false
     : api.hasPlugin('typescript')
@@ -31,12 +34,15 @@ module.exports = (api, options) => {
       const fs = require('fs-extra')
       const builder = require('electron-builder')
       const yargs = require('yargs')
+      //   Import the yargs options from electron-builder
       const configureBuildCommand = require('electron-builder/out/builder')
         .configureBuildCommand
+        // Parse the raw arguments using electron-builder yargs config
       const builderArgs = yargs
         .command(['build', '*'], 'Build', configureBuildCommand)
         .parse(rawArgs)
       const rendererConfig = api.resolveChainableWebpackConfig()
+      //   Base config used in electron-builder build
       const defaultBuildConfig = {
         directories: {
           output: outputDir
@@ -48,13 +54,18 @@ module.exports = (api, options) => {
         ],
         extends: null
       }
+      //   User-defined electron-builder config, overwrites/adds to default config
+      const userBuildConfig = pluginOptions.builderOptions || {}
+      //   Arguments to be passed to renderer build
       const vueArgs = {
         _: [],
+        // For the cli-ui webpack dashboard
         dashboard: args.dashboard,
+        // Make sure files are outputted to proper directory
         dest: outputDir + '/bundled'
       }
-      const userBuildConfig = pluginOptions.builderOptions || {}
       const mainConfig = new Config()
+      //   Configure main process webpack config
       mainConfig
         .mode('production')
         .target('electron-main')
@@ -83,9 +94,12 @@ module.exports = (api, options) => {
       }
 
       console.log('Bundling render process:')
+      //   Configure base webpack config to work properly with electron
       rendererConfig.target('electron-renderer').output.publicPath('./')
       rendererConfig.node.set('__dirname', false).set('__filename', false)
+      //   Build the render process with the custom args and config
       await buildRenderer(vueArgs, api, options, rendererConfig)
+      //   Copy fonts to css/fonts. Fixes some issues with static font imports
       if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
         fs.mkdirSync(api.resolve(outputDir + '/bundled/css/fonts'))
         fs.copySync(
@@ -93,6 +107,7 @@ module.exports = (api, options) => {
           api.resolve(outputDir + '/bundled/css/fonts')
         )
       }
+      //   Build the main process into the renderer process output dir
       const bundle = webpack(mainProcessChain(mainConfig).toConfig())
       console.log('Bundling main process:\n')
       bundle.run((err, stats) => {
@@ -123,12 +138,14 @@ module.exports = (api, options) => {
         )
 
         console.log('\nBuilding app with electron-builder:\n')
-
+        // Build the app using electron builder
         builder
           .build({
+            //   Args parsed with yargs
             ...builderArgs,
             config: {
               ...defaultBuildConfig,
+              //   User-defined config overwrites defaults
               ...userBuildConfig
             }
           })
@@ -154,10 +171,12 @@ module.exports = (api, options) => {
       const execa = require('execa')
       const serve = require('@vue/cli-service/lib/commands/serve').serve
       const rendererConfig = api.resolveChainableWebpackConfig()
+      //   Configure renderer process to work properly with electron
       rendererConfig
         .target('electron-renderer')
         .node.set('__dirname', false)
         .set('__filename', false)
+      //   Configure webpack for main process
       const mainConfig = new Config()
       mainConfig
         .mode('development')
@@ -184,8 +203,8 @@ module.exports = (api, options) => {
           .options({ transpileOnly: !mainProcessTypeChecking })
       }
 
+      //   Build the main process
       const bundle = webpack(mainProcessChain(mainConfig).toConfig())
-
       console.log('Bundling main process:\n')
       bundle.run((err, stats) => {
         if (err) {
@@ -215,27 +234,32 @@ module.exports = (api, options) => {
         )
 
         console.log('\nStarting development server:\n')
-
+        // Run the serve command with custom webpack config
         serve(
+          // Use dashboard if called from ui
           { _: [], dashboard: args.dashboard },
           api,
           options,
           rendererConfig
         ).then(server => {
+          // Launch electron with execa
           console.log('\nLaunching Electron...')
           const child = execa(
             './node_modules/.bin/electron',
+            // Have it load the main process file built with webpack
             [`${outputDir}/background.js`],
             {
               cwd: api.resolve('.'),
               stdio: 'inherit',
               env: {
                 ...process.env,
+                // Give the main process the url to the dev server
                 WEBPACK_DEV_SERVER_URL: server.url
               }
             }
           )
           child.on('exit', () => {
+            //   Exit when electron is closed
             process.exit(0)
           })
         })

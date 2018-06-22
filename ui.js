@@ -11,6 +11,7 @@ module.exports = api => {
   let hadFailed = false
   let modernMode = false
 
+  // For webpack dashboard
   function resetSharedData (key) {
     setSharedData(`${key}-status`, null)
     setSharedData(`${key}-progress`, 0)
@@ -20,6 +21,7 @@ module.exports = api => {
     setSharedData(`${key}-problems`, null)
   }
 
+  //   For webpack dashboard
   async function onWebpackMessage ({ data: message }) {
     if (message.webpackDashboardData) {
       const type = message.webpackDashboardData.type
@@ -91,26 +93,32 @@ module.exports = api => {
       if (answers.dir) args.push('--dir')
       if (answers.windows) {
         args.push('--windows')
+        // For each windows target, add it after --windows
         answers.windowsTargets.forEach(t => {
           args.push(t)
         })
       }
       if (answers.linux) {
         args.push('--linux')
+        // For each linux target, add it after --linux
         answers.linuxTargets.forEach(t => {
           args.push(t)
         })
       }
       if (answers.macos) {
         args.push('--macos')
+        // For each macos target, add it after --macos
         answers.macosTargets.forEach(t => {
           args.push(t)
         })
       }
+      //   add --[arch] for each architecture target
       answers.archs.forEach(a => {
         args.push(`--${a}`)
       })
+      //   Webpack dashboard
       setSharedData('modern-mode', (modernMode = !!answers.modern))
+      //   Tell renderer build to send status to dashboard
       args.push('--dashboard')
       // Data
       resetSharedData('build')
@@ -144,7 +152,7 @@ module.exports = api => {
     link:
       'https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/v1-dev#serve-command',
     onBeforeRun: ({ answers, args }) => {
-      // Args
+      // Tell dev server to send status to dashboard
       args.push('--dashboard')
 
       // Data

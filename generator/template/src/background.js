@@ -14,8 +14,10 @@ function createMainWindow () {
 
   if (isDevelopment) {
     window.webContents.openDevTools()
+    // Load the url of the dev server if in development mode
     window.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
   } else {
+    //   Load the index.html when not in development
     window.loadURL(
       formatUrl({
         pathname: path.join(__dirname, 'index.html'),
