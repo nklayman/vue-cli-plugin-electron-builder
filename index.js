@@ -37,11 +37,20 @@ module.exports = (api, options) => {
       //   Import the yargs options from electron-builder
       const configureBuildCommand = require('electron-builder/out/builder')
         .configureBuildCommand
-        // Parse the raw arguments using electron-builder yargs config
+      // Parse the raw arguments using electron-builder yargs config
       const builderArgs = yargs
         .command(['build', '*'], 'Build', configureBuildCommand)
         .parse(rawArgs)
       const rendererConfig = api.resolveChainableWebpackConfig()
+      //   Configure base webpack config to work properly with electron
+      rendererConfig.target('electron-renderer').output.publicPath('./')
+      rendererConfig.node.set('__dirname', false).set('__filename', false)
+      //   Set process.env.BASE_URL and __static to absolute file path
+      rendererConfig.plugin('define').tap(args => {
+        args[0]['process.env'].BASE_URL = '__dirname'
+        args[0].__static = '__dirname'
+        return args
+      })
       //   Base config used in electron-builder build
       const defaultBuildConfig = {
         directories: {
@@ -74,6 +83,10 @@ module.exports = (api, options) => {
       mainConfig.output
         .path(api.resolve(outputDir + '/bundled'))
         .filename('background.js')
+      //   Set __static to __dirname (files in public get copied here)
+      mainConfig
+        .plugin('define')
+        .use(webpack.DefinePlugin, [{ __static: '__dirname' }])
       mainConfig.plugin('uglify').use(UglifyJSPlugin, [
         {
           parallel: true
@@ -94,9 +107,6 @@ module.exports = (api, options) => {
       }
 
       console.log('Bundling render process:')
-      //   Configure base webpack config to work properly with electron
-      rendererConfig.target('electron-renderer').output.publicPath('./')
-      rendererConfig.node.set('__dirname', false).set('__filename', false)
       //   Build the render process with the custom args and config
       await buildRenderer(vueArgs, api, options, rendererConfig)
       //   Copy fonts to css/fonts. Fixes some issues with static font imports
@@ -176,6 +186,11 @@ module.exports = (api, options) => {
         .target('electron-renderer')
         .node.set('__dirname', false)
         .set('__filename', false)
+      //   Set __static to absolute path to public folder
+      rendererConfig.plugin('define').tap(args => {
+        args[0].__static = JSON.stringify(api.resolve('./public'))
+        return args
+      })
       //   Configure webpack for main process
       const mainConfig = new Config()
       mainConfig
@@ -187,6 +202,12 @@ module.exports = (api, options) => {
       mainConfig.plugin('uglify').use(UglifyJSPlugin, [
         {
           parallel: true
+        }
+      ])
+      //   Set __static to absolute path to public folder
+      mainConfig.plugin('define').use(webpack.DefinePlugin, [
+        {
+          __static: JSON.stringify(api.resolve('./public'))
         }
       ])
       mainConfig
