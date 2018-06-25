@@ -98,6 +98,27 @@ module.exports = {
   }
 };
 ```
+### Handling static assets:
+Static assets work similarily to a regular app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html). However, there are a few changes made:
+
+ - The `__static` global variable is added. It provides a path to your public directory in both development and production. Use this to read/write files in your app's public directory.
+ - In production, the `process.env.BASE_URL` is replaced with the path to your app's files.
+
+**Note: `__static` is not available in regular build/serve. It should only be used in electron to read/write files on disk. To import a file (img, script, etc...) and not have it be transpiled by webpack, use the `process.env.BASE_URL` instead.**
+#### Examples:
+```html
+<!-- This image will be processed by webpack and placed under img/ -->
+<img src="./assets/logo.png">
+<!-- This image will no be processed by webpack, just copied-->
+<!-- imgPath should equal `path.join(process.env.BASE_URL, 'logo.png')` -->
+<img :src="imgPath">
+<!-- This will read the contents of public/myText.txt -->
+<script>
+const fs = require('fs')
+const path = require('path')
+console.log(fs.readFileSync(path.join(__static, 'myText.txt'), 'utf8'))
+</script>
+```
 
 ### Changing the output directory:
 If you don't want your files outputted into dist_electron, you can choose a custom folder in vue-cli-plugin-electron-builder's plugin options.
