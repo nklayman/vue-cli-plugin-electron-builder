@@ -1,14 +1,17 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow } from 'electron'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
+import createProtocol from 'vue-cli-plugin-electron-builder/lib/createProtocol'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow
 
+// Standard scheme must be registered before the app is ready
+protocol.registerStandardSchemes(['app'], { secure: true })
 function createMainWindow () {
   const window = new BrowserWindow()
 
@@ -17,6 +20,7 @@ function createMainWindow () {
     // Load the url of the dev server if in development mode
     window.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
   } else {
+    createProtocol('app')
     //   Load the index.html when not in development
     window.loadURL(
       formatUrl({

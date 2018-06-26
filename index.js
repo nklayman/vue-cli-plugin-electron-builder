@@ -71,7 +71,9 @@ module.exports = (api, options) => {
         // For the cli-ui webpack dashboard
         dashboard: args.dashboard,
         // Make sure files are outputted to proper directory
-        dest: outputDir + '/bundled'
+        dest: outputDir + '/bundled',
+        // Enable modern mode
+        modern: true
       }
       const mainConfig = new Config()
       //   Configure main process webpack config
@@ -105,7 +107,8 @@ module.exports = (api, options) => {
           .loader('ts-loader')
           .options({ transpileOnly: !mainProcessTypeChecking })
       }
-
+      //   Set the base url so that the app protocol is used
+      options.baseUrl = './'
       console.log('Bundling render process:')
       //   Build the render process with the custom args and config
       await buildRenderer(vueArgs, api, options, rendererConfig)
@@ -253,7 +256,6 @@ module.exports = (api, options) => {
             colors: true
           })
         )
-
         console.log('\nStarting development server:\n')
         // Run the serve command with custom webpack config
         serve(
