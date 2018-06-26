@@ -48,6 +48,7 @@ or with NPM:
 │ ├── [application name] setup [version].[target binary (exe|dmg|rpm...)]  # installer for Electron app
 │ ├── background.js  # compiled background file used for serve:electron
 │ └── ...
+├── public/  # Files placed here will be avalible through __static or process.env.BASE_URL
 ├── src/
 │ ├── background.[js|ts]  # electron entry file (for Electron's main process)
 │ ├── [main|index].[js|ts]  # your app's entry file (for Electron's render process)
@@ -99,24 +100,35 @@ module.exports = {
 };
 ```
 ### Handling static assets:
-Static assets work similarily to a regular app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html). However, there are a few changes made:
+#### Renderer process (main app):
+In the renderer process, static assets work similarly to a regular app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html) before continuing. However, there are a few changes made:
 
  - The `__static` global variable is added. It provides a path to your public directory in both development and production. Use this to read/write files in your app's public directory.
  - In production, the `process.env.BASE_URL` is replaced with the path to your app's files.
 
 **Note: `__static` is not available in regular build/serve. It should only be used in electron to read/write files on disk. To import a file (img, script, etc...) and not have it be transpiled by webpack, use the `process.env.BASE_URL` instead.**
+#### Main process (background.js):
+The main process won't have access to `process.env.BASE_URL` or `src/assets`. However, you can still use `__static` to get a path to your public directory in development and production.
 #### Examples:
 ```html
+<!-- Renderer process only -->
 <!-- This image will be processed by webpack and placed under img/ -->
 <img src="./assets/logo.png">
+<!-- Renderer process only -->
 <!-- This image will no be processed by webpack, just copied-->
 <!-- imgPath should equal `path.join(process.env.BASE_URL, 'logo.png')` -->
 <img :src="imgPath">
+<!-- Both renderer and main process -->
 <!-- This will read the contents of public/myText.txt -->
 <script>
 const fs = require('fs')
 const path = require('path')
-console.log(fs.readFileSync(path.join(__static, 'myText.txt'), 'utf8'))
+
+// Expects myText.txt to be placed in public folder
+const fileLocation = path.join(__static, 'myText.txt')
+const fileContents = fs.readFileSync(fileLocation, 'utf8')
+
+console.log(fileContents)
 </script>
 ```
 
