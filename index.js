@@ -277,7 +277,9 @@ module.exports = (api, options) => {
               env: {
                 ...process.env,
                 // Give the main process the url to the dev server
-                WEBPACK_DEV_SERVER_URL: server.url
+                WEBPACK_DEV_SERVER_URL: server.url,
+                // Disable electron security warnings
+                ELECTRON_DISABLE_SECURITY_WARNINGS: true
               }
             }
           )
