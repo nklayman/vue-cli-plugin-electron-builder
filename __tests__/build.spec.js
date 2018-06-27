@@ -7,7 +7,7 @@ const fs = require('fs')
 
 test('build:electron', async () => {
   defaultPreset.plugins['vue-cli-plugin-electron-builder'] = {
-    version: 'file:../../'
+    version: 'file:../../../'
   }
   //   defaultPreset.plugins['file:../../../'] = {}
   const project = await create(
