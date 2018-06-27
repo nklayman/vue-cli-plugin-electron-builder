@@ -108,7 +108,7 @@ module.exports = (api, options) => {
           .options({ transpileOnly: !mainProcessTypeChecking })
       }
       //   Set the base url so that the app protocol is used
-      options.baseUrl = './'
+      //   options.baseUrl = './'
       console.log('Bundling render process:')
       //   Build the render process with the custom args and config
       await buildRenderer(vueArgs, api, options, rendererConfig)

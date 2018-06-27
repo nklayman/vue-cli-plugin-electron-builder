@@ -57,3 +57,5 @@ typings/
 # dotenv environment variables file
 .env
 
+# Vue Cli test projects
+/__tests__/projects
