@@ -84,5 +84,5 @@ test('build:electron', async () => {
   //   App is loaded properly
   expect(await client.getHTML('#app')).toMatchSnapshot()
 
-  app.stop()
+  await app.stop()
 })

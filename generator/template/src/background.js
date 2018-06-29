@@ -16,9 +16,9 @@ function createMainWindow () {
   const window = new BrowserWindow()
 
   if (isDevelopment) {
-    window.webContents.openDevTools()
     // Load the url of the dev server if in development mode
     window.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
+    if (!process.env.IS_TEST) window.webContents.openDevTools()
   } else {
     createProtocol('app')
     //   Load the index.html when not in development
