@@ -4,7 +4,8 @@
   "description": "A Vue Cli 3 plugin for Electron with no required configuration",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --runInBand",
+    "pretest": "rimraf __tests__/projects/*"
   },
   "keywords": [
     "electron",
@@ -40,8 +41,10 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
-    "http-server": "^0.11.1",
     "jest": "^23.2.0",
+    "lnk": "^1.1.0",
+    "rimraf": "^2.6.2",
+    "spectron": "^3.8.0",
     "vue": "^2.5.16"
   }
 }
