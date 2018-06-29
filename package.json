@@ -4,8 +4,7 @@
   "description": "A Vue Cli 3 plugin for Electron with no required configuration",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand",
-    "pretest": "rimraf __tests__/projects/*"
+    "test": "jest --runInBand"
   },
   "keywords": [
     "electron",
