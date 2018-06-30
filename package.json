@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --runInBand",
+    "pretest": "rimraf __tests__/projects/*",
     "lint": "eslint --ignore-pattern projects ./"
   },
   "keywords": [
