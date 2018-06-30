@@ -4,7 +4,7 @@
   "description": "A Vue Cli 3 plugin for Electron with no required configuration",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand",
+    "test": "jest",
     "pretest": "rimraf __tests__/projects/*",
     "lint": "eslint --ignore-pattern projects ./"
   },
@@ -24,7 +24,7 @@
   "private": false,
   "dependencies": {
     "@vue/cli-service": "https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/v1-dev/vue-cli-service-custom-1.tgz",
-    "electron-builder": "^20.15.1",
+    "electron-builder": "^20.18.0",
     "execa": "^0.10.0",
     "fs-extra": "^6.0.1",
     "uglifyjs-webpack-plugin": "^1.2.5",
@@ -36,7 +36,9 @@
     "@vue/cli": "^3.0.0-rc.3",
     "@vue/cli-plugin-babel": "^3.0.0-rc.3",
     "@vue/cli-plugin-eslint": "^3.0.0-rc.3",
+    "@vue/cli-plugin-typescript": "^3.0.0-rc.3",
     "@vue/cli-test-utils": "^3.0.0-rc.3",
+    "@vue/eslint-config-typescript": "^3.0.0-rc.3",
     "electron": "^2.0.3",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.12.0",
