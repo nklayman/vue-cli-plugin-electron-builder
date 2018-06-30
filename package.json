@@ -47,6 +47,7 @@
     "eslint-plugin-standard": "^3.1.0",
     "jest": "^23.2.0",
     "lnk": "^1.1.0",
+    "portfinder": "^1.0.13",
     "rimraf": "^2.6.2",
     "spectron": "^3.8.0",
     "vue": "^2.5.16"

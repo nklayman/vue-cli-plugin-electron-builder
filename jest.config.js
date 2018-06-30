@@ -12,5 +12,9 @@ module.exports = {
   //   testMatch: ['<rootDir>/__tests__/**.spec.js']
   testEnvironment: 'node',
   setupFiles: ['<rootDir>/testSetup.js'],
-  testPathIgnorePatterns: ['/node_modules/', '/__tests__/projects/']
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/__tests__/projects/',
+    '.*.helper.js'
+  ]
 }

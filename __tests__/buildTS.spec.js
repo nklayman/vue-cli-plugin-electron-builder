@@ -2,6 +2,6 @@ jest.setTimeout(600000)
 
 const runTests = require('./build.helper.js').runTests
 
-test('build:electron', async () => {
-  await runTests()
+test('build:electron-ts', async () => {
+  await runTests(true)
 })
