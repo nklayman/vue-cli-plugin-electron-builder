@@ -3,7 +3,7 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
-import createProtocol from 'vue-cli-plugin-electron-builder/lib/createProtocol'
+import createProtocol from 'vue-cli-plugin-electron-builder/lib/createProtocol.js'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 

@@ -1,4 +1,3 @@
-
 # Vue CLI Plugin Electron Builder
 
 A Vue Cli 3 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/).
@@ -64,10 +63,11 @@ or with NPM:
 To see avalible options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
 
 They can be placed under the `builderOptions` key in vue-cli-plugin-electron-builder's plugin options in `vue.config.js`
+
 ```javascript
 // vue.config.js
 
-module.exports= {
+module.exports = {
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
@@ -76,8 +76,10 @@ module.exports= {
     }
   }
 }
-``` 
+```
+
 ### Webpack configuration:
+
 Your regular config is used for bundling the renderer process (your app). To modify the webpack config for the electron main process only, use the `chainWebpackMainProcess` function under vue-cli-plugin-electron-builder's plugin options in `vue.config.js`. To learn more about webpack chaining, see [webpack-chain](https://github.com/mozilla-neutrino/webpack-chain). The function should take a config argument, modify it through webpack-chain, and then return it.
 
 **Note: Do NOT change the webpack output directory for the main process! See changing output directory below for more info. To change the entry point for the main process, use the `mainProcessFile` key, DO NOT modify it in through chaining.**
@@ -91,25 +93,32 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
-      chainWebpackMainProcess: (config) => {
+      chainWebpackMainProcess: config => {
         // Chain webpack config for electron main process only
       },
       mainProcessFile: 'src/myBackgroundFile.js'
     }
   }
-};
+}
 ```
+
 ### Handling static assets:
+
 #### Renderer process (main app):
+
 In the renderer process, static assets work similarly to a regular app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html) before continuing. However, there are a few changes made:
 
- - The `__static` global variable is added. It provides a path to your public directory in both development and production. Use this to read/write files in your app's public directory.
- - In production, the `process.env.BASE_URL` is replaced with the path to your app's files.
+- The `__static` global variable is added. It provides a path to your public directory in both development and production. Use this to read/write files in your app's public directory.
+- In production, the `process.env.BASE_URL` is replaced with the path to your app's files.
 
 **Note: `__static` is not available in regular build/serve. It should only be used in electron to read/write files on disk. To import a file (img, script, etc...) and not have it be transpiled by webpack, use the `process.env.BASE_URL` instead.**
+
 #### Main process (background.js):
+
 The main process won't have access to `process.env.BASE_URL` or `src/assets`. However, you can still use `__static` to get a path to your public directory in development and production.
+
 #### Examples:
+
 ```html
 <!-- Renderer process only -->
 <!-- This image will be processed by webpack and placed under img/ -->
@@ -133,8 +142,10 @@ console.log(fileContents)
 ```
 
 ### Changing the output directory:
+
 If you don't want your files outputted into dist_electron, you can choose a custom folder in vue-cli-plugin-electron-builder's plugin options.
 **Note: after changing this, you MUST update the main field of your `package.json` to `[new dir]/bundled/background.js`. It is also recommended to add the new directory to your .gitignore file.**
+
 ```javascript
 // vue.config.js
 
@@ -144,13 +155,15 @@ module.exports = {
       outputDir: 'electron-builder-output-dir'
     }
   }
-};
+}
 ```
+
 ### Cli Options:
 
 Arguments passed to `build:electron` are sent to electron-builder. To see available cli options, see [electron-builder's cli options](https://www.electron.build/cli). `serve:electron` takes no arguments.
 
 ### TypeScript Support:
+
 Typescript support is automatic and requires no configuration, just add the `@vue/typescript` cli plugin. There are a few options for configuring typescript if necessary:
 
 ```javascript
@@ -159,26 +172,30 @@ Typescript support is automatic and requires no configuration, just add the `@vu
 module.exports = {
   pluginOptions: {
     electronBuilder: {
-	  // option: default // description
+      // option: default // description
       disableMainProcessTypescript: false, // Manually disable typescript plugin for main process. Enable if you want to use regular js for the main process (src/background.js by default).
       mainProcessTypeChecking: false // Manually enable type checking during webpck bundling for background file.
     }
   }
-};
+}
 ```
-You may also want to set `mainWindow`'s type to `any` and change `process.env.WEBPACK_DEV_SERVER_URL` to `process.env.WEBPACK_DEV_SERVER_URL  as  string` to fix type errors.
+
+If you are adding typescript before vue-cli-plugin-electron-builder, you may also want to set `mainWindow`'s type to `any` and change `process.env.WEBPACK_DEV_SERVER_URL` to `process.env.WEBPACK_DEV_SERVER_URL as string` to fix type errors. If you add typescript first, this will be done automatically.
 
 ## How it works:
+
 ### Build command:
+
 The build command consists of three main phases: render build, main build, and electron-builder build:
 
- 1. Render build: This phase calls `vue-cli-service build` with some custom configuration so it works properly with electron. (The render process is your standard app.)
- 2. Main build: This phase is where vue-cli-plugin-electron-builder bundles your background file for the main process (`src/background.js`).
- 3. Electron-builder build: This phase uses [electron-builder](https://www.electron.build) to turn your web app code into an desktop app powered by [Electron](https://electronjs.org).
+1.  Render build: This phase calls `vue-cli-service build` with some custom configuration so it works properly with electron. (The render process is your standard app.)
+2.  Main build: This phase is where vue-cli-plugin-electron-builder bundles your background file for the main process (`src/background.js`).
+3.  Electron-builder build: This phase uses [electron-builder](https://www.electron.build) to turn your web app code into an desktop app powered by [Electron](https://electronjs.org).
 
 ### Serve command:
+
 The serve command also consists of 3 main phases: main build, dev server launch, and electron launch:
 
- 1. Main build: This phase, like in the build command, bundles your app's main process, but in development mode.
- 2. Dev server launch: This phase starts the built in dev server with a few modifications to work properly with electron.
- 3. Electron launch: This phase launches electron and tells it to load the url of the above dev server.
+1.  Main build: This phase, like in the build command, bundles your app's main process, but in development mode.
+2.  Dev server launch: This phase starts the built in dev server with a few modifications to work properly with electron.
+3.  Electron launch: This phase launches electron and tells it to load the url of the above dev server.

@@ -16,6 +16,21 @@ module.exports = api => {
     //   Write updated files
     fs.writeFileSync(api.resolve('./public/index.html'), index)
     fs.writeFileSync(api.resolve('./.gitignore'), gitignore)
+    if (api.hasPlugin('typescript')) {
+      let background
+      if (fs.existsSync(api.resolve('./src/background.js'))) {
+        background = fs.readFileSync(api.resolve('./src/background.js'), 'utf8')
+        fs.unlinkSync(api.resolve('./src/background.js'))
+      } else {
+        background = fs.readFileSync(api.resolve('./src/background.ts'), 'utf8')
+      }
+      background = background.replace(
+        'process.env.WEBPACK_DEV_SERVER_URL',
+        'process.env.WEBPACK_DEV_SERVER_URL as string'
+      )
+      background = background.replace('let mainWindow', 'let mainWindow: any')
+      fs.writeFileSync(api.resolve('./src/background.ts'), background)
+    }
   })
   api.extendPackage({
     scripts: {
