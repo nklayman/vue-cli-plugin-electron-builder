@@ -11,6 +11,16 @@ branches:
 
 skip_tags: true
 
+skip_commits:
+  files:
+    - ".travis.yml"
+    - ".circleci/*"
+    - "README.md"
+    - "UPGRADING.md"
+    - ".eslintrc.js"
+    - ".gitignore"
+    - "logo.png"
+
 environment:
   nodejs_version: "10"
 
