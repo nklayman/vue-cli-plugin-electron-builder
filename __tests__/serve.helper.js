@@ -1,8 +1,7 @@
-const create = require('@vue/cli-test-utils/createTestProject')
+const create = require('./createProject.helper.js')
 const path = require('path')
 const Application = require('spectron').Application
 const electronPath = require('electron')
-const { defaultPreset } = require('@vue/cli/lib/options')
 const portfinder = require('portfinder')
 
 portfinder.basePort = 9515
@@ -41,24 +40,9 @@ const serve = (project, notifyUpdate) =>
   })
 const runTests = useTS =>
   new Promise(async resolve => {
-    //   Prevent modification of import
-    let preset = { ...defaultPreset }
-    let projectName = 'serve'
-    if (useTS) {
-      // Install typescript plugin
-      defaultPreset.plugins['@vue/cli-plugin-typescript'] = {}
-      //   Use different project name
-      projectName += '-ts'
-    }
+    const { project, projectName } = await create('serve', useTS)
     const projectPath = p =>
       path.join(process.cwd(), '__tests__/projects/' + projectName, p)
-    // Install vcp-electron-builder
-    defaultPreset.plugins['vue-cli-plugin-electron-builder'] = {}
-    const project = await create(
-      projectName,
-      preset,
-      path.join(process.cwd(), '/__tests__/projects')
-    )
     //   Prevent electron from being launched
     jest.mock('execa')
     //   Wait for dev server to start
@@ -87,12 +71,40 @@ const runTests = useTS =>
         //   Make sure there are no fatal errors
         expect(log.level).not.toBe('SEVERE')
       })
+      let appBaseUrl = logs
+        //   Find BASE_URL log
+        .find(v => v.message.indexOf('process.env.BASE_URL=') !== -1)
+        // Get just the value
+        .message.split('=')[1]
+      // Remove any quotes
+      appBaseUrl = appBaseUrl.replace('"', '')
+      //   Base url should be root of server
+      expect(appBaseUrl).toBe('/')
+      let appStatic = logs
+        //   Find __static log
+        .find(v => v.message.indexOf('__static=') !== -1)
+        // Get just the value
+        .message.split('=')[1]
+      // Remove any quotes
+      appStatic = appStatic.replace('"', '')
+      //   __static should point to public folder
+      expect(path.normalize(appStatic)).toBe(projectPath('public'))
     })
     await client.getMainProcessLogs().then(logs => {
       logs.forEach(log => {
         //   Make sure there are no fatal errors
         expect(log.level).not.toBe('SEVERE')
       })
+      let appStatic = logs
+        //   Find __static log
+        .find(m => m.indexOf('__static=') !== -1)
+        // Get just the value
+        .split('=')[1]
+      // Remove any quotes
+      appStatic = appStatic.replace('"', '')
+      appStatic = appStatic.replace('', '')
+      //   __static should point to public folder
+      expect(path.normalize(appStatic)).toBe(projectPath('public'))
     })
     //   Window was created
     expect(await client.getWindowCount()).toBe(1)
