@@ -14,7 +14,7 @@ Open a terminal in the directory of your app created with Vue-CLI 3.
 
 Then, install and invoke the generator of vue-cli-plugin-electron-builder by running:
 
-`vue add electron-builder@alpha`
+`vue add electron-builder`
 
 That's It! You're ready to go!
 
@@ -56,11 +56,15 @@ or with NPM:
 ├── ...
 ```
 
+### Is this plugin production ready?
+
+This plugin is nearly production ready. It has test coverage for everything but the ui interface and proper logging of errors. It needs to be used a little bit more in large applications before it is considered safe to use in a large production environment. Please try it in your app and report any bugs or feature requests.
+
 ## Configuration:
 
 ### Configuring Electron Builder:
 
-To see avalible options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
+To see available options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
 
 They can be placed under the `builderOptions` key in vue-cli-plugin-electron-builder's plugin options in `vue.config.js`
 

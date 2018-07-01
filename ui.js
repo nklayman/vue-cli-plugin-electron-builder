@@ -86,7 +86,7 @@ module.exports = api => {
     match: /vue-cli-service build:electron/,
     description: 'Build your app for production with electron-builder',
     link:
-      'https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/v1-dev#build-command',
+      'https://github.com/nklayman/vue-cli-plugin-electron-builder#build-command',
     prompts,
     onBeforeRun: ({ answers, args }) => {
       // Args
@@ -150,7 +150,7 @@ module.exports = api => {
     match: /vue-cli-service serve:electron/,
     description: 'Serve your app, launch electron',
     link:
-      'https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/v1-dev#serve-command',
+      'https://github.com/nklayman/vue-cli-plugin-electron-builder#serve-command',
     onBeforeRun: ({ answers, args }) => {
       // Tell dev server to send status to dashboard
       args.push('--dashboard')
