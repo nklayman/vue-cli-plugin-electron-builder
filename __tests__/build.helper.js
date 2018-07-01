@@ -45,8 +45,11 @@ const runTests = useTS =>
     )
     expect(index.indexOf('<base href=app://./ >')).not.toBe(-1)
     // Launch app with spectron
+    const isWin = process.platform === 'win32'
     const app = new Application({
-      path: `./__tests__/projects/${projectName}/dist_electron/win-unpacked/${projectName}.exe`,
+      path: `./__tests__/projects/${projectName}/dist_electron/${
+        isWin ? 'win' : 'linux'
+      }-unpacked/${projectName}${isWin ? '.exe' : ''}`,
       //   Make sure tests do not interfere with each other
       port: await portfinder.getPortPromise()
     })
@@ -70,7 +73,9 @@ const runTests = useTS =>
       //   Base url should be root of server
       expect(path.normalize(appBaseUrl)).toBe(
         projectPath(
-          'dist_electron/win-unpacked/resources/app.asar/dist_electron/bundled'
+          `dist_electron/${
+            isWin ? 'win' : 'linux'
+          }-unpacked/resources/app.asar/dist_electron/bundled`
         )
       )
       let appStatic = logs
@@ -83,7 +88,9 @@ const runTests = useTS =>
       //   __static should point to public folder
       expect(path.normalize(appStatic)).toBe(
         projectPath(
-          'dist_electron/win-unpacked/resources/app.asar/dist_electron/bundled'
+          `dist_electron/${
+            isWin ? 'win' : 'linux'
+          }-unpacked/resources/app.asar/dist_electron/bundled`
         )
       )
     })
@@ -103,7 +110,9 @@ const runTests = useTS =>
       //   __static should point to public folder
       expect(path.normalize(appStatic)).toBe(
         projectPath(
-          'dist_electron/win-unpacked/resources/app.asar/dist_electron/bundled'
+          `dist_electron/${
+            isWin ? 'win' : 'linux'
+          }-unpacked/resources/app.asar/dist_electron/bundled`
         )
       )
     })
