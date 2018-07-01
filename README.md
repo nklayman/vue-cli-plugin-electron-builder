@@ -2,6 +2,8 @@
 
 A Vue Cli 3 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/).
 
+AppVeyor build status: [![Build status](https://ci.appveyor.com/api/projects/status/tyrr8kemli4vfll7?svg=true)](https://ci.appveyor.com/project/nklayman/vue-cli-plugin-electron-builder)
+
 **IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
 
 **IMPORTANT: This is the alpha version of vue-cli-plugin-electron-builder! It is only recommended that you use this if you want to test it out and report bugs, not in production. Check back soon for a beta release.**
