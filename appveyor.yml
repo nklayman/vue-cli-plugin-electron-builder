@@ -20,6 +20,7 @@ skip_commits:
     - ".eslintrc.js"
     - ".gitignore"
     - "logo.png"
+    - ".github/*"
 
 environment:
   nodejs_version: "10"
