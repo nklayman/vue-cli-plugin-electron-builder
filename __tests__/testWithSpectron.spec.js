@@ -15,7 +15,7 @@ test('basic tests pass', async () => {
   // Create spectron test
   await project.write(
     'tests/unit/spectron.js',
-    `jest.setTimeout(30000)
+    `jest.setTimeout(60000)
   const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
   test('app loads a window', async () => {
     const { app, stopServe } = await testWithSpectron()
