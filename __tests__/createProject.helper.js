@@ -3,18 +3,19 @@ const create = require('@vue/cli-test-utils/createTestProject')
 const path = require('path')
 const fs = require('fs-extra')
 
-const createProject = (projectName, useTS) =>
+const createProject = (projectName, useTS, customPlugins = {}) =>
   new Promise(async resolve => {
     //   Prevent modification of import
     let preset = { ...defaultPreset }
     if (useTS) {
       // Install typescript plugin
-      defaultPreset.plugins['@vue/cli-plugin-typescript'] = {}
+      preset.plugins['@vue/cli-plugin-typescript'] = {}
       //   Use different project name
       projectName += '-ts'
     }
     // Install vcp-electron-builder
-    defaultPreset.plugins['vue-cli-plugin-electron-builder'] = {}
+    preset.plugins['vue-cli-plugin-electron-builder'] = {}
+    preset.plugins = { ...preset.plugins, ...customPlugins }
     const projectPath = p =>
       path.join(process.cwd(), '__tests__/projects/' + projectName, p)
     const project = await create(

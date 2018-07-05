@@ -202,11 +202,13 @@ module.exports = (api, options) => {
         .node.set('__dirname', false)
         .set('__filename', false)
       mainConfig.output.path(api.resolve(outputDir)).filename('background.js')
-      mainConfig.plugin('uglify').use(UglifyJSPlugin, [
-        {
-          parallel: true
-        }
-      ])
+      if (!args.debug) {
+        mainConfig.plugin('uglify').use(UglifyJSPlugin, [
+          {
+            parallel: true
+          }
+        ])
+      }
       //   Set __static to absolute path to public folder
       mainConfig.plugin('define').use(webpack.DefinePlugin, [
         {
@@ -259,34 +261,59 @@ module.exports = (api, options) => {
         console.log('\nStarting development server:\n')
         // Run the serve command with custom webpack config
         serve(
-          // Use dashboard if called from ui
-          { _: [], dashboard: args.dashboard },
+          {
+            _: [],
+            // Use dashboard if called from ui
+            dashboard: args.dashboard,
+            // Serve in development mode if launched in headless mode
+            mode: args.headless && !args.forceDev ? 'production' : 'development'
+          },
           api,
           options,
           rendererConfig
         ).then(server => {
-          // Launch electron with execa
-          console.log('\nLaunching Electron...')
-          const child = execa(
-            './node_modules/.bin/electron',
-            // Have it load the main process file built with webpack
-            [`${outputDir}/background.js`],
-            {
-              cwd: api.resolve('.'),
-              stdio: 'inherit',
-              env: {
-                ...process.env,
-                // Give the main process the url to the dev server
-                WEBPACK_DEV_SERVER_URL: server.url,
-                // Disable electron security warnings
-                ELECTRON_DISABLE_SECURITY_WARNINGS: true
+          if (args.debug) {
+            //   Do not launch electron and provide instructions on launching through debugger
+            console.log(
+              'Not launching electron as debug argument was passed. You must launch electron though your debugger.'
+            )
+            console.log(
+              `Make sure to set the WEBPACK_DEV_SERVER_URL env variable to ${
+                server.url
               }
-            }
-          )
-          child.on('exit', () => {
-            //   Exit when electron is closed
-            process.exit(0)
-          })
+              And IS_TEST to true`
+            )
+            console.log(
+              'Learn more about debugging the main process at https://github.com/nklayman/vue-cli-plugin-electron-builder#debugging.'
+            )
+          } else if (args.headless) {
+            // Log information for spectron
+            console.log(`$outputDir=${outputDir}`)
+            console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
+          } else {
+            // Launch electron with execa
+            console.log('\nLaunching Electron...')
+            const child = execa(
+              './node_modules/.bin/electron',
+              // Have it load the main process file built with webpack
+              [`${outputDir}/background.js`],
+              {
+                cwd: api.resolve('.'),
+                stdio: 'inherit',
+                env: {
+                  ...process.env,
+                  // Give the main process the url to the dev server
+                  WEBPACK_DEV_SERVER_URL: server.url,
+                  // Disable electron security warnings
+                  ELECTRON_DISABLE_SECURITY_WARNINGS: true
+                }
+              }
+            )
+            child.on('exit', () => {
+              //   Exit when electron is closed
+              process.exit(0)
+            })
+          }
         })
       })
     }
@@ -296,3 +323,4 @@ module.exports.defaultModes = {
   'build:electron': 'production',
   'serve:electron': 'development'
 }
+module.exports.testWithSpectron = require('./lib/testWithSpectron')
