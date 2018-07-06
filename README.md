@@ -184,7 +184,7 @@ module.exports = {
 }
 ```
 
-If you are adding typescript before vue-cli-plugin-electron-builder, you may also want to set `mainWindow`'s type to `any` and change `process.env.WEBPACK_DEV_SERVER_URL` to `process.env.WEBPACK_DEV_SERVER_URL as string` to fix type errors. If you add typescript first, this will be done automatically.
+If you are adding typescript after vue-cli-plugin-electron-builder, you may also want to set `mainWindow`'s type to `any` and change `process.env.WEBPACK_DEV_SERVER_URL` to `process.env.WEBPACK_DEV_SERVER_URL as string` to fix type errors. If you add typescript first, this will be done automatically.
 
 ## How it works:
 
