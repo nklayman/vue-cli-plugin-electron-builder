@@ -124,6 +124,22 @@ describe('build:electron', () => {
     expect(mainConfig.node.test).toBe('expected')
   })
 
+  test('Custom renderer process webpack config is used if provided', async () => {
+    await runCommand('build:electron', {
+      pluginOptions: {
+        electronBuilder: {
+          chainWebpackRendererProcess: config => {
+            config.node.set('test', 'expected')
+            return config
+          }
+        }
+      }
+    })
+    const rendererConfig = buildRenderer.mock.calls[0][3].toConfig()
+    // Custom node key is passed through
+    expect(rendererConfig.node.test).toBe('expected')
+  })
+
   test('Custom main process webpack config is used if provided', async () => {
     await runCommand('build:electron', {
       pluginOptions: {
@@ -221,6 +237,23 @@ describe('serve:electron', () => {
     // Custom node key is passed through
     expect(mainConfig.node.test).toBe('expected')
   })
+
+  test('Custom renderer process webpack config is used if provided', async () => {
+    await runCommand('serve:electron', {
+      pluginOptions: {
+        electronBuilder: {
+          chainWebpackRendererProcess: config => {
+            config.node.set('test', 'expected')
+            return config
+          }
+        }
+      }
+    })
+    const rendererConfig = serve.mock.calls[0][3].toConfig()
+    // Custom node key is passed through
+    expect(rendererConfig.node.test).toBe('expected')
+  })
+
   test('If --debug argument is passed, electron is not launched and main process is not minified', async () => {
     await runCommand('serve:electron', {}, { debug: true })
     const mainConfig = webpack.mock.calls[0][0]

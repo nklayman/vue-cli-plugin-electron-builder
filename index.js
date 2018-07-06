@@ -19,6 +19,8 @@ module.exports = (api, options) => {
     (usesTypescript ? 'src/background.ts' : 'src/background.js')
   const mainProcessChain =
     pluginOptions.chainWebpackMainProcess || (config => config)
+  const rendererProcessChain =
+    pluginOptions.chainWebpackRendererProcess || (config => config)
   api.registerCommand(
     'build:electron',
     {
@@ -111,7 +113,12 @@ module.exports = (api, options) => {
       options.baseUrl = './'
       console.log('Bundling render process:')
       //   Build the render process with the custom args and config
-      await buildRenderer(vueArgs, api, options, rendererConfig)
+      await buildRenderer(
+        vueArgs,
+        api,
+        options,
+        rendererProcessChain(rendererConfig)
+      )
       //   Copy fonts to css/fonts. Fixes some issues with static font imports
       if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
         fs.mkdirSync(api.resolve(outputDir + '/bundled/css/fonts'))
@@ -241,7 +248,7 @@ module.exports = (api, options) => {
         },
         api,
         options,
-        rendererConfig
+        rendererProcessChain(rendererConfig)
       ).then(server => {
         // Set dev server url
         mainConfig
