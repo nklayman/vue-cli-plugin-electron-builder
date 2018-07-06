@@ -8,20 +8,14 @@ portfinder.basePort = 9515
 const serve = (project, notifyUpdate) =>
   new Promise((resolve, reject) => {
     const child = project.run('vue-cli-service serve:electron')
-    let isFirstMatch = true
     let log = ''
     child.stdout.on('data', async data => {
       data = data.toString()
       log += data
       try {
-        const urlMatch = data.match(/http:\/\/[^/]+\//)
-        if (urlMatch && isFirstMatch) {
-          isFirstMatch = false
-          let url = urlMatch[0]
-
+        if (data.match(/Launching Electron\.\.\./)) {
           resolve({
             stdout: log,
-            url,
             stopServe: () => {
               child.stdin.write('close')
             }
@@ -46,14 +40,13 @@ const runTests = useTS =>
     //   Prevent electron from being launched
     jest.mock('execa')
     //   Wait for dev server to start
-    const { stopServe, url } = await serve(project)
+    const { stopServe } = await serve(project)
     expect(project.has('dist_electron/background.js')).toBe(true)
     // Launch app with spectron
     const app = new Application({
       path: electronPath,
       args: [projectPath('dist_electron/background.js')],
       env: {
-        WEBPACK_DEV_SERVER_URL: url,
         IS_TEST: true
       },
       cwd: projectPath(''),

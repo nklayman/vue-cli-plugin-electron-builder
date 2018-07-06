@@ -289,8 +289,6 @@ describe('testWithSpectron', async () => {
     // Proper url is returned
     expect(url).toBe('http://localhost:1234/')
     const appArgs = Application.mock.calls[0][0]
-    // Spectron is launched with proper url
-    expect(appArgs.env.WEBPACK_DEV_SERVER_URL).toBe('http://localhost:1234/')
     // Spectron is launched with proper path to background
     expect(appArgs.args).toEqual(['customOutput/background.js'])
   })

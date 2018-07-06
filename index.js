@@ -229,59 +229,60 @@ module.exports = (api, options) => {
           .options({ transpileOnly: !mainProcessTypeChecking })
       }
 
-      //   Build the main process
-      const bundle = webpack(mainProcessChain(mainConfig).toConfig())
-      console.log('Bundling main process:\n')
-      bundle.run((err, stats) => {
-        if (err) {
-          console.error(err.stack || err)
-          if (err.details) {
-            console.error(err.details)
+      console.log('\nStarting development server:\n')
+      // Run the serve command with custom webpack config
+      serve(
+        {
+          _: [],
+          // Use dashboard if called from ui
+          dashboard: args.dashboard,
+          // Serve in development mode if launched in headless mode
+          mode: args.headless && !args.forceDev ? 'production' : 'development'
+        },
+        api,
+        options,
+        rendererConfig
+      ).then(server => {
+        // Set dev server url
+        mainConfig
+          .plugin('env')
+          .tap(args => [{ ...args, WEBPACK_DEV_SERVER_URL: server.url }])
+        //   Build the main process
+        const bundle = webpack(mainProcessChain(mainConfig).toConfig())
+        console.log('Bundling main process:\n')
+        bundle.run((err, stats) => {
+          if (err) {
+            console.error(err.stack || err)
+            if (err.details) {
+              console.error(err.details)
+            }
+            process.exit(1)
           }
-          process.exit(1)
-        }
 
-        const info = stats.toJson()
+          const info = stats.toJson()
 
-        if (stats.hasErrors()) {
-          console.error(info.errors)
-          process.exit(1)
-        }
+          if (stats.hasErrors()) {
+            console.error(info.errors)
+            process.exit(1)
+          }
 
-        if (stats.hasWarnings()) {
-          console.warn(info.warnings)
-        }
+          if (stats.hasWarnings()) {
+            console.warn(info.warnings)
+          }
 
-        console.log(
-          stats.toString({
-            chunks: false,
-            colors: true
-          })
-        )
-        console.log('\nStarting development server:\n')
-        // Run the serve command with custom webpack config
-        serve(
-          {
-            _: [],
-            // Use dashboard if called from ui
-            dashboard: args.dashboard,
-            // Serve in development mode if launched in headless mode
-            mode: args.headless && !args.forceDev ? 'production' : 'development'
-          },
-          api,
-          options,
-          rendererConfig
-        ).then(server => {
+          console.log(
+            stats.toString({
+              chunks: false,
+              colors: true
+            })
+          )
           if (args.debug) {
             //   Do not launch electron and provide instructions on launching through debugger
             console.log(
               'Not launching electron as debug argument was passed. You must launch electron though your debugger.'
             )
             console.log(
-              `Make sure to set the WEBPACK_DEV_SERVER_URL env variable to ${
-                server.url
-              }
-              And IS_TEST to true`
+              `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
             )
             console.log(
               'Learn more about debugging the main process at https://github.com/nklayman/vue-cli-plugin-electron-builder#debugging.'
@@ -302,8 +303,6 @@ module.exports = (api, options) => {
                 stdio: 'inherit',
                 env: {
                   ...process.env,
-                  // Give the main process the url to the dev server
-                  WEBPACK_DEV_SERVER_URL: server.url,
                   // Disable electron security warnings
                   ELECTRON_DISABLE_SECURITY_WARNINGS: true
                 }
