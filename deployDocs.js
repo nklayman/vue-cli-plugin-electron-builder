@@ -28,7 +28,8 @@ const deploy = () =>
         'master:gh-pages'
       ],
       {
-        cwd: './docs/.vuepress/dist'
+        cwd: './docs/.vuepress/dist',
+        stdio: 'inherit'
       }
     )
     resolve()
