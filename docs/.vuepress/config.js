@@ -3,7 +3,17 @@ module.exports = {
   description:
     'A Vue CLI 3 plugin for Electron with no required configuration.',
   base: '/vue-cli-plugin-electron-builder/',
-  head: [['link', { rel: 'shortcut icon', href: '/favicon.ico' }]],
+  head: [
+    ['link', { rel: 'shortcut icon', href: '/favicon.ico' }],
+    // Google search property verification
+    [
+      'meta',
+      {
+        name: 'google-site-verification',
+        content: 'It9QDm7l8m-gYoVuBFVzERjx0MapaegfY1AMru9wFCc'
+      }
+    ]
+  ],
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
