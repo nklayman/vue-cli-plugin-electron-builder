@@ -5,7 +5,15 @@ module.exports = {
   base: '/vue-cli-plugin-electron-builder/',
   head: [['link', { rel: 'shortcut icon', href: '/favicon.ico' }]],
   themeConfig: {
-    nav: [{ text: 'Home', link: '/' }, { text: 'Guide', link: '/guide/' }],
+    nav: [
+      { text: 'Home', link: '/' },
+      { text: 'Guide', link: '/guide/' },
+      {
+        text: 'Changelog',
+        link:
+          'https://github.com/nklayman/vue-cli-plugin-electron-builder/releases'
+      }
+    ],
     sidebar: {
       '/guide/': [
         '',

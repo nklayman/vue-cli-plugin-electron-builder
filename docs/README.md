@@ -18,3 +18,7 @@ footer: MIT Licensed | Copyright © 2018-present Noah Klayman
 AppVeyor build status: [![Build status](https://ci.appveyor.com/api/projects/status/tyrr8kemli4vfll7?svg=true)](https://ci.appveyor.com/project/nklayman/vue-cli-plugin-electron-builder)
 
 </centered-markdown>
+
+:::warning Notice
+I will be camping from July 8 - July 21st. During this time, I will be unable to respond to or view issues and pull requests. I apologize for any inconvenience this may cause you.
+:::
