@@ -24,6 +24,7 @@ skip_commits:
     - ".gitignore"
     - "logo.png"
     - ".github/*"
+    - "docs/*"
 
 environment:
   nodejs_version: "10"
