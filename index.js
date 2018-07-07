@@ -1,6 +1,7 @@
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const webpack = require('webpack')
 const Config = require('webpack-chain')
+const merge = require('lodash.merge')
 
 module.exports = (api, options) => {
   // If plugin options are provided in vue.config.js, those will be used. Otherwise it is empty object
@@ -163,11 +164,11 @@ module.exports = (api, options) => {
           .build({
             //   Args parsed with yargs
             ...builderArgs,
-            config: {
-              ...defaultBuildConfig,
+            config: merge(
+              defaultBuildConfig,
               //   User-defined config overwrites defaults
-              ...userBuildConfig
-            }
+              userBuildConfig
+            )
           })
           .then(() => {
             // handle result
@@ -290,7 +291,7 @@ module.exports = (api, options) => {
           if (args.debug) {
             //   Do not launch electron and provide instructions on launching through debugger
             console.log(
-              'Not launching electron as debug argument was passed. You must launch electron though your debugger.'
+              '\nNot launching electron as debug argument was passed. You must launch electron though your debugger.'
             )
             console.log(
               `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
