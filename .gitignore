@@ -59,3 +59,6 @@ typings/
 
 # Vue Cli test projects
 /__tests__/projects
+
+# VuePress dist
+/docs/.vuepress/dist

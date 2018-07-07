@@ -6,7 +6,10 @@
   "scripts": {
     "test": "jest",
     "pretest": "rimraf __tests__/projects/*",
-    "lint": "eslint --ignore-pattern projects ./"
+    "lint": "eslint --ignore-pattern projects ./",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs",
+    "docs:deploy": "node ./deployDocs.js"
   },
   "keywords": [
     "electron",
@@ -52,6 +55,7 @@
     "lnk": "^1.1.0",
     "portfinder": "^1.0.13",
     "rimraf": "^2.6.2",
-    "vue": "^2.5.16"
+    "vue": "^2.5.16",
+    "vuepress": "^0.10.2"
   }
 }

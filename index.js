@@ -30,7 +30,7 @@ module.exports = (api, options) => {
       details:
         `All electron-builder command line options are supported.\n` +
         `See https://www.electron.build/cli for cli options\n` +
-        `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details about this plugin.`
+        `See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.`
     },
     async (args, rawArgs) => {
       const buildRenderer = require('@vue/cli-service/lib/commands/build').build
@@ -189,7 +189,7 @@ module.exports = (api, options) => {
     {
       description: 'serve app and launch electron',
       usage: 'vue-cli-service serve:electron',
-      details: `See https://github.com/nklayman/vue-cli-plugin-electron-builder for more details about this plugin.`
+      details: `See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.`
     },
     args => {
       const execa = require('execa')
