@@ -209,7 +209,11 @@ module.exports = (api, options) => {
         .node.set('__dirname', false)
         .set('__filename', false)
       mainConfig.output.path(api.resolve(outputDir)).filename('background.js')
-      if (!args.debug) {
+      if (args.debug) {
+        // Enable source maps for debugging
+        mainConfig.devtool('source-map')
+      } else {
+        // Minify for better performance
         mainConfig.plugin('uglify').use(UglifyJSPlugin, [
           {
             parallel: true
