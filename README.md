@@ -2,6 +2,9 @@
 
 A Vue Cli 3 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/) and [Electron Webpack](https://webpack.electron.build/).
 
+**The 1.0.0 beta has been released and is strongly reccomended over this version. Please upgrade your app by following the [upgrade guide](https://nklayman.github.io/vue-cli-plugin-electron-builder/)**
+
+
 **IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
 
 **IMPORTANT: This plugin only works with @vue/cli-service@3.0.0-beta.10 or greater, not with beta.9 or lower. Set @vue/cli-service to ^3.0.0-beta.10 in the devDependencies of your package.json if build/serve:electron fails. If you still need beta.9 support, use v0.2.5 of vue-cli-plugin-electron-builder.**
