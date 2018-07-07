@@ -306,7 +306,7 @@ module.exports = (api, options) => {
               `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
             )
             console.log(
-              'Learn more about debugging the main process at https://github.com/nklayman/vue-cli-plugin-electron-builder#debugging.'
+              'Learn more about debugging the main process at https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/testingAndDebugging.html#debugging.'
             )
           } else if (args.headless) {
             // Log information for spectron
