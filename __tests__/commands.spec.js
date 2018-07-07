@@ -254,7 +254,7 @@ describe('serve:electron', () => {
     expect(rendererConfig.node.test).toBe('expected')
   })
 
-  test('If --debug argument is passed, electron is not launched and main process is not minified', async () => {
+  test('If --debug argument is passed, electron is not launched, main process is not minified, and source maps are enabled', async () => {
     await runCommand('serve:electron', {}, { debug: true })
     const mainConfig = webpack.mock.calls[0][0]
 
@@ -264,6 +264,8 @@ describe('serve:electron', () => {
         p => p.__pluginConstructorName === 'UglifyJsPlugin'
       )
     ).toBeUndefined()
+    // Source maps are enabled
+    expect(mainConfig.devtool).toBe('source-map')
     // Electron is not launched
     expect(execa).not.toBeCalled()
   })
