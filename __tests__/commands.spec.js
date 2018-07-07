@@ -170,6 +170,26 @@ describe('build:electron', () => {
       'projectPath/dist_electron/bundled/css/fonts'
     )
   })
+
+  test('--mode argument takes precedence over other options', async () => {
+    await runCommand(
+      'build:electron',
+      { pluginOptions: { electronBuilder: { buildMode: 'production' } } },
+      { headless: true, mode: 'development' }
+    )
+
+    // Development mode is used
+    expect(buildRenderer.mock.calls[0][0].mode).toBe('development')
+  })
+
+  test('buildMode sets Vue mode if provided', async () => {
+    await runCommand('build:electron', {
+      pluginOptions: { electronBuilder: { buildMode: 'development' } }
+    })
+
+    // Development mode is used
+    expect(buildRenderer.mock.calls[0][0].mode).toBe('development')
+  })
 })
 
 describe('serve:electron', () => {
@@ -269,21 +289,40 @@ describe('serve:electron', () => {
     // Electron is not launched
     expect(execa).not.toBeCalled()
   })
-  test('If --healdess argument is passed, serve:electron is launched in production mode', async () => {
-    await runCommand('serve:electron', {}, { headless: true })
+  test('If --headless argument is passed, serve:electron is launched in production mode', async () => {
+    await runCommand(
+      'serve:electron',
+      {
+        // It should take precedence over plugin options
+        pluginOptions: { electronBuilder: { serveMode: 'production' } }
+      },
+      { headless: true }
+    )
 
     // Production mode is used
     expect(serve.mock.calls[0][0].mode).toBe('production')
     // Electron is not launched
     expect(execa).not.toBeCalled()
   })
-  test('If --forceDev argument is passed, serve:electron is launched in dev mode', async () => {
-    await runCommand('serve:electron', {}, { headless: true, forceDev: true })
 
-    // Production mode is used
+  test('--mode argument takes precedence over other options', async () => {
+    await runCommand(
+      'serve:electron',
+      { pluginOptions: { electronBuilder: { serveMode: 'production' } } },
+      { headless: true, mode: 'development' }
+    )
+
+    // Development mode is used
     expect(serve.mock.calls[0][0].mode).toBe('development')
-    // Electron is not launched
-    expect(execa).not.toBeCalled()
+  })
+
+  test('serveMode sets Vue mode if provided', async () => {
+    await runCommand('serve:electron', {
+      pluginOptions: { electronBuilder: { serveMode: 'production' } }
+    })
+
+    // Development mode is used
+    expect(serve.mock.calls[0][0].mode).toBe('production')
   })
 })
 
@@ -349,7 +388,11 @@ describe('testWithSpectron', async () => {
   })
   test('launches dev server in dev mode if forceDev argument is provided', async () => {
     await runSpectron({ forceDev: true })
-    expect(execa.mock.calls[0][1]).toContain('--forceDev')
+
+    // Mode argument was set to development
+    expect(
+      execa.mock.calls[0][1].join(' ').indexOf('--mode development')
+    ).not.toBe(-1)
   })
   test('returns stdout of command', async () => {
     const { stdout } = await runSpectron({}, { customLog: 'shouldBeInLog' })
