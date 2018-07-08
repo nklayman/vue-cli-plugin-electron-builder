@@ -13,6 +13,8 @@ interface Options {
    You will have to run app.start() and app.client.waitUntilWindowLoaded() yourself.
    */
   noStart: boolean
+  /** Set custom Vue env mode. Defaults to 'test' */
+  mode: string
 }
 interface Server {
   /** Spectron instance. */

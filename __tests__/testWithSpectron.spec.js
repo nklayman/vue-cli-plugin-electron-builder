@@ -18,11 +18,14 @@ test('basic tests pass', async () => {
     `jest.setTimeout(60000)
   const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
   test('app loads a window', async () => {
-    const { app, stopServe } = await testWithSpectron()
+    const { app, stdout, stopServe } = await testWithSpectron({mode: 'production'})
     expect(await app.client.getWindowCount()).toBe(1)
+    // App is served in production mode
+    expect(stdout.indexOf('App is served in production mode.')).not.toBe(-1)
     await stopServe()
   })
   `
   )
+  process.env.NODE_ENV = 'production'
   await project.run('vue-cli-service test:unit')
 })

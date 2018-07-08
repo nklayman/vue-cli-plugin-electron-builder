@@ -36,7 +36,6 @@ module.exports = (api, options) => {
       const buildRenderer = require('@vue/cli-service/lib/commands/build').build
       const fs = require('fs-extra')
       const builder = require('electron-builder')
-      const mode = args.mode || pluginOptions.buildMode
       const yargs = require('yargs')
       //   Import the yargs options from electron-builder
       const configureBuildCommand = require('electron-builder/out/builder')
@@ -77,9 +76,7 @@ module.exports = (api, options) => {
         // Make sure files are outputted to proper directory
         dest: outputDir + '/bundled',
         // Enable modern mode
-        modern: true,
-        // Apply mode if provided
-        ...(mode ? { mode } : {})
+        modern: true
       }
       const mainConfig = new Config()
       //   Configure main process webpack config
@@ -194,12 +191,6 @@ module.exports = (api, options) => {
     args => {
       const execa = require('execa')
       const serve = require('@vue/cli-service/lib/commands/serve').serve
-      // --mode > headless > pluginOptions > defaults
-      const mode =
-        args.mode ||
-        (args.headless ? 'production' : null) ||
-        pluginOptions.serveMode
-      console.log(mode)
       const rendererConfig = api.resolveChainableWebpackConfig()
       //   Configure renderer process to work properly with electron
       rendererConfig
@@ -256,9 +247,7 @@ module.exports = (api, options) => {
         {
           _: [],
           // Use dashboard if called from ui
-          dashboard: args.dashboard,
-          // Apply mode if provided
-          ...(mode ? { mode } : {})
+          dashboard: args.dashboard
         },
         api,
         options,
