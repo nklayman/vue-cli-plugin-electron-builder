@@ -100,24 +100,3 @@ module.exports = {
 :::tip
 If you are adding typescript after vue-cli-plugin-electron-builder, you may also want to set `mainWindow`'s type to `any` and change `process.env.WEBPACK_DEV_SERVER_URL` to `process.env.WEBPACK_DEV_SERVER_URL as string` to fix type errors. If you add typescript first, this will be done automatically.
 :::
-
-### Using Vue Modes (.env Vars)
-
-Before continuing, read the Vue CLI's [documentation on modes](https://cli.vuejs.org/guide/mode-and-env.html). To use modes in VCP Electron Builder, you have 2 options.
-
-1.  Pass the `--mode` command line argument to either `build:electron` or `serve:electron` (`yarn serve:electron --mode myMode`)
-
-2.  Set `serveMode` and `buildMode` in VCP Electron Builder's plugin options.
-
-```javascript
-// vue.config.js
-
-module.exports = {
-  pluginOptions: {
-    electronBuilder: {
-      serveMode: 'development',
-      buildMode: 'production'
-    }
-  }
-}
-```
