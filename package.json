@@ -1,6 +1,6 @@
 {
   "name": "vue-cli-plugin-electron-builder",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "A Vue Cli 3 plugin for Electron with no required configuration",
   "main": "index.js",
   "homepage": "https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/testingAndDebugging.html#debugging",
