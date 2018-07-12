@@ -62,5 +62,15 @@ app.on('activate', () => {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', () => {
+  if (isDevelopment) {
+    // https://electronjs.org/docs/tutorial/devtools-extension
+    const {
+      default: installExtension,
+      VUEJS_DEVTOOLS
+    } = require('electron-devtools-installer')
+    installExtension(VUEJS_DEVTOOLS, true).catch((err) => {
+      console.log('Unable to install `vue-devtools`: \n', err)
+    })
+  }
   mainWindow = createMainWindow()
 })

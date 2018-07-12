@@ -38,7 +38,8 @@ module.exports = api => {
       'serve:electron': 'vue-cli-service serve:electron'
     },
     devDependencies: {
-      electron: '^2.0.2'
+      electron: '^2.0.2',
+      'electron-devtools-installer': '^2.2.4'
     },
     main: 'dist_electron/bundled/background.js'
   })
