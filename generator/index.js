@@ -5,17 +5,20 @@ module.exports = api => {
   api.onCreateComplete(() => {
     //   Read existing index.html and .gitignore
     let index = fs.readFileSync(api.resolve('./public/index.html'), 'utf8')
-    let gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')
     //   Add base element inside <head> tag
     index = index.replace(
       /^\s*?<head.*?>\s*?$/m,
       `<head>\n    <% if (BASE_URL === './') { %><base href="app://./" /><% } %>`
     )
-    //   Add /dist_electron to gitignore
-    gitignore = gitignore + '\n#Electron-builder output\n/dist_electron'
-    //   Write updated files
+    //   Write updated index.html
     fs.writeFileSync(api.resolve('./public/index.html'), index)
-    fs.writeFileSync(api.resolve('./.gitignore'), gitignore)
+    // Update .gitignore if it exists
+    if (fs.existsSync(api.resolve('./.gitignore'))) {
+      let gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')
+      //   Add /dist_electron to gitignore
+      gitignore = gitignore + '\n#Electron-builder output\n/dist_electron'
+      fs.writeFileSync(api.resolve('./.gitignore'), gitignore)
+    }
     if (api.hasPlugin('typescript')) {
       let background
       if (fs.existsSync(api.resolve('./src/background.js'))) {
