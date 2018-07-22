@@ -170,6 +170,13 @@ describe('build:electron', () => {
       'projectPath/dist_electron/bundled/css/fonts'
     )
   })
+  test('.js and .ts are merged into file extensions', async () => {
+    await runCommand('build:electron')
+
+    const mainConfig = webpack.mock.calls[0][0]
+    // Both .js and .ts are resolved
+    expect(mainConfig.resolve.extensions).toEqual(['.js', '.ts'])
+  })
 })
 
 describe('serve:electron', () => {
@@ -268,6 +275,14 @@ describe('serve:electron', () => {
     expect(mainConfig.devtool).toBe('source-map')
     // Electron is not launched
     expect(execa).not.toBeCalled()
+  })
+
+  test('.js and .ts are merged into file extensions', async () => {
+    await runCommand('serve:electron')
+
+    const mainConfig = webpack.mock.calls[0][0]
+    // Both .js and .ts are resolved
+    expect(mainConfig.resolve.extensions).toEqual(['.js', '.ts'])
   })
 })
 

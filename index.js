@@ -102,7 +102,7 @@ module.exports = (api, options) => {
         .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'production' }])
       mainConfig.entry('background').add(api.resolve(mainProcessFile))
       if (usesTypescript) {
-        mainConfig.resolve.extensions.merge(['.ts'])
+        mainConfig.resolve.extensions.merge(['.js', '.ts'])
         mainConfig.module
           .rule('ts')
           .test(/\.ts$/)
@@ -232,7 +232,7 @@ module.exports = (api, options) => {
         .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'development' }])
       mainConfig.entry('background').add(api.resolve(mainProcessFile))
       if (usesTypescript) {
-        mainConfig.resolve.extensions.merge(['.ts'])
+        mainConfig.resolve.extensions.merge(['.js', '.ts'])
         mainConfig.module
           .rule('ts')
           .test(/\.ts$/)
