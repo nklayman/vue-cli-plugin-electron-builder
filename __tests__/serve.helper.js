@@ -51,7 +51,9 @@ const runTests = useTS =>
       },
       cwd: projectPath(''),
       //   Make sure tests do not interfere with each other
-      port: await portfinder.getPortPromise()
+      port: await portfinder.getPortPromise(),
+      // Increase wait timeout for parallel testing
+      waitTimeout: 10000
     })
 
     await app.start()
