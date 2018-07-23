@@ -3,8 +3,10 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
-import createProtocol from 'vue-cli-plugin-electron-builder/lib/createProtocol.js'
-
+import {
+  createProtocol,
+  installVueDevtools
+} from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
@@ -61,6 +63,10 @@ app.on('activate', () => {
 })
 
 // create main BrowserWindow when electron is ready
-app.on('ready', () => {
+app.on('ready', async () => {
+  if (isDevelopment && !process.env.IS_TEST) {
+    // Install Vue Devtools
+    await installVueDevtools()
+  }
   mainWindow = createMainWindow()
 })

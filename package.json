@@ -28,12 +28,14 @@
   "private": false,
   "dependencies": {
     "@vue/cli-service": "https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/master/vue-cli-service-custom-1.tgz",
+    "electron": "^2.0.5",
     "electron-builder": "^20.24.4",
     "execa": "^0.10.0",
     "fs-extra": "^7.0.0",
     "lodash.merge": "^4.6.1",
     "spectron": "^3.8.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
+    "unzip-crx": "^0.2.0",
     "webpack": "^4.16.1",
     "webpack-chain": "^4.8.0",
     "webpack-target-electron-renderer": "^0.4.0"
@@ -46,7 +48,6 @@
     "@vue/cli-plugin-unit-jest": "^3.0.0-rc.5",
     "@vue/cli-test-utils": "^3.0.0-rc.5",
     "@vue/eslint-config-typescript": "^3.0.0-rc.5",
-    "electron": "^2.0.5",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-node": "^7.0.1",
