@@ -8,7 +8,7 @@ sidebarDepth: 2
 
 #### Renderer Process (Main App)
 
-You can debug the renderer process using [Vue Devtools](https://github.com/vuejs/vue-devtools). To install them, follow [Electron's documentation here](https://electronjs.org/docs/tutorial/devtools-extension).
+You can debug the renderer process using [Vue Devtools](https://github.com/vuejs/vue-devtools). Vue Devtools are automatically installed for you (powered by [electron-devtools-installer](https://github.com/MarshallOfSound/electron-devtools-installer)).
 
 #### Main Process (Background File)
 
@@ -21,7 +21,7 @@ If you are testing with spectron, make sure to set `process.env.IS_TEST` to `tru
 ### Testing
 
 :::tip
-If you don't want to use Spectron, you can still use this funciton, just set `noSpectron` to `true`
+If you don't want to use Spectron, you can still use this function, just set `noSpectron` to `true`
 :::
 
 Before continuing, read about [Spectron](https://github.com/electron/spectron). This guide assumes basic knowledge about using Spectron.
