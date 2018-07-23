@@ -2,6 +2,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const webpack = require('webpack')
 const Config = require('webpack-chain')
 const merge = require('lodash.merge')
+const fs = require('fs-extra')
 
 module.exports = (api, options) => {
   // If plugin options are provided in vue.config.js, those will be used. Otherwise it is empty object
@@ -34,7 +35,6 @@ module.exports = (api, options) => {
     },
     async (args, rawArgs) => {
       const buildRenderer = require('@vue/cli-service/lib/commands/build').build
-      const fs = require('fs-extra')
       const builder = require('electron-builder')
       const yargs = require('yargs')
       //   Import the yargs options from electron-builder
@@ -257,73 +257,88 @@ module.exports = (api, options) => {
         mainConfig
           .plugin('env')
           .tap(args => [{ ...args, WEBPACK_DEV_SERVER_URL: server.url }])
-        //   Build the main process
-        const bundle = webpack(mainProcessChain(mainConfig).toConfig())
-        console.log('Bundling main process:\n')
-        bundle.run((err, stats) => {
-          if (err) {
-            console.error(err.stack || err)
-            if (err.details) {
-              console.error(err.details)
-            }
-            process.exit(1)
+        // Electron process
+        let child
+        // Function to bundle main process and start Electron
+        const startElectron = () => {
+          if (child) {
+            // Prevent self exit on Electron process death
+            child.removeAllListeners()
+            // Kill old Electron process
+            child.kill()
           }
-
-          const info = stats.toJson()
-
-          if (stats.hasErrors()) {
-            console.error(info.errors)
-            process.exit(1)
-          }
-
-          if (stats.hasWarnings()) {
-            console.warn(info.warnings)
-          }
-
-          console.log(
-            stats.toString({
-              chunks: false,
-              colors: true
-            })
-          )
-          if (args.debug) {
-            //   Do not launch electron and provide instructions on launching through debugger
-            console.log(
-              '\nNot launching electron as debug argument was passed. You must launch electron though your debugger.'
-            )
-            console.log(
-              `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
-            )
-            console.log(
-              'Learn more about debugging the main process at https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/testingAndDebugging.html#debugging.'
-            )
-          } else if (args.headless) {
-            // Log information for spectron
-            console.log(`$outputDir=${outputDir}`)
-            console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
-          } else {
-            // Launch electron with execa
-            console.log('\nLaunching Electron...')
-            const child = execa(
-              './node_modules/.bin/electron',
-              // Have it load the main process file built with webpack
-              [`${outputDir}/background.js`],
-              {
-                cwd: api.resolve('.'),
-                stdio: 'inherit',
-                env: {
-                  ...process.env,
-                  // Disable electron security warnings
-                  ELECTRON_DISABLE_SECURITY_WARNINGS: true
-                }
+          //   Build the main process
+          const bundle = webpack(mainProcessChain(mainConfig).toConfig())
+          console.log('Bundling main process:\n')
+          bundle.run((err, stats) => {
+            if (err) {
+              console.error(err.stack || err)
+              if (err.details) {
+                console.error(err.details)
               }
+              process.exit(1)
+            }
+
+            const info = stats.toJson()
+
+            if (stats.hasErrors()) {
+              console.error(info.errors)
+              process.exit(1)
+            }
+
+            if (stats.hasWarnings()) {
+              console.warn(info.warnings)
+            }
+
+            console.log(
+              stats.toString({
+                chunks: false,
+                colors: true
+              })
             )
-            child.on('exit', () => {
-              //   Exit when electron is closed
-              process.exit(0)
-            })
-          }
-        })
+            if (args.debug) {
+              //   Do not launch electron and provide instructions on launching through debugger
+              console.log(
+                '\nNot launching electron as debug argument was passed. You must launch electron though your debugger.'
+              )
+              console.log(
+                `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
+              )
+              console.log(
+                'Learn more about debugging the main process at https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/testingAndDebugging.html#debugging.'
+              )
+            } else if (args.headless) {
+              // Log information for spectron
+              console.log(`$outputDir=${outputDir}`)
+              console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
+            } else {
+              // Launch electron with execa
+              console.log('\nLaunching Electron...')
+              child = execa(
+                require('electron'),
+                // Have it load the main process file built with webpack
+                [`${outputDir}/background.js`],
+                {
+                  cwd: api.resolve('.'),
+                  stdio: 'inherit',
+                  env: {
+                    ...process.env,
+                    // Disable electron security warnings
+                    ELECTRON_DISABLE_SECURITY_WARNINGS: true
+                  }
+                }
+              )
+              child.on('exit', () => {
+                //   Exit when electron is closed
+                process.exit(0)
+              })
+            }
+          })
+        }
+        // Initial start of Electron
+        startElectron()
+        // Restart on main process file change
+        fs.watchFile(api.resolve(mainProcessFile), startElectron)
       })
     }
   )

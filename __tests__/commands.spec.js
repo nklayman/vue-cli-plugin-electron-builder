@@ -12,7 +12,12 @@ const Application = require('spectron').Application
 jest.mock('@vue/cli-service/lib/commands/build')
 jest.mock('fs-extra')
 jest.mock('electron-builder')
-jest.mock('execa', () => jest.fn(() => ({ on: jest.fn() })))
+const mockExeca = {
+  on: jest.fn(),
+  removeAllListeners: jest.fn(),
+  kill: jest.fn()
+}
+jest.mock('execa', () => jest.fn(() => mockExeca))
 jest.mock('@vue/cli-service/lib/commands/serve', () => ({
   serve: jest.fn().mockResolvedValue({ url: 'serveUrl' })
 }))
@@ -284,6 +289,43 @@ describe('serve:electron', () => {
     // Both .js and .ts are resolved
     expect(mainConfig.resolve.extensions).toEqual(['.js', '.ts'])
   })
+
+  test('Main process is recompiled and Electron is relaunched on main process file change', async () => {
+    process.exit = jest.fn()
+    let watchCb
+    fs.watchFile.mockImplementation((file, cb) => {
+      // Set callback to be called later
+      watchCb = cb
+    })
+    await runCommand('serve:electron', {
+      pluginOptions: {
+        electronBuilder: {
+          mainProcessFile: 'customBackground'
+        }
+      }
+    })
+
+    // Proper file is watched
+    expect(fs.watchFile.mock.calls[0][0]).toBe('projectPath/customBackground')
+    // Child has not yet been killed or unwatched
+    expect(mockExeca.kill).not.toBeCalled()
+    expect(mockExeca.removeAllListeners).not.toBeCalled()
+    // Main process was bundled and Electron was launched initially
+    expect(webpack).toHaveBeenCalledTimes(1)
+    expect(execa).toHaveBeenCalledTimes(1)
+
+    // Mock change of background file
+    watchCb()
+    // Electron was killed and listeners removed
+    expect(mockExeca.kill).toHaveBeenCalledTimes(1)
+    expect(mockExeca.removeAllListeners).toHaveBeenCalledTimes(1)
+    // Process did not exit on Electron close
+    expect(process.exit).not.toBeCalled()
+    // Main process file was recompiled
+    expect(webpack).toHaveBeenCalledTimes(2)
+    // Electron was re-launched
+    expect(execa).toHaveBeenCalledTimes(2)
+  })
 })
 
 describe('testWithSpectron', async () => {
@@ -303,7 +345,7 @@ describe('testWithSpectron', async () => {
       }
     })
     const testPromise = testWithSpectron(spectronOptions)
-    // Mock console.log from serve:elctron
+    // Mock console.log from serve:electron
     if (launchOptions.customLog) await sendData(launchOptions.customLog)
     await sendData(`$outputDir=${launchOptions.outputDir || 'dist_electron'}`)
     await sendData(
