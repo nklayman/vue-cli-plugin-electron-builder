@@ -27,7 +27,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "@vue/cli-service": "https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/master/vue-cli-service-custom-1.tgz",
+    "@vue/cli-service": "https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/master/vue-cli-service-custom-2.tgz",
     "electron": "^2.0.5",
     "electron-builder": "^20.24.4",
     "execa": "^0.10.0",

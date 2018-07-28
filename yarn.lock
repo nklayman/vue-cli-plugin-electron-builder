@@ -999,9 +999,9 @@
     jest-transform-stub "^1.0.0"
     vue-jest "^2.6.0"
 
-"@vue/cli-service@https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/master/vue-cli-service-custom-1.tgz":
+"@vue/cli-service@https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/master/vue-cli-service-custom-2.tgz":
   version "3.0.0-rc.2"
-  resolved "https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/master/vue-cli-service-custom-1.tgz#eafb9935cf747113999462d349eb6b1dc624a10f"
+  resolved "https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/master/vue-cli-service-custom-2.tgz#3bc04776e28672df9e7297b83cab510cdca4c657"
   dependencies:
     "@vue/cli-overlay" "^3.0.0-rc.2"
     "@vue/cli-shared-utils" "^3.0.0-rc.2"
