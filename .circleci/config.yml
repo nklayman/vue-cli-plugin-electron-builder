@@ -20,6 +20,9 @@ jobs:
       - checkout
 
       # Download and cache dependencies
+      - run:
+          name: Install Wine
+          command: sudo apt-get install wine -y
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
