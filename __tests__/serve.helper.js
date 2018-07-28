@@ -116,7 +116,11 @@ const runTests = useTS =>
     expect(width).toBeGreaterThan(0)
     expect(height).toBeGreaterThan(0)
     //   App is loaded properly
-    expect(await client.getHTML('#app')).toMatchSnapshot()
+    expect(
+      (await client.getHTML('#app')).indexOf(
+        `Welcome to Your Vue.js ${useTS ? '+ TypeScript ' : ''}App`
+      )
+    ).not.toBe(-1)
 
     stopServe()
     await app.stop()
