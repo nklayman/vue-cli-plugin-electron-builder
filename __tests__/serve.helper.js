@@ -7,13 +7,19 @@ const portfinder = require('portfinder')
 portfinder.basePort = 9515
 const serve = (project, notifyUpdate) =>
   new Promise((resolve, reject) => {
-    const child = project.run('vue-cli-service serve:electron')
+    // --debug to prevent Electron from being launched
+    const child = project.run('vue-cli-service serve:electron --debug')
     let log = ''
     child.stdout.on('data', async data => {
       data = data.toString()
       log += data
       try {
-        if (data.match(/Launching Electron\.\.\./)) {
+        if (
+          data.match(
+            // Dev server is finished and background.js is created
+            /Not launching electron as debug argument was passed\. You must launch electron though your debugger\./
+          )
+        ) {
           resolve({
             stdout: log,
             stopServe: () => {
@@ -37,8 +43,6 @@ const runTests = useTS =>
     const { project, projectName } = await create('serve', useTS)
     const projectPath = p =>
       path.join(process.cwd(), '__tests__/projects/' + projectName, p)
-    //   Prevent electron from being launched
-    jest.mock('execa')
     //   Wait for dev server to start
     const { stopServe } = await serve(project)
     expect(project.has('dist_electron/background.js')).toBe(true)
