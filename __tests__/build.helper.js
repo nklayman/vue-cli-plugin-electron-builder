@@ -9,11 +9,12 @@ const runTests = useTS =>
   new Promise(async resolve => {
     const { project, projectName } = await create('build', useTS)
 
+    const isWin = process.platform === 'win32'
     const projectPath = p =>
       path.join(process.cwd(), '__tests__/projects/' + projectName, p)
 
     const { stdout } = await project.run(
-      'vue-cli-service build:electron --x64 --win zip --linux zip'
+      `vue-cli-service build:electron ${isWin ? '--win zip' : ''} --linux zip`
     )
     //   Ensure built completes
     expect(stdout.indexOf('Build complete!')).not.toBe(-1)
@@ -25,9 +26,11 @@ const runTests = useTS =>
     expect(project.has('dist_electron/bundled/js')).toBe(true)
     expect(project.has('dist_electron/bundled/css')).toBe(true)
     expect(project.has('dist_electron/bundled/background.js')).toBe(true)
-    expect(project.has(`dist_electron/win-unpacked/${projectName}.exe`)).toBe(
-      true
-    )
+    if (isWin) {
+      expect(project.has(`dist_electron/win-unpacked/${projectName}.exe`)).toBe(
+        true
+      )
+    }
     expect(project.has(`dist_electron/linux-unpacked/${projectName}`)).toBe(
       true
     )
@@ -36,7 +39,11 @@ const runTests = useTS =>
       false
     )
     // Ensure that zip files were created
-    expect(project.has(`dist_electron/${projectName}-0.1.0-win.zip`)).toBe(true)
+    if (isWin) {
+      expect(project.has(`dist_electron/${projectName}-0.1.0-win.zip`)).toBe(
+        true
+      )
+    }
     expect(project.has(`dist_electron/${projectName}-0.1.0.zip`)).toBe(true)
     //   Ensure base is set properly (for app protocol)
     const index = fs.readFileSync(
@@ -45,7 +52,6 @@ const runTests = useTS =>
     )
     expect(index.indexOf('<base href=app://./ >')).not.toBe(-1)
     // Launch app with spectron
-    const isWin = process.platform === 'win32'
     const app = new Application({
       path: `./__tests__/projects/${projectName}/dist_electron/${
         isWin ? 'win' : 'linux'
