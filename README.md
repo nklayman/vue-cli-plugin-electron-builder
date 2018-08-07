@@ -2,7 +2,7 @@
 
 A Vue Cli 3 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/).
 
-[![Build status](https://ci.appveyor.com/api/projects/status/tyrr8kemli4vfll7?svg=true)](https://ci.appveyor.com/project/nklayman/vue-cli-plugin-electron-builder) [![Greenkeeper badge](https://badges.greenkeeper.io/nklayman/vue-cli-plugin-electron-builder.svg)](https://greenkeeper.io/)
+Win/Node 10: [![Build status](https://ci.appveyor.com/api/projects/status/tyrr8kemli4vfll7?svg=true)](https://ci.appveyor.com/project/nklayman/vue-cli-plugin-electron-builder), Linux/Node 8: [![Build Status](https://travis-ci.org/nklayman/vue-cli-plugin-electron-builder.svg?branch=master)](https://travis-ci.org/nklayman/vue-cli-plugin-electron-builder), Greenkeeper: [![Greenkeeper badge](https://badges.greenkeeper.io/nklayman/vue-cli-plugin-electron-builder.svg)](https://greenkeeper.io/)
 
 **IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
 
