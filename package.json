@@ -58,6 +58,6 @@
     "portfinder": "^1.0.13",
     "rimraf": "^2.6.2",
     "vue": "^2.5.16",
-    "vuepress": "^0.12.0"
+    "vuepress": "^0.13.1"
   }
 }
