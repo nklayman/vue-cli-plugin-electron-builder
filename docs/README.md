@@ -21,7 +21,8 @@ footer: MIT Licensed | Copyright © 2018-present Noah Klayman
   </div>
 </div>
 <centered-markdown>
+Build Status:
 
-AppVeyor build status: [![Build status](https://ci.appveyor.com/api/projects/status/tyrr8kemli4vfll7?svg=true)](https://ci.appveyor.com/project/nklayman/vue-cli-plugin-electron-builder)
+Windows (Appveyor): [![Build status](https://ci.appveyor.com/api/projects/status/tyrr8kemli4vfll7?svg=true)](https://ci.appveyor.com/project/nklayman/vue-cli-plugin-electron-builder), Linux (Travis): [![Build Status](https://travis-ci.org/nklayman/vue-cli-plugin-electron-builder.svg?branch=master)](https://travis-ci.org/nklayman/vue-cli-plugin-electron-builder)
 
 </centered-markdown>
