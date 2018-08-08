@@ -1,12 +1,23 @@
+sudo: required
+
 os:
   - linux
 
 language: node_js
 
 node_js:
+  - '10'
   - '8'
 
-script: npm run test -- --runInBand
+before_install: # if "install" is overridden
+  # Repo for Yarn
+  - sudo apt-key adv --fetch-keys http://dl.yarnpkg.com/debian/pubkey.gpg
+  - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -qq yarn
+  - yarn global add greenkeeper-lockfile@1
+
+script: yarn test --runInBand
 
 branches:
   only:
@@ -26,3 +37,5 @@ before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
+  - greenkeeper-lockfile-update
+after_script: greenkeeper-lockfile-upload
