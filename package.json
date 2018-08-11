@@ -6,6 +6,7 @@
   "homepage": "https://nklayman.github.io/vue-cli-plugin-electron-builder/",
   "scripts": {
     "test": "jest",
+    "test:docker": "docker build -t vcpeb . && docker run --rm --name vcpeb vcpeb",
     "pretest": "rimraf __tests__/projects/*",
     "lint": "eslint --ignore-pattern projects ./",
     "docs:dev": "vuepress dev docs",
