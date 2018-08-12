@@ -3,13 +3,10 @@ const testWithSpectron = pluginIndex.testWithSpectron
 const Config = require('webpack-chain')
 const webpack = require('webpack')
 const builder = require('electron-builder')
-const buildRenderer = require('@vue/cli-service/lib/commands/build').build
-const serve = require('@vue/cli-service/lib/commands/serve').serve
 const fs = require('fs-extra')
 const execa = require('execa')
 const portfinder = require('portfinder')
 const Application = require('spectron').Application
-jest.mock('@vue/cli-service/lib/commands/build')
 jest.mock('fs-extra')
 jest.mock('electron-builder')
 const mockExeca = {
@@ -18,9 +15,6 @@ const mockExeca = {
   kill: jest.fn()
 }
 jest.mock('execa', () => jest.fn(() => mockExeca))
-jest.mock('@vue/cli-service/lib/commands/serve', () => ({
-  serve: jest.fn().mockResolvedValue({ url: 'serveUrl' })
-}))
 jest.mock('electron-builder', () => ({ build: jest.fn().mockResolvedValue() }))
 const mockWait = jest.fn(() => new Promise(resolve => resolve()))
 const mockStart = jest.fn()
@@ -30,6 +24,8 @@ jest.mock('spectron', () => ({
     client: { waitUntilWindowLoaded: mockWait }
   }))
 }))
+const buildRenderer = jest.fn().mockResolvedValue()
+const serve = jest.fn().mockResolvedValue({ url: 'serveUrl' })
 console.log = jest.fn()
 
 beforeEach(() => {
@@ -50,7 +46,13 @@ const runCommand = async (command, options = {}, args = {}) => {
     registerCommand: jest.fn().mockImplementation((name, options, command) => {
       commands[name] = command
     }),
-    resolve: jest.fn(path => 'projectPath/' + path)
+    resolve: jest.fn(path => 'projectPath/' + path),
+    service: {
+      run: jest.fn(
+        (command, ...args) =>
+          command === 'serve' ? serve(args) : buildRenderer(args)
+      )
+    }
   }
   pluginIndex(api, options)
   await commands[command](args, [])
@@ -106,7 +108,7 @@ describe('build:electron', () => {
     //   Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output/bundled')
     //   Render build output is correct
-    expect(buildRenderer.mock.calls[0][0].dest).toBe('output/bundled')
+    expect(buildRenderer.mock.calls[0][0][0].dest).toBe('output/bundled')
     //   Electron-builder output is correct
     expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
       'output'
@@ -140,7 +142,7 @@ describe('build:electron', () => {
         }
       }
     })
-    const rendererConfig = buildRenderer.mock.calls[0][3].toConfig()
+    const rendererConfig = buildRenderer.mock.calls[0][0][2][0].toConfig()
     // Custom node key is passed through
     expect(rendererConfig.node.test).toBe('expected')
   })
@@ -261,7 +263,7 @@ describe('serve:electron', () => {
         }
       }
     })
-    const rendererConfig = serve.mock.calls[0][3].toConfig()
+    const rendererConfig = serve.mock.calls[0][0][2][0].toConfig()
     // Custom node key is passed through
     expect(rendererConfig.node.test).toBe('expected')
   })
