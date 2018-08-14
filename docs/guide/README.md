@@ -3,7 +3,7 @@ title: Quick Start
 sidebarDepth: 2
 ---
 
-## Quick Start
+# Quick Start
 
 ::: warning Important
 Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!
@@ -13,7 +13,7 @@ Your app must be created with Vue-CLI 3 (vue create my-app), will not work with 
 These docs are for the v1.0.0-beta release of VCP Electron Builder. If you were previously using an older version of vue-cli-plugin-electron-builder (<1.0.0), please see the [upgrade guide](./upgrading.md) or [view the old docs](https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/legacy).
 :::
 
-### Installation
+## Installation
 
 Open a terminal in the directory of your app created with Vue-CLI 3.
 
@@ -23,7 +23,7 @@ Then, install and invoke the generator of vue-cli-plugin-electron-builder by run
 
 That's It! You're ready to go!
 
-### To start a development server
+## To start a development server
 
 If you use [Yarn](https://yarnpkg.com/en/) (strongly recommended):
 
@@ -33,7 +33,7 @@ or if you use NPM:
 
 `npm run serve:electron`
 
-### To build your app
+## To build your app
 
 With Yarn:
 

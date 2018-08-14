@@ -33,7 +33,6 @@ module.exports = {
         'upgrading'
       ]
     },
-    displayAllHeaders: true,
     repo: 'nklayman/vue-cli-plugin-electron-builder',
     docsDir: 'docs',
     editLinks: true,
