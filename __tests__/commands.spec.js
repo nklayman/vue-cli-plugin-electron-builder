@@ -326,6 +326,57 @@ describe('serve:electron', () => {
     // Electron was re-launched
     expect(execa).toHaveBeenCalledTimes(2)
   })
+
+  test('Main process is recompiled and Electron is relaunched when file in list change', async () => {
+    process.exit = jest.fn()
+    let watchCb = {}
+    fs.watchFile.mockImplementation((file, cb) => {
+      // Set callback to be called later
+      watchCb[file] = cb
+    })
+    await runCommand('serve:electron', {
+      pluginOptions: {
+        electronBuilder: {
+          mainProcessFile: 'customBackground',
+          mainProcessWatch: ['listFile']
+        }
+      }
+    })
+
+    // Proper file is watched
+    expect(fs.watchFile.mock.calls[0][0]).toBe('projectPath/customBackground')
+    expect(fs.watchFile.mock.calls[1][0]).toBe('projectPath/listFile')
+    // Child has not yet been killed or unwatched
+    expect(mockExeca.kill).not.toBeCalled()
+    expect(mockExeca.removeAllListeners).not.toBeCalled()
+    // Main process was bundled and Electron was launched initially
+    expect(webpack).toHaveBeenCalledTimes(1)
+    expect(execa).toHaveBeenCalledTimes(1)
+
+    // Mock change of listed file
+    watchCb['projectPath/listFile']()
+    // Electron was killed and listeners removed
+    expect(mockExeca.kill).toHaveBeenCalledTimes(1)
+    expect(mockExeca.removeAllListeners).toHaveBeenCalledTimes(1)
+    // Process did not exit on Electron close
+    expect(process.exit).not.toBeCalled()
+    // Main process file was recompiled
+    expect(webpack).toHaveBeenCalledTimes(2)
+    // Electron was re-launched
+    expect(execa).toHaveBeenCalledTimes(2)
+
+    // Mock change of background file
+    watchCb['projectPath/customBackground']()
+    // Electron was killed and listeners removed
+    expect(mockExeca.kill).toHaveBeenCalledTimes(2)
+    expect(mockExeca.removeAllListeners).toHaveBeenCalledTimes(2)
+    // Process did not exit on Electron close
+    expect(process.exit).not.toBeCalled()
+    // Main process file was recompiled
+    expect(webpack).toHaveBeenCalledTimes(3)
+    // Electron was re-launched
+    expect(execa).toHaveBeenCalledTimes(3)
+  })
 })
 
 describe('testWithSpectron', async () => {

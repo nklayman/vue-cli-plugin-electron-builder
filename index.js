@@ -192,6 +192,10 @@ module.exports = (api, options) => {
       const execa = require('execa')
       const serve = require('@vue/cli-service/lib/commands/serve').serve
       const rendererConfig = api.resolveChainableWebpackConfig()
+      const mainProcessWatch = [
+        mainProcessFile,
+        ...(pluginOptions.mainProcessWatch || [])
+      ]
       //   Configure renderer process to work properly with electron
       rendererConfig
         .target('electron-renderer')
@@ -338,7 +342,9 @@ module.exports = (api, options) => {
         // Initial start of Electron
         startElectron()
         // Restart on main process file change
-        fs.watchFile(api.resolve(mainProcessFile), startElectron)
+        mainProcessWatch.forEach(file => {
+          fs.watchFile(api.resolve(file), startElectron)
+        })
       })
     }
   )

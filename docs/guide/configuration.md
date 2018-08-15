@@ -57,7 +57,10 @@ module.exports = {
                 return config
             },
             // Use this to change the entrypoint of your app's main process
-            mainProcessFile: 'src/myBackgroundFile.js'
+            mainProcessFile: 'src/myBackgroundFile.js',
+            // Provide an array of files that, when changed, will recompile the main process and restart Electron
+            // Your main process file will be added by default
+            mainProcessWatch: ['src/myFile1', 'src/myFile2']
         }
     }
 }
