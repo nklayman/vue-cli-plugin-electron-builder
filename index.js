@@ -40,6 +40,9 @@ module.exports = (api, options) => {
       //   Import the yargs options from electron-builder
       const configureBuildCommand = require('electron-builder/out/builder')
         .configureBuildCommand
+      // Prevent mode arg from interfering with electron-builder
+      const modeIndex = rawArgs.indexOf('--mode')
+      if (modeIndex !== -1) rawArgs.splice(modeIndex, 2)
       // Parse the raw arguments using electron-builder yargs config
       const builderArgs = yargs
         .command(['build', '*'], 'Build', configureBuildCommand)

@@ -9,6 +9,10 @@ const fs = require('fs-extra')
 const execa = require('execa')
 const portfinder = require('portfinder')
 const Application = require('spectron').Application
+// const {command} = require('yargs')
+const mockYargsParse = jest.fn()
+const mockYargsCommand = jest.fn(() => ({ parse: mockYargsParse }))
+jest.mock('yargs', () => ({ command: mockYargsCommand }))
 jest.mock('@vue/cli-service/lib/commands/build')
 jest.mock('fs-extra')
 jest.mock('electron-builder')
@@ -35,7 +39,7 @@ console.log = jest.fn()
 beforeEach(() => {
   jest.clearAllMocks()
 })
-const runCommand = async (command, options = {}, args = {}) => {
+const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
   if (!args._) args._ = []
   const renderConfig = new Config()
   //   Command expects define plugin to exist
@@ -53,7 +57,8 @@ const runCommand = async (command, options = {}, args = {}) => {
     resolve: jest.fn(path => 'projectPath/' + path)
   }
   pluginIndex(api, options)
-  await commands[command](args, [])
+
+  await commands[command](args, rawArgs)
 }
 
 describe('build:electron', () => {
@@ -181,6 +186,44 @@ describe('build:electron', () => {
     const mainConfig = webpack.mock.calls[0][0]
     // Both .js and .ts are resolved
     expect(mainConfig.resolve.extensions).toEqual(['.js', '.ts'])
+  })
+  test('--mode argument is removed from electron-builder args', async () => {
+    await runCommand('build:electron', {}, {}, [
+      '--keep1',
+      '--mode',
+      'buildMode',
+      '--keep2'
+    ])
+    // --mode and buildMode should have been removed
+    expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
+    mockYargsParse.mockClear()
+
+    await runCommand('build:electron', {}, {}, [
+      '--mode',
+      'buildMode',
+      '--keep2'
+    ])
+    // --mode and buildMode should have been removed
+    expect(mockYargsParse).toBeCalledWith(['--keep2'])
+    mockYargsParse.mockClear()
+
+    await runCommand('build:electron', {}, {}, [
+      '--keep1',
+      '--mode',
+      'buildMode'
+    ])
+    // --mode and buildMode should have been removed
+    expect(mockYargsParse).toBeCalledWith(['--keep1'])
+    mockYargsParse.mockClear()
+
+    await runCommand('build:electron', {}, {}, ['--mode', 'buildMode'])
+    // --mode and buildMode should have been removed
+    expect(mockYargsParse).toBeCalledWith([])
+    mockYargsParse.mockClear()
+
+    await runCommand('build:electron', {}, {}, ['--keep1', '--keep2'])
+    // --mode and buildMode should have been removed
+    expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
   })
 })
 
