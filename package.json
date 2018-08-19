@@ -28,7 +28,6 @@
     "license": "MIT",
     "private": false,
     "dependencies": {
-        "@vue/cli-service": "https://github.com/nklayman/vue-cli-plugin-electron-builder/raw/master/vue-cli-service-custom-2.tgz",
         "electron-builder": "^20.28.1",
         "execa": "^0.10.0",
         "fs-extra": "^7.0.0",
@@ -47,6 +46,7 @@
         "@vue/cli-plugin-eslint": "^3.0.1",
         "@vue/cli-plugin-typescript": "^3.0.1",
         "@vue/cli-plugin-unit-jest": "^3.0.1",
+        "@vue/cli-service": "^3.0.1",
         "@vue/cli-test-utils": "^3.0.1",
         "@vue/eslint-config-typescript": "^3.0.1",
         "electron": "^2.0.7",

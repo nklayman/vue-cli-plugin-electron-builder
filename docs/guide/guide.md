@@ -10,8 +10,8 @@ sidebarDepth: 2
 
 In the renderer process, static assets work similarly to a regular app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html) before continuing. However, there are a few changes made:
 
--   The `__static` global variable is added. It provides a path to your public directory in both development and production. Use this to read/write files in your app's public directory.
--   In production, the `process.env.BASE_URL` is replaced with the path to your app's files.
+- The `__static` global variable is added. It provides a path to your public directory in both development and production. Use this to read/write files in your app's public directory.
+- In production, the `process.env.BASE_URL` is replaced with the path to your app's files.
 
 **Note: `__static` is not available in regular build/serve. It should only be used in electron to read/write files on disk. To import a file (img, script, etc...) and not have it be transpiled by webpack, use the `process.env.BASE_URL` instead.**
 
@@ -60,6 +60,30 @@ console.log(fileContents)
 ├── package.json  # your app's package.json file
 ├── ...
 ```
+
+## Using Native Dependencies
+
+To use native deps in Electron, you will need to find the path to the main file (`.node`) relative to `node_modules` for that dep. Once you have found it, set `vue.config.js` (replace `YOUR_DEP` with the name of the native dep and `YOUR_DEP_PATH` with the path to the main file) to:
+
+```javascript
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      chainWebpackRendererProcess: config => {
+        config.module
+          .rule('node-loader')
+          .test(/\.node$/)
+          .use('node')
+          .loader('node-loader')
+        config.resolve.alias.set('YOUR_DEP', 'YOUR_DEP_PATH')
+        return config
+      }
+    }
+  }
+}
+```
+
+For example, if you were using SQlite3, `YOUR_DEP_PATH` would be `sqlite3/lib/binding/electron-v2.0-YOUR_PLATFORM_HERE-x64/node_sqlite3.node`
 
 ## How it works
 

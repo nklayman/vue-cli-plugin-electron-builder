@@ -3,13 +3,10 @@ const testWithSpectron = pluginIndex.testWithSpectron
 const Config = require('webpack-chain')
 const webpack = require('webpack')
 const builder = require('electron-builder')
-const buildRenderer = require('@vue/cli-service/lib/commands/build').build
-const serve = require('@vue/cli-service/lib/commands/serve').serve
 const fs = require('fs-extra')
 const execa = require('execa')
 const portfinder = require('portfinder')
 const Application = require('spectron').Application
-// const {command} = require('yargs')
 const mockYargsParse = jest.fn()
 const mockYargsCommand = jest.fn(() => ({ parse: mockYargsParse }))
 jest.mock('yargs', () => ({ command: mockYargsCommand }))
@@ -34,6 +31,13 @@ jest.mock('spectron', () => ({
     client: { waitUntilWindowLoaded: mockWait }
   }))
 }))
+const chainWebpack = jest.fn()
+const serviceRun = jest.fn(
+  () =>
+    new Promise(resolve => {
+      resolve({ url: 'serveUrl' })
+    })
+)
 console.log = jest.fn()
 
 beforeEach(() => {
@@ -54,7 +58,11 @@ const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
     registerCommand: jest.fn().mockImplementation((name, options, command) => {
       commands[name] = command
     }),
-    resolve: jest.fn(path => 'projectPath/' + path)
+    resolve: jest.fn(path => 'projectPath/' + path),
+    chainWebpack,
+    service: {
+      run: serviceRun
+    }
   }
   pluginIndex(api, options)
 
@@ -110,8 +118,8 @@ describe('build:electron', () => {
     const mainConfig = webpack.mock.calls[0][0]
     //   Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output/bundled')
-    //   Render build output is correct
-    expect(buildRenderer.mock.calls[0][0].dest).toBe('output/bundled')
+
+    expect(serviceRun.mock.calls[0][1].dest).toBe('output/bundled')
     //   Electron-builder output is correct
     expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
       'output'
@@ -145,12 +153,13 @@ describe('build:electron', () => {
         }
       }
     })
-    const rendererConfig = buildRenderer.mock.calls[0][3].toConfig()
+    const config = new Config()
+    chainWebpack.mock.calls[0][0](config)
     // Custom node key is passed through
-    expect(rendererConfig.node.test).toBe('expected')
+    expect(config.toConfig().node.test).toBe('expected')
   })
 
-  test('Custom main process webpack config is used if provided', async () => {
+  test('Custom Electron Builder config is used if provided', async () => {
     await runCommand('build:electron', {
       pluginOptions: {
         electronBuilder: {
@@ -304,9 +313,10 @@ describe('serve:electron', () => {
         }
       }
     })
-    const rendererConfig = serve.mock.calls[0][3].toConfig()
+    const config = new Config()
+    chainWebpack.mock.calls[0][0](config)
     // Custom node key is passed through
-    expect(rendererConfig.node.test).toBe('expected')
+    expect(config.toConfig().node.test).toBe('expected')
   })
 
   test('If --debug argument is passed, electron is not launched, main process is not minified, and source maps are enabled', async () => {

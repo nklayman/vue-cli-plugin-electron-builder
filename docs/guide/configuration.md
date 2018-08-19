@@ -14,13 +14,13 @@ They can be placed under the `builderOptions` key in vue-cli-plugin-electron-bui
 // vue.config.js
 
 module.exports = {
-    pluginOptions: {
-        electronBuilder: {
-            builderOptions: {
-                // options placed here will be merged with default configuration and passed to electron-builder
-            }
-        }
+  pluginOptions: {
+    electronBuilder: {
+      builderOptions: {
+        // options placed here will be merged with default configuration and passed to electron-builder
+      }
     }
+  }
 }
 ```
 
@@ -30,7 +30,7 @@ All CLI arguments passed to `build:electron` will be forwarded to electron-build
 
 ## Webpack configuration
 
-Your regular config is used for bundling the renderer process (your app). To modify the webpack config for the electron main process only, use the `chainWebpackMainProcess` function under vue-cli-plugin-electron-builder's plugin options in `vue.config.js`. Use `chainWebpackRendererProcess` customize your app's webpack config for Electron builds only. To learn more about webpack chaining, see [webpack-chain](https://github.com/mozilla-neutrino/webpack-chain). The function should take a config argument, modify it through webpack-chain, and then return it.
+Your regular config is extended and used for bundling the renderer process (your app). To modify your webpack config for Electron builds only, use the `chainWebpackRendererProcess` function. To modify the webpack config for the [Electron main process](https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes) only, use the `chainWebpackMainProcess` function under VCP Electron Builder's plugin options in `vue.config.js`. To learn more about webpack chaining, see [webpack-chain](https://github.com/mozilla-neutrino/webpack-chain). These functions work similarly to the [`chainWebpack`](https://cli.vuejs.org/config/#chainwebpack) option provided by Vue CLI.
 
 **Note: Do NOT change the webpack output directory for the main process! See changing output directory below for more info. To change the entry point for the main process, use the `mainProcessFile` key, DO NOT modify it in through chaining.**
 
@@ -38,31 +38,29 @@ Your regular config is used for bundling the renderer process (your app). To mod
 // vue.config.js
 
 module.exports = {
-    configureWebpack: {
-        // Configuration applied to all builds
-    },
-    pluginOptions: {
-        electronBuilder: {
-            chainWebpackMainProcess: config => {
-                // Chain webpack config for electron main process only
-            },
-            chainWebpackRendererProcess: config => {
-                // Chain webpack config for electron renderer process only
-                // The following example will set IS_ELECTRON to true in your app
-                config.plugin('define').tap(args => {
-                    args[0]['IS_ELECTRON'] = true
-                    return args
-                })
-                // If you do not return the config property, your app may break!
-                return config
-            },
-            // Use this to change the entrypoint of your app's main process
-            mainProcessFile: 'src/myBackgroundFile.js',
-            // Provide an array of files that, when changed, will recompile the main process and restart Electron
-            // Your main process file will be added by default
-            mainProcessWatch: ['src/myFile1', 'src/myFile2']
-        }
+  configureWebpack: {
+    // Configuration applied to all builds
+  },
+  pluginOptions: {
+    electronBuilder: {
+      chainWebpackMainProcess: config => {
+        // Chain webpack config for electron main process only
+      },
+      chainWebpackRendererProcess: config => {
+        // Chain webpack config for electron renderer process only
+        // The following example will set IS_ELECTRON to true in your app
+        config.plugin('define').tap(args => {
+          args[0]['IS_ELECTRON'] = true
+          return args
+        })
+      },
+      // Use this to change the entrypoint of your app's main process
+      mainProcessFile: 'src/myBackgroundFile.js',
+      // Provide an array of files that, when changed, will recompile the main process and restart Electron
+      // Your main process file will be added by default
+      mainProcessWatch: ['src/myFile1', 'src/myFile2']
     }
+  }
 }
 ```
 
@@ -76,11 +74,11 @@ If you don't want your files outputted into dist_electron, you can choose a cust
 // vue.config.js
 
 module.exports = {
-    pluginOptions: {
-        electronBuilder: {
-            outputDir: 'electron-builder-output-dir'
-        }
+  pluginOptions: {
+    electronBuilder: {
+      outputDir: 'electron-builder-output-dir'
     }
+  }
 }
 ```
 
@@ -92,13 +90,13 @@ Typescript support is automatic and requires no configuration, just add the `@vu
 // vue.config.js
 
 module.exports = {
-    pluginOptions: {
-        electronBuilder: {
-            // option: default // description
-            disableMainProcessTypescript: false, // Manually disable typescript plugin for main process. Enable if you want to use regular js for the main process (src/background.js by default).
-            mainProcessTypeChecking: false // Manually enable type checking during webpck bundling for background file.
-        }
+  pluginOptions: {
+    electronBuilder: {
+      // option: default // description
+      disableMainProcessTypescript: false, // Manually disable typescript plugin for main process. Enable if you want to use regular js for the main process (src/background.js by default).
+      mainProcessTypeChecking: false // Manually enable type checking during webpck bundling for background file.
     }
+  }
 }
 ```
 

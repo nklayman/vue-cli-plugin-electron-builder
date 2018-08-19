@@ -34,15 +34,15 @@ vue-cli-plugin-electron-builder exports a `testWithSpectron` function. This func
 const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
 
 test('a window is created', async () => {
-    const { stdout, url, stopServe, app } = await testWithSpectron()
-    // stdout is the log of serve:electron
-    console.log(`serve:electron returned: ${stdout}`)
-    // url is the url for the dev server created with serve:electron
-    console.log(`the dev server url is: ${url}`)
-    // app is a spectron instance. It is attached to the dev server, launched, and waited for to load.
-    expect(await app.client.getWindowCount()).toBe(1)
-    // Before your tests end, make sure to stop the dev server and spectron
-    await stopServe()
+  const { stdout, url, stopServe, app } = await testWithSpectron()
+  // stdout is the log of serve:electron
+  console.log(`serve:electron returned: ${stdout}`)
+  // url is the url for the dev server created with serve:electron
+  console.log(`the dev server url is: ${url}`)
+  // app is a spectron instance. It is attached to the dev server, launched, and waited for to load.
+  expect(await app.client.getWindowCount()).toBe(1)
+  // Before your tests end, make sure to stop the dev server and spectron
+  await stopServe()
 })
 ```
 
