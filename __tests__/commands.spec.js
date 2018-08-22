@@ -21,10 +21,7 @@ const mockInstallAppDeps = jest.fn()
 jest.mock('electron-builder/out/cli/install-app-deps.js', () => ({
   installAppDeps: mockInstallAppDeps
 }))
-jest.mock('../lib/webpackConfig.js', () => ({
-  getExternals: jest.fn(),
-  chainWebpack: jest.fn()
-}))
+jest.mock('../lib/webpackConfig.js')
 const mockExeca = {
   on: jest.fn(),
   removeAllListeners: jest.fn(),
