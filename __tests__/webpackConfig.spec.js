@@ -2,7 +2,7 @@ const { chainWebpack } = require('../lib/webpackConfig')
 const Config = require('webpack-chain')
 const webpack = require('webpack')
 const fs = require('fs')
-
+jest.mock('fs')
 // Set for Electron builds
 process.env.IS_ELECTRON = true
 
@@ -86,7 +86,7 @@ describe('chainWebpack', () => {
         dependencies: { mockExternal: 'mockExternal' }
       }))
       const { readFileSync: realReadFileSync } = fs
-      fs.readFileSync = jest.fn((path, ...args) => {
+      fs.readFileSync.mockImplementationOnce((path, ...args) => {
         if (path === 'mockExternalPath') {
           return JSON.stringify({})
         }
