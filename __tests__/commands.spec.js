@@ -1,18 +1,30 @@
+// #region Imports
 const pluginIndex = require('../index.js')
 const testWithSpectron = pluginIndex.testWithSpectron
-const Config = require('webpack-chain')
 const webpack = require('webpack')
 const builder = require('electron-builder')
 const fs = require('fs-extra')
 const execa = require('execa')
 const portfinder = require('portfinder')
 const Application = require('spectron').Application
+const { chainWebpack, getExternals } = require('../lib/webpackConfig')
+// #endregion
+
+// #region Mocks
 const mockYargsParse = jest.fn()
 const mockYargsCommand = jest.fn(() => ({ parse: mockYargsParse }))
 jest.mock('yargs', () => ({ command: mockYargsCommand }))
 jest.mock('@vue/cli-service/lib/commands/build')
 jest.mock('fs-extra')
 jest.mock('electron-builder')
+const mockInstallAppDeps = jest.fn()
+jest.mock('electron-builder/out/cli/install-app-deps.js', () => ({
+  installAppDeps: mockInstallAppDeps
+}))
+jest.mock('../lib/webpackConfig.js', () => ({
+  getExternals: jest.fn(),
+  chainWebpack: jest.fn()
+}))
 const mockExeca = {
   on: jest.fn(),
   removeAllListeners: jest.fn(),
@@ -23,7 +35,7 @@ jest.mock('@vue/cli-service/lib/commands/serve', () => ({
   serve: jest.fn().mockResolvedValue({ url: 'serveUrl' })
 }))
 jest.mock('electron-builder', () => ({ build: jest.fn().mockResolvedValue() }))
-const mockWait = jest.fn(() => new Promise(resolve => resolve()))
+const mockWait = jest.fn().mockResolvedValue()
 const mockStart = jest.fn()
 jest.mock('spectron', () => ({
   Application: jest.fn().mockImplementation(() => ({
@@ -31,43 +43,39 @@ jest.mock('spectron', () => ({
     client: { waitUntilWindowLoaded: mockWait }
   }))
 }))
-const chainWebpack = jest.fn()
-const serviceRun = jest.fn(
-  () =>
-    new Promise(resolve => {
-      resolve({ url: 'serveUrl' })
-    })
-)
+// Prevent console.log statements from index
 console.log = jest.fn()
-
 beforeEach(() => {
   jest.clearAllMocks()
 })
+// #endregion
+
+// #region runCommand
+const serviceRun = jest.fn().mockResolvedValue({ url: 'serveUrl' })
 const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
   if (!args._) args._ = []
-  const renderConfig = new Config()
-  //   Command expects define plugin to exist
-  renderConfig
-    .plugin('define')
-    .use(webpack.DefinePlugin, [{ 'process.env': {} }])
   let commands = {}
   const api = {
     //   Make app think typescript plugin is installed
     hasPlugin: jest.fn().mockReturnValue(true),
-    resolveChainableWebpackConfig: jest.fn(() => renderConfig),
     registerCommand: jest.fn().mockImplementation((name, options, command) => {
+      // Save registered commands
       commands[name] = command
     }),
+    // So we can ensure that files were resolved properly
     resolve: jest.fn(path => 'projectPath/' + path),
-    chainWebpack,
+    chainWebpack: jest.fn(),
     service: {
+      // Mock api.service.run('build/serve')
       run: serviceRun
     }
   }
+  // Run the plugin, saving it's registered commands
   pluginIndex(api, options)
-
+  // Run the provided command
   await commands[command](args, rawArgs)
 }
+// #endregion
 
 describe('build:electron', () => {
   test('typescript is disabled when set in options', async () => {
@@ -118,7 +126,7 @@ describe('build:electron', () => {
     const mainConfig = webpack.mock.calls[0][0]
     //   Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output/bundled')
-
+    // cli-service build output is correct
     expect(serviceRun.mock.calls[0][1].dest).toBe('output/bundled')
     //   Electron-builder output is correct
     expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
@@ -131,7 +139,7 @@ describe('build:electron', () => {
       pluginOptions: {
         electronBuilder: {
           chainWebpackMainProcess: config => {
-            config.node.set('test', 'expected')
+            config.node.set('shouldBe', 'expected')
             return config
           }
         }
@@ -139,24 +147,12 @@ describe('build:electron', () => {
     })
     const mainConfig = webpack.mock.calls[0][0]
     // Custom node key is passed through
-    expect(mainConfig.node.test).toBe('expected')
+    expect(mainConfig.node.shouldBe).toBe('expected')
   })
 
-  test('Custom renderer process webpack config is used if provided', async () => {
-    await runCommand('build:electron', {
-      pluginOptions: {
-        electronBuilder: {
-          chainWebpackRendererProcess: config => {
-            config.node.set('test', 'expected')
-            return config
-          }
-        }
-      }
-    })
-    const config = new Config()
-    chainWebpack.mock.calls[0][0](config)
-    // Custom node key is passed through
-    expect(config.toConfig().node.test).toBe('expected')
+  test('process.env.IS_ELECTRON is set to true', async () => {
+    await runCommand('build:electron')
+    expect(process.env.IS_ELECTRON).toBe('true')
   })
 
   test('Custom Electron Builder config is used if provided', async () => {
@@ -164,13 +160,13 @@ describe('build:electron', () => {
       pluginOptions: {
         electronBuilder: {
           builderOptions: {
-            testOption: 'expected'
+            shouldBe: 'expected'
           }
         }
       }
     })
     // Custom electron-builder config is used
-    expect(builder.build.mock.calls[0][0].config.testOption).toBe('expected')
+    expect(builder.build.mock.calls[0][0].config.shouldBe).toBe('expected')
   })
 
   test('Fonts folder is copied to css if it exists', async () => {
@@ -189,6 +185,7 @@ describe('build:electron', () => {
       'projectPath/dist_electron/bundled/css/fonts'
     )
   })
+
   test('.js and .ts are merged into file extensions', async () => {
     await runCommand('build:electron')
 
@@ -196,6 +193,7 @@ describe('build:electron', () => {
     // Both .js and .ts are resolved
     expect(mainConfig.resolve.extensions).toEqual(['.js', '.ts'])
   })
+
   test('--mode argument is removed from electron-builder args', async () => {
     await runCommand('build:electron', {}, {}, [
       '--keep1',
@@ -203,7 +201,7 @@ describe('build:electron', () => {
       'buildMode',
       '--keep2'
     ])
-    // --mode and buildMode should have been removed
+    // --mode and buildMode should have been removed, and other args kept
     expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
     mockYargsParse.mockClear()
 
@@ -212,7 +210,7 @@ describe('build:electron', () => {
       'buildMode',
       '--keep2'
     ])
-    // --mode and buildMode should have been removed
+    // --mode and buildMode should have been removed, and other args kept
     expect(mockYargsParse).toBeCalledWith(['--keep2'])
     mockYargsParse.mockClear()
 
@@ -221,7 +219,7 @@ describe('build:electron', () => {
       '--mode',
       'buildMode'
     ])
-    // --mode and buildMode should have been removed
+    // --mode and buildMode should have been removed, and other args kept
     expect(mockYargsParse).toBeCalledWith(['--keep1'])
     mockYargsParse.mockClear()
 
@@ -231,7 +229,7 @@ describe('build:electron', () => {
     mockYargsParse.mockClear()
 
     await runCommand('build:electron', {}, {}, ['--keep1', '--keep2'])
-    // --mode and buildMode should have been removed
+    // Nothing should be removed
     expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
   })
 })
@@ -286,12 +284,13 @@ describe('serve:electron', () => {
     //   Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output')
   })
+
   test('Custom main process webpack config is used if provided', async () => {
     await runCommand('serve:electron', {
       pluginOptions: {
         electronBuilder: {
           chainWebpackMainProcess: config => {
-            config.node.set('test', 'expected')
+            config.node.set('shouldBe', 'expected')
             return config
           }
         }
@@ -299,24 +298,12 @@ describe('serve:electron', () => {
     })
     const mainConfig = webpack.mock.calls[0][0]
     // Custom node key is passed through
-    expect(mainConfig.node.test).toBe('expected')
+    expect(mainConfig.node.shouldBe).toBe('expected')
   })
 
-  test('Custom renderer process webpack config is used if provided', async () => {
-    await runCommand('serve:electron', {
-      pluginOptions: {
-        electronBuilder: {
-          chainWebpackRendererProcess: config => {
-            config.node.set('test', 'expected')
-            return config
-          }
-        }
-      }
-    })
-    const config = new Config()
-    chainWebpack.mock.calls[0][0](config)
-    // Custom node key is passed through
-    expect(config.toConfig().node.test).toBe('expected')
+  test('process.env.IS_ELECTRON is set to true', async () => {
+    await runCommand('serve:electron')
+    expect(process.env.IS_ELECTRON).toBe('true')
   })
 
   test('If --debug argument is passed, electron is not launched, main process is not minified, and source maps are enabled', async () => {
@@ -344,7 +331,8 @@ describe('serve:electron', () => {
   })
 
   test('Main process is recompiled and Electron is relaunched on main process file change', async () => {
-    process.exit = jest.fn()
+    // So we can make sure it wasn't called
+    jest.spyOn(process, 'exit')
     let watchCb
     fs.watchFile.mockImplementation((file, cb) => {
       // Set callback to be called later
@@ -353,6 +341,7 @@ describe('serve:electron', () => {
     await runCommand('serve:electron', {
       pluginOptions: {
         electronBuilder: {
+          // Make sure it watches proper background file
           mainProcessFile: 'customBackground'
         }
       }
@@ -381,7 +370,8 @@ describe('serve:electron', () => {
   })
 
   test('Main process is recompiled and Electron is relaunched when file in list change', async () => {
-    process.exit = jest.fn()
+    // So we can make sure it wasn't called
+    jest.spyOn(process, 'exit')
     let watchCb = {}
     fs.watchFile.mockImplementation((file, cb) => {
       // Set callback to be called later
@@ -390,7 +380,9 @@ describe('serve:electron', () => {
     await runCommand('serve:electron', {
       pluginOptions: {
         electronBuilder: {
+          // Make sure background file is watch as well
           mainProcessFile: 'customBackground',
+          // Custom file that should be watched
           mainProcessWatch: ['listFile']
         }
       }
@@ -430,6 +422,56 @@ describe('serve:electron', () => {
     // Electron was re-launched
     expect(execa).toHaveBeenCalledTimes(3)
   })
+
+  test('Native deps are installed if detected', async () => {
+    getExternals.mockReturnValueOnce({
+      someDep: {
+        commonjs: 'someDep',
+        commonjs2: 'someDep'
+      }
+    })
+    await runCommand('serve:electron')
+
+    // electron-builder's install-app-deps function was called
+    expect(mockInstallAppDeps.mock.calls[0][0]).toEqual({
+      platform: process.platform
+    })
+  })
+
+  test('Native deps are not installed if there are none detected', async () => {
+    getExternals.mockReturnValueOnce({})
+    await runCommand('serve:electron')
+
+    // electron-builder's install-app-deps function was not called
+    expect(mockInstallAppDeps).not.toBeCalled()
+  })
+})
+
+describe('Custom webpack chain', () => {
+  test('Custom webpack config is used', () => {
+    chainWebpack.mockReturnValueOnce('expected')
+    const api = {
+      chainWebpack: jest.fn(),
+      hasPlugin: jest.fn(),
+      registerCommand: jest.fn()
+    }
+    const options = {
+      pluginOptions: { electronBuilder: { shouldBe: 'expected' } }
+    }
+    // Initiate plugin with mock api
+    pluginIndex(api, options)
+    // Run chainWebpack function
+    api.chainWebpack.mock.calls[0][0]('chainableConfig')
+    // Custom webpack config should be activated
+    expect(chainWebpack).toBeCalledWith(
+      // API is passed through
+      api,
+      // Plugin options are passed through
+      { shouldBe: 'expected' },
+      // Config is passed through
+      'chainableConfig'
+    )
+  })
 })
 
 describe('testWithSpectron', async () => {
@@ -443,6 +485,7 @@ describe('testWithSpectron', async () => {
       stdout: {
         on: (event, callback) => {
           if (event === 'data') {
+            // Save callback to be called later
             sendData = callback
           }
         }
@@ -466,50 +509,59 @@ describe('testWithSpectron', async () => {
         outputDir: 'customOutput'
       }
     )
-    // Proper url is returned
+    // Proper URL is returned
     expect(url).toBe('http://localhost:1234/')
     const appArgs = Application.mock.calls[0][0]
     // Spectron is launched with proper path to background
     expect(appArgs.args).toEqual(['customOutput/background.js'])
   })
+
   test('secures an open port with portfinder', async () => {
     await runSpectron()
     // Port should match portfinder's mock return value
     expect(Application.mock.calls[0][0].port).toBe('expectedPort')
   })
+
   test("doesn't start app if noStart option is provided", async () => {
     await runSpectron({ noStart: true })
     // App should not be started nor waited for to load
     expect(mockStart).not.toBeCalled()
     expect(mockWait).not.toBeCalled()
   })
+
   test("doesn't launch spectron if noSpectron option is provided", async () => {
     await runSpectron({ noSpectron: true })
     // Spectron instance should not be created
     expect(Application).not.toBeCalled()
   })
+
   test('uses custom spectron options if provided', async () => {
     await runSpectron({ spectronOptions: { testKey: 'expected' } })
+    // Custom spectron option is passed through
     expect(Application.mock.calls[0][0].testKey).toBe('expected')
   })
+
   test('launches dev server in production mode if forceDev argument is not provided', async () => {
     await runSpectron()
 
     // Node env was set to production
     expect(execa.mock.calls[0][2].env.NODE_ENV).toBe('production')
   })
+
   test('launches dev server in dev mode if forceDev argument is provided', async () => {
     await runSpectron({ forceDev: true })
 
     // Node env was set to development
     expect(execa.mock.calls[0][2].env.NODE_ENV).toBe('development')
   })
+
   test('default vue mode is test', async () => {
     await runSpectron()
 
     // Mode argument was set to test
     expect(execa.mock.calls[0][1].join(' ').indexOf('--mode test')).not.toBe(-1)
   })
+
   test('custom vue mode is used if provided', async () => {
     await runSpectron({ mode: 'expected' })
 
@@ -518,8 +570,10 @@ describe('testWithSpectron', async () => {
       execa.mock.calls[0][1].join(' ').indexOf('--mode expected')
     ).not.toBe(-1)
   })
+
   test('returns stdout of command', async () => {
     const { stdout } = await runSpectron({}, { customLog: 'shouldBeInLog' })
+    // Mock stdout is included
     expect(stdout.indexOf('shouldBeInLog')).not.toBe(-1)
   })
 })

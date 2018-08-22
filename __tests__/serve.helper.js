@@ -3,6 +3,7 @@ const path = require('path')
 const Application = require('spectron').Application
 const electronPath = require('electron')
 const portfinder = require('portfinder')
+const checkLogs = require('./checkLogs.helper.js')
 
 portfinder.basePort = 9515
 const serve = (project, notifyUpdate) =>
@@ -65,46 +66,9 @@ const runTests = useTS =>
     const client = app.client
     await client.waitUntilWindowLoaded()
 
-    await client.getRenderProcessLogs().then(logs => {
-      logs.forEach(log => {
-        //   Make sure there are no fatal errors
-        expect(log.level).not.toBe('SEVERE')
-      })
-      let appBaseUrl = logs
-        //   Find BASE_URL log
-        .find(v => v.message.indexOf('process.env.BASE_URL=') !== -1)
-        // Get just the value
-        .message.split('=')[1]
-      // Remove any quotes
-      appBaseUrl = appBaseUrl.replace('"', '')
-      //   Base url should be root of server
-      expect(appBaseUrl).toBe('/')
-      let appStatic = logs
-        //   Find __static log
-        .find(v => v.message.indexOf('__static=') !== -1)
-        // Get just the value
-        .message.split('=')[1]
-      // Remove any quotes
-      appStatic = appStatic.replace('"', '')
-      //   __static should point to public folder
-      expect(path.normalize(appStatic)).toBe(projectPath('public'))
-    })
-    await client.getMainProcessLogs().then(logs => {
-      logs.forEach(log => {
-        //   Make sure there are no fatal errors
-        expect(log.level).not.toBe('SEVERE')
-      })
-      let appStatic = logs
-        //   Find __static log
-        .find(m => m.indexOf('__static=') !== -1)
-        // Get just the value
-        .split('=')[1]
-      // Remove any quotes
-      appStatic = appStatic.replace('"', '')
-      appStatic = appStatic.replace('', '')
-      //   __static should point to public folder
-      expect(path.normalize(appStatic)).toBe(projectPath('public'))
-    })
+    // Check that proper info was logged
+    await checkLogs({ client, projectName, projectPath, mode: 'serve', useTS })
+
     //   Window was created
     expect(await client.getWindowCount()).toBe(1)
     //   It is not minimized

@@ -8,7 +8,8 @@ module.exports = api => {
     //   Add base element inside <head> tag
     index = index.replace(
       /^\s*?<head.*?>\s*?$/m,
-      `<head>\n    <% if (BASE_URL === './') { %><base href="app://./" /><% } %>`
+      `<head>\n    <% if (BASE_URL === './') { %><base href="app://./" /><% } %>
+      <% if (VUE_APP_NODE_MODULES_PATH !== "false") { %><script>require('module').globalPaths.push('<%= VUE_APP_NODE_MODULES_PATH %>')</script><% } %>`
     )
     //   Write updated index.html
     fs.writeFileSync(api.resolve('./public/index.html'), index)
