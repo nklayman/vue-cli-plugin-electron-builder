@@ -38,4 +38,4 @@ or with NPM:
 
 `npm run build:electron`
 
-To see more documentation, [visit our website](https://nklayman.github.io/vue-cli-plugin-electron-builder/).
+To see more documentation, [visit our website](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html).
