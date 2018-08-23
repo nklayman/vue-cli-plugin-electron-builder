@@ -22,7 +22,9 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
     // Remove any quotes
     appBaseUrl = appBaseUrl.replace('"', '')
     //   Base url should be root of server or packaged asar
-    expect(appBaseUrl).toBe(isBuild ? outputPath : '/')
+    expect(path.normalize(appBaseUrl)).toBe(
+      isBuild ? outputPath : path.sep /* Server root */
+    )
 
     let appStatic = logs
       //   Find __static log
@@ -45,6 +47,8 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
     modulePaths = modulePaths.replace(/"$/, '')
     // Parse modulePaths array
     modulePaths = modulePaths.split(',')
+    // Normalize paths
+    modulePaths = modulePaths.map(p => path.normalize(p))
     // module.paths should include path to project's node_modules unless in build
     if (isBuild) {
       expect(modulePaths).not.toContain(
@@ -65,7 +69,7 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
     vuePath = vuePath.replace('"', '')
     // Vue should be bundled and not externalized (can't check in build because of NamedModulePlugin)
     if (!isBuild) {
-      expect(path.normalize(vuePath)).toBe(
+      expect(path.posix.normalize(vuePath)).toBe(
         '../../../node_modules/vue/dist/vue.runtime.esm.js'
       )
     }
@@ -78,7 +82,9 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
     // Remove any quotes
     mockExternalPath = mockExternalPath.replace('"', '')
     // mockExternal should be externalized (can't check in build because of NamedModulePlugin)
-    if (!isBuild) expect(path.normalize(mockExternalPath)).toBe('mockExternal')
+    if (!isBuild) {
+      expect(mockExternalPath).toBe('mockExternal')
+    }
   })
 
   await client.getMainProcessLogs().then(logs => {
@@ -105,6 +111,8 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
       .split('=')[1]
     // Parse modulePaths array
     modulePaths = modulePaths.split(',')
+    // Normalize paths
+    modulePaths = modulePaths.map(p => path.normalize(p))
     // module.paths should include path to project's node_modules unless in build
     if (isBuild) {
       expect(modulePaths).not.toContain(
@@ -124,6 +132,8 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
     // Remove any quotes
     mockExternalPath = mockExternalPath.replace('"', '')
     // mockExternal should be externalized (can't check in build because of NamedModulePlugin)
-    if (!isBuild) expect(mockExternalPath).toBe('mockExternal')
+    if (!isBuild) {
+      expect(mockExternalPath).toBe('mockExternal')
+    }
   })
 }
