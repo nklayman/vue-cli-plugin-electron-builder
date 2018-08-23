@@ -7,7 +7,7 @@ const fs = require('fs-extra')
 const execa = require('execa')
 const portfinder = require('portfinder')
 const Application = require('spectron').Application
-const { chainWebpack, getExternals } = require('../lib/webpackConfig')
+const { chainWebpack } = require('../lib/webpackConfig')
 // #endregion
 
 // #region Mocks
@@ -418,29 +418,6 @@ describe('serve:electron', () => {
     expect(webpack).toHaveBeenCalledTimes(3)
     // Electron was re-launched
     expect(execa).toHaveBeenCalledTimes(3)
-  })
-
-  test('Native deps are installed if detected', async () => {
-    getExternals.mockReturnValueOnce({
-      someDep: {
-        commonjs: 'someDep',
-        commonjs2: 'someDep'
-      }
-    })
-    await runCommand('serve:electron')
-
-    // electron-builder's install-app-deps function was called
-    expect(mockInstallAppDeps.mock.calls[0][0]).toEqual({
-      platform: process.platform
-    })
-  })
-
-  test('Native deps are not installed if there are none detected', async () => {
-    getExternals.mockReturnValueOnce({})
-    await runCommand('serve:electron')
-
-    // electron-builder's install-app-deps function was not called
-    expect(mockInstallAppDeps).not.toBeCalled()
   })
 })
 

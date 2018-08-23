@@ -221,6 +221,8 @@ module.exports = (api, options) => {
         .plugin('env')
         .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'development' }])
       mainConfig.entry('background').add(api.resolve(mainProcessFile))
+      // Set external (native) deps
+      mainConfig.externals(getExternals(api, pluginOptions))
       if (usesTypescript) {
         mainConfig.resolve.extensions.merge(['.js', '.ts'])
         mainConfig.module
@@ -229,17 +231,6 @@ module.exports = (api, options) => {
           .use('ts-loader')
           .loader('ts-loader')
           .options({ transpileOnly: !mainProcessTypeChecking })
-      }
-
-      // Build native deps if needed
-      const externals = getExternals(api, pluginOptions)
-      if (externals && Object.keys(externals).length > 0) {
-        // Set externals in main process webpack config
-        mainConfig.externals(externals)
-        console.log('Installing native deps with electron-builder:')
-        await require('electron-builder/out/cli/install-app-deps.js').installAppDeps(
-          { platform: process.platform }
-        )
       }
 
       console.log('\nStarting development server:\n')

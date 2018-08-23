@@ -9,10 +9,11 @@ module.exports = api => {
     index = index.replace(
       /^\s*?<head.*?>\s*?$/m,
       `<head>\n    <% if (BASE_URL === './') { %><base href="app://./" /><% } %>
-      <% if (VUE_APP_NODE_MODULES_PATH !== "false") { %><script>require('module').globalPaths.push('<%= VUE_APP_NODE_MODULES_PATH %>')</script><% } %>`
+    <% if (VUE_APP_NODE_MODULES_PATH !== "false") { %><script>require('module').globalPaths.push('<%= VUE_APP_NODE_MODULES_PATH %>')</script><% } %>`
     )
     //   Write updated index.html
     fs.writeFileSync(api.resolve('./public/index.html'), index)
+
     // Update .gitignore if it exists
     if (fs.existsSync(api.resolve('./.gitignore'))) {
       let gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')
@@ -20,6 +21,7 @@ module.exports = api => {
       gitignore = gitignore + '\n#Electron-builder output\n/dist_electron'
       fs.writeFileSync(api.resolve('./.gitignore'), gitignore)
     }
+
     if (api.hasPlugin('typescript')) {
       let background
       if (fs.existsSync(api.resolve('./src/background.js'))) {
@@ -36,10 +38,26 @@ module.exports = api => {
       fs.writeFileSync(api.resolve('./src/background.ts'), background)
     }
   })
+
+  // Add electron-builder install-app-deps to postinstall
+  let postinstallScript
+  let pkg = fs.readFileSync(api.resolve('./package.json'), 'utf8')
+  pkg = JSON.parse(pkg)
+  if (pkg.scripts && pkg.scripts.postinstall) {
+    // Add on to existing script if it exists
+    postinstallScript = `${
+      // Existing script
+      pkg.scripts.postinstall
+    } && electron-builder install-app-deps`
+  } else {
+    // Create new postinstall script
+    postinstallScript = 'electron-builder install-app-deps'
+  }
   api.extendPackage({
     scripts: {
       'build:electron': 'vue-cli-service build:electron',
-      'serve:electron': 'vue-cli-service serve:electron'
+      'serve:electron': 'vue-cli-service serve:electron',
+      postinstall: postinstallScript
     },
     devDependencies: {
       electron: '^2.0.2'
