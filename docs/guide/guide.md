@@ -4,9 +4,41 @@ sidebarDepth: 2
 
 # Guide
 
-## Handling static assets
+## Table Of Contents
 
-### Renderer process (main app)
+[[toc]]
+
+## Native Modules <Badge text="1.0.0-rc.1+" type="warn"/>
+
+Native modules are supported and should work without any configuration. If you get errors, first make sure VCP-Electron-Builder's version is set to `1.0.0-rc.1` or greater. If it still fails, re-invoke the generator with `vue invoke electron-builder`. The generator will automatically detect missing code (such as native module support) and add it, without interfering with the rest. If you have done both these things, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
+
+```javascript
+// vue.config.js
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      // List native deps here if they don't work
+      externals: ['my-native-dep']
+    }
+  }
+}
+```
+
+::: tip
+
+You can prefix an item in the `externals` array with `!` to prevent it being automatically marked as an external. (`!not-external`)
+
+:::
+
+::: tip
+
+If you do not use native dependencies in your code, you can remove the `postinstall` script from your `package.json`. Native modules may not work, but dependency install times will be faster.
+
+:::
+
+## Handling Static Assets
+
+### Renderer Process (Main App)
 
 In the renderer process, static assets work similarly to a regular app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html) before continuing. However, there are a few changes made:
 
@@ -15,7 +47,7 @@ In the renderer process, static assets work similarly to a regular app. Read Vue
 
 **Note: `__static` is not available in regular build/serve. It should only be used in electron to read/write files on disk. To import a file (img, script, etc...) and not have it be transpiled by webpack, use the `process.env.BASE_URL` instead.**
 
-### Main process (background.js)
+### Main Process (`background.js`)
 
 The main process won't have access to `process.env.BASE_URL` or `src/assets`. However, you can still use `__static` to get a path to your public directory in development and production.
 
@@ -52,7 +84,7 @@ console.log(fileContents)
 │ ├── [application name] setup [version].[target binary (exe|dmg|rpm...)]  # installer for Electron app
 │ ├── background.js  # compiled background file used for serve:electron
 │ └── ...
-├── public/  # Files placed here will be avalible through __static or process.env.BASE_URL
+├── public/  # Files placed here will be available through __static or process.env.BASE_URL
 ├── src/
 │ ├── background.[js|ts]  # electron entry file (for Electron's main process)
 │ ├── [main|index].[js|ts]  # your app's entry file (for Electron's render process)
@@ -61,41 +93,17 @@ console.log(fileContents)
 ├── ...
 ```
 
-## Using Native Dependencies
-
-To use native deps in Electron, you will need to find the path to the main file (`.node`) relative to `node_modules` for that dep. Once you have found it, set `vue.config.js` (replace `YOUR_DEP` with the name of the native dep and `YOUR_DEP_PATH` with the path to the main file) to:
-
-```javascript
-module.exports = {
-  pluginOptions: {
-    electronBuilder: {
-      chainWebpackRendererProcess: config => {
-        config.module
-          .rule('node-loader')
-          .test(/\.node$/)
-          .use('node')
-          .loader('node-loader')
-        config.resolve.alias.set('YOUR_DEP', 'YOUR_DEP_PATH')
-        return config
-      }
-    }
-  }
-}
-```
-
-For example, if you were using SQlite3, `YOUR_DEP_PATH` would be `sqlite3/lib/binding/electron-v2.0-YOUR_PLATFORM_HERE-x64/node_sqlite3.node`
-
 ## How it works
 
-### Build command
+### Build Command
 
 The build command consists of three main phases: render build, main build, and electron-builder build:
 
 1.  Render build: This phase calls `vue-cli-service build` with some custom configuration so it works properly with electron. (The render process is your standard app.)
-2.  Main build: This phase is where vue-cli-plugin-electron-builder bundles your background file for the main process (`src/background.js`).
+2.  Main build: This phase is where VCP-Electron-Builder bundles your background file for the main process (`src/background.js`).
 3.  Electron-builder build: This phase uses [electron-builder](https://www.electron.build) to turn your web app code into an desktop app powered by [Electron](https://electronjs.org).
 
-### Serve command
+### Serve Command
 
 The serve command also consists of 3 main phases: main build, dev server launch, and electron launch:
 
@@ -103,6 +111,6 @@ The serve command also consists of 3 main phases: main build, dev server launch,
 2.  Main build: This phase, like in the build command, bundles your app's main process, but in development mode.
 3.  Electron launch: This phase launches electron and tells it to load the url of the above dev server.
 
-## Is this plugin production ready?
+## Is This Plugin Production Ready?
 
-This plugin is nearly production ready. It has test coverage for everything but the UI interface and proper logging of errors. It needs to be used a little bit more in large applications before it is considered safe to use in a large production environment. Please try it in your app and report any bugs or feature requests.
+This plugin is nearly production ready. It has test coverage for everything but the UI interface and proper error logging. It needs to be used more in the real world to iron out the last few bugs before it is considered safe to use in a large production environment. Please try it in your app and report any bugs or feature requests.

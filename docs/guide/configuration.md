@@ -4,6 +4,10 @@ sidebarDepth: 2
 
 # Configuration
 
+## Table of Contents
+
+[[toc]]
+
 ## Configuring Electron Builder
 
 To see available options, check out [Electron Builder Configuration Options](https://www.electron.build/configuration/configuration)
@@ -28,7 +32,7 @@ module.exports = {
 All CLI arguments passed to `build:electron` will be forwarded to electron-builder.
 :::
 
-## Webpack configuration
+## Webpack Configuration
 
 Your regular config is extended and used for bundling the renderer process (your app). To modify your webpack config for Electron builds only, use the `chainWebpackRendererProcess` function. To modify the webpack config for the [Electron main process](https://electronjs.org/docs/tutorial/application-architecture#main-and-renderer-processes) only, use the `chainWebpackMainProcess` function under VCP Electron Builder's plugin options in `vue.config.js`. To learn more about webpack chaining, see [webpack-chain](https://github.com/mozilla-neutrino/webpack-chain). These functions work similarly to the [`chainWebpack`](https://cli.vuejs.org/config/#chainwebpack) option provided by Vue CLI.
 
@@ -64,7 +68,7 @@ module.exports = {
 }
 ```
 
-## Changing the output directory
+## Changing the Output Directory
 
 If you don't want your files outputted into dist_electron, you can choose a custom folder in vue-cli-plugin-electron-builder's plugin options.
 
@@ -100,6 +104,6 @@ module.exports = {
 }
 ```
 
-:::tip
-If you are adding typescript after vue-cli-plugin-electron-builder, you may also want to set `mainWindow`'s type to `any` and change `process.env.WEBPACK_DEV_SERVER_URL` to `process.env.WEBPACK_DEV_SERVER_URL as string` to fix type errors. If you add typescript first, this will be done automatically.
+:::tip Tip <Badge text="1.0.0-rc.1+" type="info"/>
+If you decide to add the `@vue/typescript` plugin to your app later on, make sure to re-invoke the generator of VCP-Electron-Builder with `vue invoke electron-builder`. This will automatically insert missing type definitions to your `background.ts` file.
 :::

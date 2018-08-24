@@ -23,7 +23,7 @@ Then, install and invoke the generator of vue-cli-plugin-electron-builder by run
 
 That's It! You're ready to go!
 
-## To start a development server
+## To start a Development Server
 
 If you use [Yarn](https://yarnpkg.com/en/) (strongly recommended):
 
@@ -33,7 +33,7 @@ or if you use NPM:
 
 `npm run serve:electron`
 
-## To build your app
+## To Build Your App
 
 With Yarn:
 
