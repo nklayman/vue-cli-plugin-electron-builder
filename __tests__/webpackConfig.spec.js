@@ -168,15 +168,6 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     }
   )
 
-  test('If dep has index.js it should not be external', async () => {
-    // Mock existence of index.js
-    fs.existsSync = jest.fn(file => file === 'mockExternalIndex')
-    const { externals } = await mockGetExternals()
-    expect(externals).toBeUndefined()
-    // Remove mock
-    fs.existsSync.mockReset()
-  })
-
   test('If dep is listed in user list it should be an external', async () => {
     const { externals } = await mockGetExternals(
       // Prevent it from getting marked as an external by default
