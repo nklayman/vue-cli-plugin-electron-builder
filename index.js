@@ -315,7 +315,6 @@ module.exports = (api, options) => {
               [`${outputDir}/background.js`],
               {
                 cwd: api.resolve('.'),
-                stdio: 'inherit',
                 env: {
                   ...process.env,
                   // Disable electron security warnings
@@ -323,6 +322,21 @@ module.exports = (api, options) => {
                 }
               }
             )
+
+            if (pluginOptions.removeElectronJunk === false) {
+              // Pipe output to console
+              child.stdout.pipe(process.stdout)
+              child.stderr.pipe(process.stderr)
+            } else {
+              // Remove junk terminal output (#60)
+              child.stdout
+                .pipe(require('./lib/removeJunk.js')())
+                .pipe(process.stdout)
+              child.stderr
+                .pipe(require('./lib/removeJunk.js')())
+                .pipe(process.stderr)
+            }
+
             child.on('exit', () => {
               //   Exit when electron is closed
               process.exit(0)
