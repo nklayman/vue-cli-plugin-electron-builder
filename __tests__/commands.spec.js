@@ -179,7 +179,7 @@ describe('build:electron', () => {
     fs.existsSync.mockReturnValueOnce(true)
     await runCommand('build:electron')
     // css/fonts folder was created
-    expect(fs.mkdirSync.mock.calls[0][0]).toBe(
+    expect(fs.ensureDirSync.mock.calls[0][0]).toBe(
       'projectPath/dist_electron/bundled/css/fonts'
     )
     // fonts was copied to css/fonts

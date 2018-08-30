@@ -118,7 +118,7 @@ module.exports = (api, options) => {
       await api.service.run('build', vueArgs)
       //   Copy fonts to css/fonts. Fixes some issues with static font imports
       if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
-        fs.mkdirSync(api.resolve(outputDir + '/bundled/css/fonts'))
+        fs.ensureDirSync(api.resolve(outputDir + '/bundled/css/fonts'))
         fs.copySync(
           api.resolve(outputDir + '/bundled/fonts'),
           api.resolve(outputDir + '/bundled/css/fonts')
