@@ -112,7 +112,7 @@ If you decide to add the `@vue/typescript` plugin to your app later on, make sur
 
 By default, the app is built in [modern mode](https://cli.vuejs.org/guide/browser-compatibility.html#modern-mode). To disable this, use the `--legacy` argument in the `build:electron` command. If your app is already bundled and just needs to be built with electron-builder, pass the `--skipBundle` arg.
 
-## Electron's Junk Terminal Output
+## Electron's Junk Terminal Output <Badge text="1.0.0-rc.3+" type="info"/>
 
 Electron will sometimes produce a bunch of junk output like so:
 
