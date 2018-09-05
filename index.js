@@ -46,9 +46,14 @@ module.exports = (api, options) => {
       //   Import the yargs options from electron-builder
       const configureBuildCommand = require('electron-builder/out/builder')
         .configureBuildCommand
-      // Prevent mode arg from interfering with electron-builder
-      const modeIndex = rawArgs.indexOf('--mode')
-      if (modeIndex !== -1) rawArgs.splice(modeIndex, 2)
+      // Prevent custom args from interfering with electron-builder
+      const removeArg = (arg, count) => {
+        const index = rawArgs.indexOf(arg)
+        if (index !== -1) rawArgs.splice(index, count)
+      }
+      removeArg('--mode', 2)
+      removeArg('--legacy', 1)
+      removeArg('--skipBundle', 1)
       // Parse the raw arguments using electron-builder yargs config
       const builderArgs = yargs
         .command(['build', '*'], 'Build', configureBuildCommand)
@@ -67,93 +72,102 @@ module.exports = (api, options) => {
       }
       //   User-defined electron-builder config, overwrites/adds to default config
       const userBuildConfig = pluginOptions.builderOptions || {}
-      //   Arguments to be passed to renderer build
-      const vueArgs = {
-        _: [],
-        // For the cli-ui webpack dashboard
-        dashboard: args.dashboard,
-        // Make sure files are outputted to proper directory
-        dest: outputDir + '/bundled',
-        // Enable modern mode
-        modern: true
-      }
-      const mainConfig = new Config()
-      //   Configure main process webpack config
-      mainConfig
-        .mode('production')
-        .target('electron-main')
-        .node.set('__dirname', false)
-        .set('__filename', false)
-      // Set externals
-      mainConfig.externals(getExternals(api, pluginOptions))
-      mainConfig.output
-        .path(api.resolve(outputDir + '/bundled'))
-        .filename('background.js')
-      //   Set __static to __dirname (files in public get copied here)
-      mainConfig
-        .plugin('define')
-        .use(webpack.DefinePlugin, [{ __static: '__dirname' }])
-      mainConfig.plugin('uglify').use(UglifyJSPlugin, [
-        {
-          parallel: true
+      if (args.skipBundle) {
+        console.log('Not bundling app as --skipBundle was passed')
+        // Build with electron-builder
+        buildApp()
+      } else {
+        //   Arguments to be passed to renderer build
+        const vueArgs = {
+          _: [],
+          // For the cli-ui webpack dashboard
+          dashboard: args.dashboard,
+          // Make sure files are outputted to proper directory
+          dest: outputDir + '/bundled',
+          // Enable modern mode unless --legacy is passed
+          modern: !args.legacy
         }
-      ])
-      mainConfig
-        .plugin('env')
-        .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'production' }])
-      mainConfig.entry('background').add(api.resolve(mainProcessFile))
-      if (usesTypescript) {
-        mainConfig.resolve.extensions.merge(['.js', '.ts'])
-        mainConfig.module
-          .rule('ts')
-          .test(/\.ts$/)
-          .use('ts-loader')
-          .loader('ts-loader')
-          .options({ transpileOnly: !mainProcessTypeChecking })
-      }
-      //   Set the base url so that the app protocol is used
-      options.baseUrl = './'
-      console.log('Bundling render process:')
-      //   Build the render process with the custom args
-      await api.service.run('build', vueArgs)
-      //   Copy fonts to css/fonts. Fixes some issues with static font imports
-      if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
-        fs.ensureDirSync(api.resolve(outputDir + '/bundled/css/fonts'))
-        fs.copySync(
-          api.resolve(outputDir + '/bundled/fonts'),
-          api.resolve(outputDir + '/bundled/css/fonts')
-        )
-      }
-      //   Build the main process into the renderer process output dir
-      const bundle = webpack(mainProcessChain(mainConfig).toConfig())
-      console.log('Bundling main process:\n')
-      bundle.run((err, stats) => {
-        if (err) {
-          console.error(err.stack || err)
-          if (err.details) {
-            console.error(err.details)
+        const mainConfig = new Config()
+        //   Configure main process webpack config
+        mainConfig
+          .mode('production')
+          .target('electron-main')
+          .node.set('__dirname', false)
+          .set('__filename', false)
+        // Set externals
+        mainConfig.externals(getExternals(api, pluginOptions))
+        mainConfig.output
+          .path(api.resolve(outputDir + '/bundled'))
+          .filename('background.js')
+        //   Set __static to __dirname (files in public get copied here)
+        mainConfig
+          .plugin('define')
+          .use(webpack.DefinePlugin, [{ __static: '__dirname' }])
+        mainConfig.plugin('uglify').use(UglifyJSPlugin, [
+          {
+            parallel: true
           }
-          process.exit(1)
+        ])
+        mainConfig
+          .plugin('env')
+          .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'production' }])
+        mainConfig.entry('background').add(api.resolve(mainProcessFile))
+        if (usesTypescript) {
+          mainConfig.resolve.extensions.merge(['.js', '.ts'])
+          mainConfig.module
+            .rule('ts')
+            .test(/\.ts$/)
+            .use('ts-loader')
+            .loader('ts-loader')
+            .options({ transpileOnly: !mainProcessTypeChecking })
         }
-
-        const info = stats.toJson()
-
-        if (stats.hasErrors()) {
-          console.error(info.errors)
-          process.exit(1)
+        //   Set the base url so that the app protocol is used
+        options.baseUrl = './'
+        console.log('Bundling render process:')
+        //   Build the render process with the custom args
+        await api.service.run('build', vueArgs)
+        //   Copy fonts to css/fonts. Fixes some issues with static font imports
+        if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
+          fs.ensureDirSync(api.resolve(outputDir + '/bundled/css/fonts'))
+          fs.copySync(
+            api.resolve(outputDir + '/bundled/fonts'),
+            api.resolve(outputDir + '/bundled/css/fonts')
+          )
         }
+        //   Build the main process into the renderer process output dir
+        const bundle = webpack(mainProcessChain(mainConfig).toConfig())
+        console.log('Bundling main process:\n')
+        bundle.run((err, stats) => {
+          if (err) {
+            console.error(err.stack || err)
+            if (err.details) {
+              console.error(err.details)
+            }
+            process.exit(1)
+          }
 
-        if (stats.hasWarnings()) {
-          console.warn(info.warnings)
-        }
+          const info = stats.toJson()
 
-        console.log(
-          stats.toString({
-            chunks: false,
-            colors: true
-          })
-        )
+          if (stats.hasErrors()) {
+            console.error(info.errors)
+            process.exit(1)
+          }
 
+          if (stats.hasWarnings()) {
+            console.warn(info.warnings)
+          }
+
+          console.log(
+            stats.toString({
+              chunks: false,
+              colors: true
+            })
+          )
+
+          buildApp()
+        })
+      }
+      function buildApp () {
         console.log('\nBuilding app with electron-builder:\n')
         // Build the app using electron builder
         builder
@@ -174,7 +188,7 @@ module.exports = (api, options) => {
             // handle error
             throw err
           })
-      })
+      }
     }
   )
   api.registerCommand(

@@ -199,43 +199,53 @@ describe('build:electron', () => {
     expect(mainConfig.resolve.extensions).toEqual(['.js', '.ts'])
   })
 
-  test('--mode argument is removed from electron-builder args', async () => {
-    await runCommand('build:electron', {}, {}, [
-      '--keep1',
-      '--mode',
-      'buildMode',
-      '--keep2'
-    ])
-    // --mode and buildMode should have been removed, and other args kept
-    expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
-    mockYargsParse.mockClear()
+  test.each([['--mode', 'someMode'], ['--legacy'], ['--skipBundle']])(
+    '%s argument is removed from electron-builder args',
+    async (...args) => {
+      await runCommand('build:electron', {}, {}, [
+        '--keep1',
+        ...args,
+        '--keep2'
+      ])
+      // Custom args should have been removed, and other args kept
+      expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
+      mockYargsParse.mockClear()
 
-    await runCommand('build:electron', {}, {}, [
-      '--mode',
-      'buildMode',
-      '--keep2'
-    ])
-    // --mode and buildMode should have been removed, and other args kept
-    expect(mockYargsParse).toBeCalledWith(['--keep2'])
-    mockYargsParse.mockClear()
+      await runCommand('build:electron', {}, {}, [...args, '--keep2'])
+      // Custom args should have been removed, and other args kept
+      expect(mockYargsParse).toBeCalledWith(['--keep2'])
+      mockYargsParse.mockClear()
 
-    await runCommand('build:electron', {}, {}, [
-      '--keep1',
-      '--mode',
-      'buildMode'
-    ])
-    // --mode and buildMode should have been removed, and other args kept
-    expect(mockYargsParse).toBeCalledWith(['--keep1'])
-    mockYargsParse.mockClear()
+      await runCommand('build:electron', {}, {}, ['--keep1', ...args])
+      // Custom args should have been removed, and other args kept
+      expect(mockYargsParse).toBeCalledWith(['--keep1'])
+      mockYargsParse.mockClear()
 
-    await runCommand('build:electron', {}, {}, ['--mode', 'buildMode'])
-    // --mode and buildMode should have been removed
-    expect(mockYargsParse).toBeCalledWith([])
-    mockYargsParse.mockClear()
+      await runCommand('build:electron', {}, {}, args)
+      // Custom args should have been removed
+      expect(mockYargsParse).toBeCalledWith([])
+      mockYargsParse.mockClear()
 
-    await runCommand('build:electron', {}, {}, ['--keep1', '--keep2'])
-    // Nothing should be removed
-    expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
+      await runCommand('build:electron', {}, {}, ['--keep1', '--keep2'])
+      // Nothing should be removed
+      expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
+    }
+  )
+
+  test('Modern mode is enabled by default', async () => {
+    await runCommand('build:electron')
+    expect(serviceRun.mock.calls[0][1].modern).toBe(true)
+  })
+
+  test('Modern mode is disabled if --legacy arg is passed', async () => {
+    await runCommand('build:electron', {}, { legacy: true })
+    expect(serviceRun.mock.calls[0][1].modern).toBe(false)
+  })
+
+  test('App is not bundled if --skipBundle arg is passed', async () => {
+    await runCommand('build:electron', {}, { skipBundle: true })
+    expect(serviceRun).not.toBeCalled()
+    expect(webpack).not.toBeCalled()
   })
 })
 

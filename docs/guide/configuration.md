@@ -108,6 +108,10 @@ module.exports = {
 If you decide to add the `@vue/typescript` plugin to your app later on, make sure to re-invoke the generator of VCP-Electron-Builder with `vue invoke electron-builder`. This will automatically insert missing type definitions to your `background.ts` file.
 :::
 
+## Bundling Options <Badge text="1.0.0-rc.3+" type="info"/>
+
+By default, the app is built in [modern mode](https://cli.vuejs.org/guide/browser-compatibility.html#modern-mode). To disable this, use the `--legacy` argument in the `build:electron` command. If your app is already bundled and just needs to be built with electron-builder, pass the `--skipBundle` arg.
+
 ## Electron's Junk Terminal Output
 
 Electron will sometimes produce a bunch of junk output like so:
