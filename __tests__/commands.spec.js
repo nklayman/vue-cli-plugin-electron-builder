@@ -83,6 +83,8 @@ const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
 // #endregion
 
 describe('build:electron', () => {
+  process.env.NODE_ENV = 'production'
+
   test('typescript is disabled when set in options', async () => {
     await runCommand('build:electron', {
       pluginOptions: {
@@ -250,6 +252,8 @@ describe('build:electron', () => {
 })
 
 describe('serve:electron', () => {
+  process.env.NODE_ENV = 'development'
+
   test('typescript is disabled when set in options', async () => {
     await runCommand('serve:electron', {
       pluginOptions: {
@@ -461,6 +465,17 @@ describe('serve:electron', () => {
     expect(mockExeca.stderr.pipe).toBeCalledWith(process.stderr)
     expect(mockExeca.stdout.pipe).toBeCalledWith(process.stdout)
   })
+
+  test('package.json is copied', async () => {
+    await runCommand('serve:electron', {
+      pluginOptions: { electronBuilder: { outputDir: 'outputDir' } }
+    })
+
+    expect(fs.copySync).toBeCalledWith(
+      `projectPath/./package.json`,
+      'outputDir/package.json'
+    )
+  })
 })
 
 describe('Custom webpack chain', () => {
@@ -528,8 +543,8 @@ describe('testWithSpectron', async () => {
     // Proper URL is returned
     expect(url).toBe('http://localhost:1234/')
     const appArgs = Application.mock.calls[0][0]
-    // Spectron is launched with proper path to background
-    expect(appArgs.args).toEqual(['customOutput/background.js'])
+    // Spectron is launched with proper path to output dir
+    expect(appArgs.args).toEqual(['customOutput'])
   })
 
   test('secures an open port with portfinder', async () => {

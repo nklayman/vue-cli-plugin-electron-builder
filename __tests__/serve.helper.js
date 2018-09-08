@@ -17,7 +17,7 @@ const serve = (project, notifyUpdate) =>
       try {
         if (
           data.match(
-            // Dev server is finished and background.js is created
+            // Dev server is finished and index.js is created
             /Not launching electron as debug argument was passed\. You must launch electron though your debugger\./
           )
         ) {
@@ -46,11 +46,11 @@ const runTests = useTS =>
       path.join(process.cwd(), '__tests__/projects/' + projectName, p)
     //   Wait for dev server to start
     const { stopServe } = await serve(project)
-    expect(project.has('dist_electron/background.js')).toBe(true)
+    expect(project.has('dist_electron/index.js')).toBe(true)
     // Launch app with spectron
     const app = new Application({
       path: electronPath,
-      args: [projectPath('dist_electron/background.js')],
+      args: [projectPath('dist_electron')],
       env: {
         IS_TEST: true
       },

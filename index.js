@@ -15,7 +15,6 @@ module.exports = (api, options) => {
   const usesTypescript = pluginOptions.disableMainProcessTypescript
     ? false
     : api.hasPlugin('typescript')
-  const mainProcessTypeChecking = pluginOptions.mainProcessTypeChecking || false
   const outputDir = pluginOptions.outputDir || 'dist_electron'
   const mainProcessFile =
     pluginOptions.mainProcessFile ||
@@ -87,40 +86,6 @@ module.exports = (api, options) => {
           // Enable modern mode unless --legacy is passed
           modern: !args.legacy
         }
-        const mainConfig = new Config()
-        //   Configure main process webpack config
-        mainConfig
-          .mode('production')
-          .target('electron-main')
-          .node.set('__dirname', false)
-          .set('__filename', false)
-        // Set externals
-        mainConfig.externals(getExternals(api, pluginOptions))
-        mainConfig.output
-          .path(api.resolve(outputDir + '/bundled'))
-          .filename('background.js')
-        //   Set __static to __dirname (files in public get copied here)
-        mainConfig
-          .plugin('define')
-          .use(webpack.DefinePlugin, [{ __static: '__dirname' }])
-        mainConfig.plugin('uglify').use(UglifyJSPlugin, [
-          {
-            parallel: true
-          }
-        ])
-        mainConfig
-          .plugin('env')
-          .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'production' }])
-        mainConfig.entry('background').add(api.resolve(mainProcessFile))
-        if (usesTypescript) {
-          mainConfig.resolve.extensions.merge(['.js', '.ts'])
-          mainConfig.module
-            .rule('ts')
-            .test(/\.ts$/)
-            .use('ts-loader')
-            .loader('ts-loader')
-            .options({ transpileOnly: !mainProcessTypeChecking })
-        }
         //   Set the base url so that the app protocol is used
         options.baseUrl = './'
         console.log('Bundling render process:')
@@ -135,7 +100,16 @@ module.exports = (api, options) => {
           )
         }
         //   Build the main process into the renderer process output dir
-        const bundle = webpack(mainProcessChain(mainConfig).toConfig())
+        const bundle = bundleMain({
+          mode: 'build',
+          api,
+          args,
+          pluginOptions,
+          outputDir,
+          mainProcessFile,
+          mainProcessChain,
+          usesTypescript
+        })
         console.log('Bundling main process:\n')
         bundle.run((err, stats) => {
           if (err) {
@@ -206,46 +180,6 @@ module.exports = (api, options) => {
         mainProcessFile,
         ...(pluginOptions.mainProcessWatch || [])
       ]
-      //   Configure webpack for main process
-      const mainConfig = new Config()
-      mainConfig
-        .mode('development')
-        .target('electron-main')
-        .node.set('__dirname', false)
-        .set('__filename', false)
-      mainConfig.output.path(api.resolve(outputDir)).filename('background.js')
-      if (args.debug) {
-        // Enable source maps for debugging
-        mainConfig.devtool('source-map')
-      } else {
-        // Minify for better performance
-        mainConfig.plugin('uglify').use(UglifyJSPlugin, [
-          {
-            parallel: true
-          }
-        ])
-      }
-      //   Set __static to absolute path to public folder
-      mainConfig.plugin('define').use(webpack.DefinePlugin, [
-        {
-          __static: JSON.stringify(api.resolve('./public'))
-        }
-      ])
-      mainConfig
-        .plugin('env')
-        .use(webpack.EnvironmentPlugin, [{ NODE_ENV: 'development' }])
-      mainConfig.entry('background').add(api.resolve(mainProcessFile))
-      // Set external (native) deps
-      mainConfig.externals(getExternals(api, pluginOptions))
-      if (usesTypescript) {
-        mainConfig.resolve.extensions.merge(['.js', '.ts'])
-        mainConfig.module
-          .rule('ts')
-          .test(/\.ts$/)
-          .use('ts-loader')
-          .loader('ts-loader')
-          .options({ transpileOnly: !mainProcessTypeChecking })
-      }
 
       console.log('\nStarting development server:\n')
       // Run the serve command
@@ -255,17 +189,8 @@ module.exports = (api, options) => {
         dashboard: args.dashboard
       })
 
-      // Set dev server url
-      mainConfig.plugin('env').tap(args => [
-        {
-          // Existing env values
-          ...args,
-          // Dev server url
-          WEBPACK_DEV_SERVER_URL: server.url,
-          // Path to node_modules (for externals in development)
-          NODE_MODULES_PATH: api.resolve('./node_modules')
-        }
-      ])
+      // Copy package.json so electron can detect app's name
+      fs.copySync(api.resolve('./package.json'), `${outputDir}/package.json`)
       // Electron process
       let child
       // Function to bundle main process and start Electron
@@ -277,7 +202,17 @@ module.exports = (api, options) => {
           child.kill()
         }
         //   Build the main process
-        const bundle = webpack(mainProcessChain(mainConfig).toConfig())
+        const bundle = bundleMain({
+          mode: 'serve',
+          api,
+          args,
+          pluginOptions,
+          outputDir,
+          mainProcessFile,
+          mainProcessChain,
+          usesTypescript,
+          server
+        })
         console.log('Bundling main process:\n')
         bundle.run((err, stats) => {
           if (err) {
@@ -326,7 +261,7 @@ module.exports = (api, options) => {
             child = execa(
               require('electron'),
               // Have it load the main process file built with webpack
-              [`${outputDir}/background.js`],
+              [outputDir],
               {
                 cwd: api.resolve('.'),
                 env: {
@@ -367,6 +302,80 @@ module.exports = (api, options) => {
     }
   )
 }
+
+function bundleMain ({
+  mode,
+  api,
+  args,
+  pluginOptions,
+  outputDir,
+  mainProcessFile,
+  mainProcessChain,
+  usesTypescript,
+  server
+}) {
+  const mainProcessTypeChecking = pluginOptions.mainProcessTypeChecking || false
+  const isBuild = mode === 'build'
+  const NODE_ENV = process.env.NODE_ENV
+  const config = new Config()
+  config
+    .mode(NODE_ENV)
+    .target('electron-main')
+    .node.set('__dirname', false)
+    .set('__filename', false)
+  // Set externals
+  config.externals(getExternals(api, pluginOptions))
+
+  config.output
+    .path(api.resolve(outputDir + (isBuild ? '/bundled' : '')))
+    // Electron will not detect background.js on dev server, only index.js
+    .filename(isBuild ? 'background.js' : 'index.js')
+  if (isBuild) {
+    //   Set __static to __dirname (files in public get copied here)
+    config
+      .plugin('define')
+      .use(webpack.DefinePlugin, [{ __static: '__dirname' }])
+  } else {
+    // Set __static to public folder
+    config.plugin('define').use(webpack.DefinePlugin, [
+      {
+        __static: JSON.stringify(api.resolve('./public'))
+      }
+    ])
+    config.plugin('env').use(webpack.EnvironmentPlugin, [
+      {
+        // Dev server url
+        WEBPACK_DEV_SERVER_URL: server.url,
+        // Path to node_modules (for externals in development)
+        NODE_MODULES_PATH: api.resolve('./node_modules')
+      }
+    ])
+  }
+  if (args.debug) {
+    // Enable source maps for debugging
+    config.devtool('source-map')
+  } else if (NODE_ENV === 'production') {
+    // Minify for better performance
+    config.plugin('uglify').use(UglifyJSPlugin, [
+      {
+        parallel: true
+      }
+    ])
+  }
+  config.entry('background').add(api.resolve(mainProcessFile))
+  if (usesTypescript) {
+    config.resolve.extensions.merge(['.js', '.ts'])
+    config.module
+      .rule('ts')
+      .test(/\.ts$/)
+      .use('ts-loader')
+      .loader('ts-loader')
+      .options({ transpileOnly: !mainProcessTypeChecking })
+  }
+  mainProcessChain(config)
+  return webpack(config.toConfig())
+}
+
 module.exports.defaultModes = {
   'build:electron': 'production',
   'serve:electron': 'development'
