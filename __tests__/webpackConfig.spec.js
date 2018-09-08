@@ -16,6 +16,8 @@ const mockApi = {
       return '../__tests__/mock_package.json'
     } else if (path.match('./node_modules/mockExternal/package.json')) {
       return 'mockExternalPath'
+    } else if (path.match('customNodeModulesPath/mockExternal/package.json')) {
+      return 'customExternalPath'
     } else if (path.match('./node_modules/mockExternal/index.js')) {
       return 'mockExternalIndex'
     }
@@ -131,7 +133,7 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     // Mock dep's package.json
     const { readFileSync: realReadFileSync } = fs
     fs.readFileSync = jest.fn((path, ...args) => {
-      if (path === 'mockExternalPath') {
+      if (path === 'mockExternalPath' || path === 'customExternalPath') {
         return JSON.stringify(modulePkg)
       }
       // Don't effect other calls
@@ -186,5 +188,14 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
       { externals: ['!mockExternal'] }
     )
     expect(externals).toBeUndefined()
+  })
+
+  test("Dep's package.json is read from nodeModulesPath", async () => {
+    await mockGetExternals({}, { nodeModulesPath: 'customNodeModulesPath' })
+
+    // App's package.json is read from custom path
+    expect(fs.readFileSync).toBeCalledWith(`customExternalPath`)
+    // Not read from default path
+    expect(fs.readFileSync).not.toBeCalledWith(`mockExternalPath`)
   })
 })

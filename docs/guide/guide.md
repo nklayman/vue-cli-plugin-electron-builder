@@ -18,7 +18,9 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       // List native deps here if they don't work
-      externals: ['my-native-dep']
+      externals: ['my-native-dep'],
+      // Set this to your project's node_modules folder if it is not ./node_modules (for yarn workspaces)
+      nodeModulesPath: '../../node_modules'
     }
   }
 }
