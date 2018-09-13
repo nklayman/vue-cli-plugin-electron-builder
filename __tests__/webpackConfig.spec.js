@@ -21,6 +21,7 @@ const mockApi = {
     } else if (path.match('./node_modules/mockExternal/index.js')) {
       return 'mockExternalIndex'
     }
+    return path
   })
 }
 
@@ -115,6 +116,10 @@ describe('chainWebpack', () => {
 describe.each(['production', 'development'])('getExternals in %s', env => {
   process.env.NODE_ENV = env
 
+  fs.existsSync.mockImplementation(
+    path => path === 'mockExternalPath' || path === 'customExternalPath'
+  )
+
   const mockGetExternals = async (
     modulePkg = {},
     pluginOptions,
@@ -197,5 +202,17 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     expect(fs.readFileSync).toBeCalledWith(`customExternalPath`)
     // Not read from default path
     expect(fs.readFileSync).not.toBeCalledWith(`mockExternalPath`)
+  })
+
+  test('Checks multiple locations for dep package.json', async () => {
+    await mockGetExternals(
+      {},
+      { nodeModulesPath: ['wrongPath', 'customNodeModulesPath'] }
+    )
+    // Checked both paths
+    expect(fs.existsSync).toBeCalledWith('wrongPath/mockExternal/package.json')
+    expect(fs.existsSync).toBeCalledWith('customExternalPath')
+    // Read from proper path
+    expect(fs.readFileSync).toBeCalledWith('customExternalPath')
   })
 })
