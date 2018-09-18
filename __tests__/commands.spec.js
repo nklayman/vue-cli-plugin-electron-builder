@@ -249,6 +249,14 @@ describe('build:electron', () => {
     expect(serviceRun).not.toBeCalled()
     expect(webpack).not.toBeCalled()
   })
+
+  test('Env vars prefixed with VUE_APP_ are available in main process config', async () => {
+    process.env.VUE_APP_TEST = 'expected'
+    await runCommand('serve:electron')
+    const mainConfig = webpack.mock.calls[0][0]
+    // Env var is set correctly
+    expect(mainConfig.plugins[1].defaultValues.VUE_APP_TEST).toBe('expected')
+  })
 })
 
 describe('serve:electron', () => {
@@ -502,6 +510,14 @@ describe('Custom webpack chain', () => {
       // Config is passed through
       'chainableConfig'
     )
+  })
+
+  test('Env vars prefixed with VUE_APP_ are available in main process config', async () => {
+    process.env.VUE_APP_TEST = 'expected'
+    await runCommand('serve:electron')
+    const mainConfig = webpack.mock.calls[0][0]
+    // Env var is set correctly
+    expect(mainConfig.plugins[1].defaultValues.VUE_APP_TEST).toBe('expected')
   })
 })
 

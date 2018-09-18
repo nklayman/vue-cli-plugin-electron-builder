@@ -342,14 +342,19 @@ function bundleMain ({
         __static: JSON.stringify(api.resolve('./public'))
       }
     ])
-    config.plugin('env').use(webpack.EnvironmentPlugin, [
-      {
-        // Dev server url
-        WEBPACK_DEV_SERVER_URL: server.url,
-        // Path to node_modules (for externals in development)
-        NODE_MODULES_PATH: api.resolve('./node_modules')
+    const envVars = {
+      // Dev server url
+      WEBPACK_DEV_SERVER_URL: server.url,
+      // Path to node_modules (for externals in development)
+      NODE_MODULES_PATH: api.resolve('./node_modules')
+    }
+    // Add all env vars prefixed with VUE_APP_
+    Object.keys(process.env).forEach(k => {
+      if (/^VUE_APP_/.test(k)) {
+        envVars[k] = process.env[k]
       }
-    ])
+    })
+    config.plugin('env').use(webpack.EnvironmentPlugin, [envVars])
   }
   if (args.debug) {
     // Enable source maps for debugging

@@ -95,6 +95,10 @@ console.log(fileContents)
 ├── ...
 ```
 
+## Env Variables
+
+Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes.
+
 ## How it works
 
 ### Build Command
