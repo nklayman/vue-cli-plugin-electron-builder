@@ -1,4 +1,4 @@
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const webpack = require('webpack')
 const Config = require('webpack-chain')
 const merge = require('lodash.merge')
@@ -361,7 +361,7 @@ function bundleMain ({
     config.devtool('source-map')
   } else if (NODE_ENV === 'production') {
     // Minify for better performance
-    config.plugin('uglify').use(UglifyJSPlugin, [
+    config.plugin('uglify').use(TerserPlugin, [
       {
         parallel: true
       }
