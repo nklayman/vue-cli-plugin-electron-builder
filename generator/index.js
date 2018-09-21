@@ -122,8 +122,8 @@ if (isDevelopment) {
   }
   api.extendPackage({
     scripts: {
-      'build:electron': 'vue-cli-service build:electron',
-      'serve:electron': 'vue-cli-service serve:electron',
+      'electron:build': 'vue-cli-service electron:build',
+      'electron:serve': 'vue-cli-service electron:serve',
       postinstall: postinstallScript
     },
     devDependencies: {

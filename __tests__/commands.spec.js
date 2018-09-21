@@ -82,11 +82,11 @@ const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
 }
 // #endregion
 
-describe('build:electron', () => {
+describe('electron:build', () => {
   process.env.NODE_ENV = 'production'
 
   test('typescript is disabled when set in options', async () => {
-    await runCommand('build:electron', {
+    await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
           disableMainProcessTypescript: true
@@ -106,7 +106,7 @@ describe('build:electron', () => {
   })
 
   test('custom background file is used if provided', async () => {
-    await runCommand('build:electron', {
+    await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
           mainProcessFile: 'customBackground.js'
@@ -122,7 +122,7 @@ describe('build:electron', () => {
   })
 
   test('custom output dir is used if set in vue.config.js', async () => {
-    await runCommand('build:electron', {
+    await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
           outputDir: 'output'
@@ -142,7 +142,7 @@ describe('build:electron', () => {
   })
 
   test('custom output dir is used if dest arg is passed', async () => {
-    await runCommand('build:electron', {}, { dest: 'output' })
+    await runCommand('electron:build', {}, { dest: 'output' })
 
     const mainConfig = webpack.mock.calls[0][0]
     //   Main config output is correct
@@ -156,7 +156,7 @@ describe('build:electron', () => {
   })
 
   test('Custom main process webpack config is used if provided', async () => {
-    await runCommand('build:electron', {
+    await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
           chainWebpackMainProcess: config => {
@@ -172,12 +172,12 @@ describe('build:electron', () => {
   })
 
   test('process.env.IS_ELECTRON is set to true', async () => {
-    await runCommand('build:electron')
+    await runCommand('electron:build')
     expect(process.env.IS_ELECTRON).toBe('true')
   })
 
   test('Custom Electron Builder config is used if provided', async () => {
-    await runCommand('build:electron', {
+    await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
           builderOptions: {
@@ -193,7 +193,7 @@ describe('build:electron', () => {
   test('Fonts folder is copied to css if it exists', async () => {
     //   Mock existence of fonts folder
     fs.existsSync.mockReturnValueOnce(true)
-    await runCommand('build:electron')
+    await runCommand('electron:build')
     // css/fonts folder was created
     expect(fs.ensureDirSync.mock.calls[1][0]).toBe(
       'projectPath/dist_electron/bundled/css/fonts'
@@ -208,7 +208,7 @@ describe('build:electron', () => {
   })
 
   test('.js and .ts are merged into file extensions', async () => {
-    await runCommand('build:electron')
+    await runCommand('electron:build')
 
     const mainConfig = webpack.mock.calls[0][0]
     // Both .js and .ts are resolved
@@ -221,61 +221,61 @@ describe('build:electron', () => {
     ['--skipBundle'],
     ['--dest', 'output']
   ])('%s argument is removed from electron-builder args', async (...args) => {
-    await runCommand('build:electron', {}, {}, ['--keep1', ...args, '--keep2'])
+    await runCommand('electron:build', {}, {}, ['--keep1', ...args, '--keep2'])
     // Custom args should have been removed, and other args kept
     expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
     mockYargsParse.mockClear()
 
-    await runCommand('build:electron', {}, {}, [...args, '--keep2'])
+    await runCommand('electron:build', {}, {}, [...args, '--keep2'])
     // Custom args should have been removed, and other args kept
     expect(mockYargsParse).toBeCalledWith(['--keep2'])
     mockYargsParse.mockClear()
 
-    await runCommand('build:electron', {}, {}, ['--keep1', ...args])
+    await runCommand('electron:build', {}, {}, ['--keep1', ...args])
     // Custom args should have been removed, and other args kept
     expect(mockYargsParse).toBeCalledWith(['--keep1'])
     mockYargsParse.mockClear()
 
-    await runCommand('build:electron', {}, {}, args)
+    await runCommand('electron:build', {}, {}, args)
     // Custom args should have been removed
     expect(mockYargsParse).toBeCalledWith([])
     mockYargsParse.mockClear()
 
-    await runCommand('build:electron', {}, {}, ['--keep1', '--keep2'])
+    await runCommand('electron:build', {}, {}, ['--keep1', '--keep2'])
     // Nothing should be removed
     expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
   })
 
   test('Modern mode is enabled by default', async () => {
-    await runCommand('build:electron')
+    await runCommand('electron:build')
     expect(serviceRun.mock.calls[0][1].modern).toBe(true)
   })
 
   test('Modern mode is disabled if --legacy arg is passed', async () => {
-    await runCommand('build:electron', {}, { legacy: true })
+    await runCommand('electron:build', {}, { legacy: true })
     expect(serviceRun.mock.calls[0][1].modern).toBe(false)
   })
 
   test('App is not bundled if --skipBundle arg is passed', async () => {
-    await runCommand('build:electron', {}, { skipBundle: true })
+    await runCommand('electron:build', {}, { skipBundle: true })
     expect(serviceRun).not.toBeCalled()
     expect(webpack).not.toBeCalled()
   })
 
   test('Env vars prefixed with VUE_APP_ are available in main process config', async () => {
     process.env.VUE_APP_TEST = 'expected'
-    await runCommand('serve:electron')
+    await runCommand('electron:serve')
     const mainConfig = webpack.mock.calls[0][0]
     // Env var is set correctly
     expect(mainConfig.plugins[1].defaultValues.VUE_APP_TEST).toBe('expected')
   })
 })
 
-describe('serve:electron', () => {
+describe('electron:serve', () => {
   process.env.NODE_ENV = 'development'
 
   test('typescript is disabled when set in options', async () => {
-    await runCommand('serve:electron', {
+    await runCommand('electron:serve', {
       pluginOptions: {
         electronBuilder: {
           disableMainProcessTypescript: true
@@ -295,7 +295,7 @@ describe('serve:electron', () => {
   })
 
   test('custom background file is used if provided', async () => {
-    await runCommand('serve:electron', {
+    await runCommand('electron:serve', {
       pluginOptions: {
         electronBuilder: {
           mainProcessFile: 'customBackground.js'
@@ -311,7 +311,7 @@ describe('serve:electron', () => {
   })
 
   test('custom output dir is used if set in vue.config.js', async () => {
-    await runCommand('serve:electron', {
+    await runCommand('electron:serve', {
       pluginOptions: {
         electronBuilder: {
           outputDir: 'output'
@@ -325,7 +325,7 @@ describe('serve:electron', () => {
   })
 
   test('Custom main process webpack config is used if provided', async () => {
-    await runCommand('serve:electron', {
+    await runCommand('electron:serve', {
       pluginOptions: {
         electronBuilder: {
           chainWebpackMainProcess: config => {
@@ -341,12 +341,12 @@ describe('serve:electron', () => {
   })
 
   test('process.env.IS_ELECTRON is set to true', async () => {
-    await runCommand('serve:electron')
+    await runCommand('electron:serve')
     expect(process.env.IS_ELECTRON).toBe('true')
   })
 
   test('If --debug argument is passed, electron is not launched, main process is not minified, and source maps are enabled', async () => {
-    await runCommand('serve:electron', {}, { debug: true })
+    await runCommand('electron:serve', {}, { debug: true })
     const mainConfig = webpack.mock.calls[0][0]
 
     // UglifyJS plugin does not exist
@@ -362,7 +362,7 @@ describe('serve:electron', () => {
   })
 
   test('.js and .ts are merged into file extensions', async () => {
-    await runCommand('serve:electron')
+    await runCommand('electron:serve')
 
     const mainConfig = webpack.mock.calls[0][0]
     // Both .js and .ts are resolved
@@ -377,7 +377,7 @@ describe('serve:electron', () => {
       // Set callback to be called later
       watchCb = cb
     })
-    await runCommand('serve:electron', {
+    await runCommand('electron:serve', {
       pluginOptions: {
         electronBuilder: {
           // Make sure it watches proper background file
@@ -416,7 +416,7 @@ describe('serve:electron', () => {
       // Set callback to be called later
       watchCb[file] = cb
     })
-    await runCommand('serve:electron', {
+    await runCommand('electron:serve', {
       pluginOptions: {
         electronBuilder: {
           // Make sure background file is watch as well
@@ -463,7 +463,7 @@ describe('serve:electron', () => {
   })
 
   test('Junk output is stripped from electron child process', async () => {
-    await runCommand('serve:electron')
+    await runCommand('electron:serve')
 
     // Junk is removed
     expect(mockExeca.stderr.pipe).toBeCalledWith('removeJunk')
@@ -474,7 +474,7 @@ describe('serve:electron', () => {
   })
 
   test('Junk output is not stripped from electron child process if removeElectronJunk is set to false', async () => {
-    await runCommand('serve:electron', {
+    await runCommand('electron:serve', {
       pluginOptions: { electronBuilder: { removeElectronJunk: false } }
     })
 
@@ -487,7 +487,7 @@ describe('serve:electron', () => {
   })
 
   test('package.json is copied', async () => {
-    await runCommand('serve:electron', {
+    await runCommand('electron:serve', {
       pluginOptions: { electronBuilder: { outputDir: 'outputDir' } }
     })
 
@@ -526,7 +526,7 @@ describe('Custom webpack chain', () => {
 
   test('Env vars prefixed with VUE_APP_ are available in main process config', async () => {
     process.env.VUE_APP_TEST = 'expected'
-    await runCommand('serve:electron')
+    await runCommand('electron:serve')
     const mainConfig = webpack.mock.calls[0][0]
     // Env var is set correctly
     expect(mainConfig.plugins[1].defaultValues.VUE_APP_TEST).toBe('expected')
@@ -551,7 +551,7 @@ describe('testWithSpectron', async () => {
       }
     })
     const testPromise = testWithSpectron(spectronOptions)
-    // Mock console.log from serve:electron
+    // Mock console.log from electron:serve
     if (launchOptions.customLog) await sendData(launchOptions.customLog)
     await sendData(`$outputDir=${launchOptions.outputDir || 'dist_electron'}`)
     await sendData(

@@ -84,7 +84,7 @@ console.log(fileContents)
 │ ├── bundled/..  # where webpack outputs compiled files
 │ ├── [target platform]-unpacked/..  # unpacked Electron app (main app and supporting files)
 │ ├── [application name] setup [version].[target binary (exe|dmg|rpm...)]  # installer for Electron app
-│ ├── index.js  # compiled background file used for serve:electron
+│ ├── index.js  # compiled background file used for electron:serve
 │ └── ...
 ├── public/  # Files placed here will be available through __static or process.env.BASE_URL
 ├── src/

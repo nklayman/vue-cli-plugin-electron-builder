@@ -9,7 +9,7 @@ portfinder.basePort = 9515
 const serve = (project, notifyUpdate) =>
   new Promise((resolve, reject) => {
     // --debug to prevent Electron from being launched
-    const child = project.run('vue-cli-service serve:electron --debug')
+    const child = project.run('vue-cli-service electron:serve --debug')
     let log = ''
     child.stdout.on('data', async data => {
       data = data.toString()

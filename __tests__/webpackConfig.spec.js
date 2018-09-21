@@ -56,7 +56,7 @@ describe('chainWebpack', () => {
   })
 
   test('process.env.VUE_APP_NODE_MODULES_PATH is set to projectPath/node_modules in Electron dev', () => {
-    // Simulate serve:electron
+    // Simulate electron:serve
     process.env.NODE_ENV = 'development'
     mockChain()
     // Is set to project's node_modules folder

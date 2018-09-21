@@ -27,7 +27,7 @@ module.exports = (api, options) => {
   })
 
   api.registerCommand(
-    'build:electron',
+    'electron:build',
     {
       description: 'build app with electron-builder',
       usage: 'vue-cli-service build:electron [electron-builder options]',
@@ -173,7 +173,7 @@ module.exports = (api, options) => {
       })
   )
   api.registerCommand(
-    'serve:electron',
+    'electron:serve',
     {
       description: 'serve app and launch electron',
       usage: 'vue-cli-service serve:electron',
@@ -309,6 +309,41 @@ module.exports = (api, options) => {
       })
     }
   )
+
+  api.registerCommand(
+    'build:electron',
+    {
+      description:
+        '[deprecated, use electron:build instead] build app with electron-builder',
+      usage: 'vue-cli-service build:electron [electron-builder options]',
+      details:
+        `All electron-builder command line options are supported.\n` +
+        `See https://www.electron.build/cli for cli options\n` +
+        `See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.`
+    },
+    (args, rawArgs) => {
+      console.log(
+        'This command is deprecated. Please use electron:build instead.'
+      )
+      return api.service.run('electron:build', args, rawArgs)
+    }
+  )
+
+  api.registerCommand(
+    'serve:electron',
+    {
+      description:
+        '[deprecated, use electron:serve instead] serve app and launch electron',
+      usage: 'vue-cli-service serve:electron',
+      details: `See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.`
+    },
+    (args, rawArgs) => {
+      console.log(
+        'This command is deprecated. Please use electron:serve instead.'
+      )
+      return api.service.run('electron:serve', args, rawArgs)
+    }
+  )
 }
 
 function bundleMain ({
@@ -391,6 +426,8 @@ function bundleMain ({
 
 module.exports.defaultModes = {
   'build:electron': 'production',
-  'serve:electron': 'development'
+  'serve:electron': 'development',
+  'electron:build': 'production',
+  'electron:serve': 'development'
 }
 module.exports.testWithSpectron = require('./lib/testWithSpectron')

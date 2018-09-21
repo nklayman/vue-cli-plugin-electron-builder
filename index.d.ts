@@ -28,7 +28,7 @@ interface Server {
 }
 
 /**
-   Run serve:electron, but instead of launching Electron it returns a Spectron Application instance.
+   Run electron:serve, but instead of launching Electron it returns a Spectron Application instance.
    Used for e2e testing with Spectron.
 */
 export function testWithSpectron(options: Options): Promise<Server>

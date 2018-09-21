@@ -29,7 +29,7 @@ module.exports = {
 ```
 
 :::tip
-All CLI arguments passed to `build:electron` will be forwarded to electron-builder.
+All CLI arguments passed to `electron:build` will be forwarded to electron-builder.
 :::
 
 ## Webpack Configuration
@@ -110,7 +110,7 @@ If you decide to add the `@vue/typescript` plugin to your app later on, make sur
 
 ## Bundling Options <Badge text="1.0.0-rc.3+" type="info"/>
 
-By default, the app is built in [modern mode](https://cli.vuejs.org/guide/browser-compatibility.html#modern-mode). To disable this, use the `--legacy` argument in the `build:electron` command. If your app is already bundled and just needs to be built with electron-builder, pass the `--skipBundle` arg.
+By default, the app is built in [modern mode](https://cli.vuejs.org/guide/browser-compatibility.html#modern-mode). To disable this, use the `--legacy` argument in the `electron:build` command. If your app is already bundled and just needs to be built with electron-builder, pass the `--skipBundle` arg.
 
 ## Electron's Junk Terminal Output <Badge text="1.0.0-rc.3+" type="info"/>
 

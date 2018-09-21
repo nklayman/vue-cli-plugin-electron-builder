@@ -15,7 +15,7 @@ const runTests = useTS =>
       path.join(process.cwd(), '__tests__/projects/' + projectName, p)
 
     const { stdout } = await project.run(
-      `vue-cli-service build:electron --x64 ${
+      `vue-cli-service electron:build --x64 ${
         isWin ? '--win zip' : ''
       } --linux zip`
     )

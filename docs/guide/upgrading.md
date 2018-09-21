@@ -17,6 +17,7 @@ This guide is for upgrading from <=v0.3.2 to >=v1.0.0.
 
 - Electron-webpack is no longer used. Instead, your app is built as normal (but with some slight configuration changes).
 - This means there is no need to change your config to work with stylus, sass, or any other special files.
+- The commands have been renamed from `command:electron` to `electron:command` (since 1.0.0-rc.4)
 - Typescript support is [automatic](./configuration.md#typescript-options) for both processes, just add the `@vue/typescript` plugin.
 - Your normal build will not be overwritten by `build:electron`.
 - The [folder structure](./guide.md#folder-structure) has changed dramatically.

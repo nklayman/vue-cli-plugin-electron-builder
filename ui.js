@@ -83,7 +83,7 @@ module.exports = api => {
   }
 
   api.describeTask({
-    match: /vue-cli-service build:electron/,
+    match: /vue-cli-service electron:build/,
     description: 'Build your app for production with electron-builder',
     link: 'https://nklayman.github.io/vue-cli-plugin-electron-builder/',
     prompts,
@@ -146,7 +146,7 @@ module.exports = api => {
     defaultView: 'vue-webpack-dashboard'
   })
   api.describeTask({
-    match: /vue-cli-service serve:electron/,
+    match: /vue-cli-service electron:serve/,
     description: 'Serve your app, launch electron',
     link: 'https://nklayman.github.io/vue-cli-plugin-electron-builder/',
     onBeforeRun: ({ answers, args }) => {

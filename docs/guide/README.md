@@ -27,18 +27,18 @@ That's It! You're ready to go!
 
 If you use [Yarn](https://yarnpkg.com/en/) (strongly recommended):
 
-`yarn serve:electron`
+`yarn electron:serve`
 
 or if you use NPM:
 
-`npm run serve:electron`
+`npm run electron:serve`
 
 ## To Build Your App
 
 With Yarn:
 
-`yarn build:electron`
+`yarn electron:build`
 
 or with NPM:
 
-`npm run build:electron`
+`npm run electron:build`

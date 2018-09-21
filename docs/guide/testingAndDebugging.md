@@ -12,7 +12,7 @@ You can debug the renderer process using [Vue Devtools](https://github.com/vuejs
 
 ### Main Process (Background File)
 
-First, read [Electron's instructions](https://electronjs.org/docs/tutorial/debugging-main-process#command-line-switches) for debugging the main process. Before launching Electron through your debugger, run `serve:electron` in debug mode with the `--debug` argument. This will prevent Electron from launching automatically and enable source map support. Make sure to set the background file `dist_electron/background.js`.
+First, read [Electron's instructions](https://electronjs.org/docs/tutorial/debugging-main-process#command-line-switches) for debugging the main process. Before launching Electron through your debugger, run `electron:serve` in debug mode with the `--debug` argument. This will prevent Electron from launching automatically and enable source map support. Make sure to set the background file `dist_electron/background.js`.
 
 ::: tip
 If you are testing with spectron, make sure to set `process.env.IS_TEST` to `true`. This will prevent dev tools from being loaded which results in errors.
@@ -26,7 +26,7 @@ If you don't want to use Spectron, you can still use this function, just set `no
 
 Before continuing, read about [Spectron](https://github.com/electron/spectron). This guide assumes basic knowledge about using Spectron.
 
-vue-cli-plugin-electron-builder exports a `testWithSpectron` function. This function will run `serve:electron`, but instead of launching electron, a new Spectron Application will be created and attached to the dev server. This can be used to run e2e tests with Spectron.
+vue-cli-plugin-electron-builder exports a `testWithSpectron` function. This function will run `electron:serve`, but instead of launching electron, a new Spectron Application will be created and attached to the dev server. This can be used to run e2e tests with Spectron.
 
 ```javascript
 // This example uses Jest, but any testing framework will work as well
@@ -35,9 +35,9 @@ const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
 
 test('a window is created', async () => {
   const { stdout, url, stopServe, app } = await testWithSpectron()
-  // stdout is the log of serve:electron
-  console.log(`serve:electron returned: ${stdout}`)
-  // url is the url for the dev server created with serve:electron
+  // stdout is the log of electron:serve
+  console.log(`electron:serve returned: ${stdout}`)
+  // url is the url for the dev server created with electron:serve
   console.log(`the dev server url is: ${url}`)
   // app is a spectron instance. It is attached to the dev server, launched, and waited for to load.
   expect(await app.client.getWindowCount()).toBe(1)
