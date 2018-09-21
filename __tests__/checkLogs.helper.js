@@ -4,9 +4,7 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
   const isWin = process.platform === 'win32'
   const isBuild = mode === 'build'
   const outputPath = projectPath(
-    `dist_electron/${
-      isWin ? 'win' : 'linux'
-    }-unpacked/resources/app.asar/dist_electron/bundled`
+    `dist_electron/${isWin ? 'win' : 'linux'}-unpacked/resources/app.asar`
   )
 
   await client.getRenderProcessLogs().then(logs => {

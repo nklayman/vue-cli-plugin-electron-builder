@@ -129,6 +129,6 @@ if (isDevelopment) {
     devDependencies: {
       electron: '^2.0.2'
     },
-    main: 'dist_electron/bundled/background.js'
+    main: 'background.js'
   })
 }

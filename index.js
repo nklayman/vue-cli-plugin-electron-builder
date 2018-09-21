@@ -15,7 +15,6 @@ module.exports = (api, options) => {
   const usesTypescript = pluginOptions.disableMainProcessTypescript
     ? false
     : api.hasPlugin('typescript')
-  const outputDir = pluginOptions.outputDir || 'dist_electron'
   const mainProcessFile =
     pluginOptions.mainProcessFile ||
     (usesTypescript ? 'src/background.ts' : 'src/background.js')
@@ -51,6 +50,7 @@ module.exports = (api, options) => {
         if (index !== -1) rawArgs.splice(index, count)
       }
       removeArg('--mode', 2)
+      removeArg('--dest', 2)
       removeArg('--legacy', 1)
       removeArg('--skipBundle', 1)
       // Parse the raw arguments using electron-builder yargs config
@@ -58,15 +58,13 @@ module.exports = (api, options) => {
         .command(['build', '*'], 'Build', configureBuildCommand)
         .parse(rawArgs)
       //   Base config used in electron-builder build
+      const outputDir = args.dest || pluginOptions.outputDir || 'dist_electron'
       const defaultBuildConfig = {
         directories: {
-          output: outputDir
+          output: outputDir,
+          app: `${outputDir}/bundled`
         },
-        files: [
-          outputDir + '/bundled/**/*',
-          'node_modules/**/*',
-          'package.json'
-        ],
+        files: ['**'],
         extends: null
       }
       //   User-defined electron-builder config, overwrites/adds to default config
@@ -91,6 +89,13 @@ module.exports = (api, options) => {
         console.log('Bundling render process:')
         //   Build the render process with the custom args
         await api.service.run('build', vueArgs)
+        // Copy package.json to output dir
+        fs.copySync(
+          api.resolve('./package.json'),
+          `${outputDir}/bundled/package.json`
+        )
+        // Prevent electron-builder from installing app deps
+        fs.ensureDirSync(`${outputDir}/bundled/node_modules`)
         //   Copy fonts to css/fonts. Fixes some issues with static font imports
         if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
           fs.ensureDirSync(api.resolve(outputDir + '/bundled/css/fonts'))
@@ -188,6 +193,7 @@ module.exports = (api, options) => {
         // Use dashboard if called from ui
         dashboard: args.dashboard
       })
+      const outputDir = pluginOptions.outputDir || 'dist_electron'
 
       // Copy package.json so electron can detect app's name
       fs.copySync(api.resolve('./package.json'), `${outputDir}/package.json`)

@@ -121,7 +121,7 @@ describe('build:electron', () => {
     )
   })
 
-  test('custom output dir is used if provided', async () => {
+  test('custom output dir is used if set in vue.config.js', async () => {
     await runCommand('build:electron', {
       pluginOptions: {
         electronBuilder: {
@@ -129,6 +129,20 @@ describe('build:electron', () => {
         }
       }
     })
+
+    const mainConfig = webpack.mock.calls[0][0]
+    //   Main config output is correct
+    expect(mainConfig.output.path).toBe('projectPath/output/bundled')
+    // cli-service build output is correct
+    expect(serviceRun.mock.calls[0][1].dest).toBe('output/bundled')
+    //   Electron-builder output is correct
+    expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
+      'output'
+    )
+  })
+
+  test('custom output dir is used if dest arg is passed', async () => {
+    await runCommand('build:electron', {}, { dest: 'output' })
 
     const mainConfig = webpack.mock.calls[0][0]
     //   Main config output is correct
@@ -181,14 +195,14 @@ describe('build:electron', () => {
     fs.existsSync.mockReturnValueOnce(true)
     await runCommand('build:electron')
     // css/fonts folder was created
-    expect(fs.ensureDirSync.mock.calls[0][0]).toBe(
+    expect(fs.ensureDirSync.mock.calls[1][0]).toBe(
       'projectPath/dist_electron/bundled/css/fonts'
     )
     // fonts was copied to css/fonts
-    expect(fs.copySync.mock.calls[0][0]).toBe(
+    expect(fs.copySync.mock.calls[1][0]).toBe(
       'projectPath/dist_electron/bundled/fonts'
     )
-    expect(fs.copySync.mock.calls[0][1]).toBe(
+    expect(fs.copySync.mock.calls[1][1]).toBe(
       'projectPath/dist_electron/bundled/css/fonts'
     )
   })
@@ -201,38 +215,36 @@ describe('build:electron', () => {
     expect(mainConfig.resolve.extensions).toEqual(['.js', '.ts'])
   })
 
-  test.each([['--mode', 'someMode'], ['--legacy'], ['--skipBundle']])(
-    '%s argument is removed from electron-builder args',
-    async (...args) => {
-      await runCommand('build:electron', {}, {}, [
-        '--keep1',
-        ...args,
-        '--keep2'
-      ])
-      // Custom args should have been removed, and other args kept
-      expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
-      mockYargsParse.mockClear()
+  test.each([
+    ['--mode', 'someMode'],
+    ['--legacy'],
+    ['--skipBundle'],
+    ['--dest', 'output']
+  ])('%s argument is removed from electron-builder args', async (...args) => {
+    await runCommand('build:electron', {}, {}, ['--keep1', ...args, '--keep2'])
+    // Custom args should have been removed, and other args kept
+    expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
+    mockYargsParse.mockClear()
 
-      await runCommand('build:electron', {}, {}, [...args, '--keep2'])
-      // Custom args should have been removed, and other args kept
-      expect(mockYargsParse).toBeCalledWith(['--keep2'])
-      mockYargsParse.mockClear()
+    await runCommand('build:electron', {}, {}, [...args, '--keep2'])
+    // Custom args should have been removed, and other args kept
+    expect(mockYargsParse).toBeCalledWith(['--keep2'])
+    mockYargsParse.mockClear()
 
-      await runCommand('build:electron', {}, {}, ['--keep1', ...args])
-      // Custom args should have been removed, and other args kept
-      expect(mockYargsParse).toBeCalledWith(['--keep1'])
-      mockYargsParse.mockClear()
+    await runCommand('build:electron', {}, {}, ['--keep1', ...args])
+    // Custom args should have been removed, and other args kept
+    expect(mockYargsParse).toBeCalledWith(['--keep1'])
+    mockYargsParse.mockClear()
 
-      await runCommand('build:electron', {}, {}, args)
-      // Custom args should have been removed
-      expect(mockYargsParse).toBeCalledWith([])
-      mockYargsParse.mockClear()
+    await runCommand('build:electron', {}, {}, args)
+    // Custom args should have been removed
+    expect(mockYargsParse).toBeCalledWith([])
+    mockYargsParse.mockClear()
 
-      await runCommand('build:electron', {}, {}, ['--keep1', '--keep2'])
-      // Nothing should be removed
-      expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
-    }
-  )
+    await runCommand('build:electron', {}, {}, ['--keep1', '--keep2'])
+    // Nothing should be removed
+    expect(mockYargsParse).toBeCalledWith(['--keep1', '--keep2'])
+  })
 
   test('Modern mode is enabled by default', async () => {
     await runCommand('build:electron')
@@ -298,7 +310,7 @@ describe('serve:electron', () => {
     )
   })
 
-  test('custom output dir is used if provided', async () => {
+  test('custom output dir is used if set in vue.config.js', async () => {
     await runCommand('serve:electron', {
       pluginOptions: {
         electronBuilder: {

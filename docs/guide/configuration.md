@@ -70,9 +70,9 @@ module.exports = {
 
 ## Changing the Output Directory
 
-If you don't want your files outputted into dist_electron, you can choose a custom folder in vue-cli-plugin-electron-builder's plugin options.
+If you don't want your files outputted into dist_electron, you can choose a custom folder in vue-cli-plugin-electron-builder's plugin options. If you are using `v1.0.0-rc.4` or later, you can use the `--dest` argument to change the output dir as well.
 
-**Note: after changing this, you MUST update the main field of your `package.json` to `[new dir]/bundled/background.js`. It is also recommended to add the new directory to your .gitignore file.**
+**Note: If you are using version 1.0.0-rc.3 or lower, after changing this, you MUST update the main field of your `package.json` to `[new dir]/bundled/background.js`. It is also recommended to add the new directory to your .gitignore file.**
 
 ```javascript
 // vue.config.js
