@@ -36,139 +36,141 @@ module.exports = (api, options) => {
         `See https://www.electron.build/cli for cli options\n` +
         `See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.`
     },
-    async (args, rawArgs) => {
-      // Use custom config for webpack
-      process.env.IS_ELECTRON = true
-      const builder = require('electron-builder')
-      const yargs = require('yargs')
-      //   Import the yargs options from electron-builder
-      const configureBuildCommand = require('electron-builder/out/builder')
-        .configureBuildCommand
-      // Prevent custom args from interfering with electron-builder
-      const removeArg = (arg, count) => {
-        const index = rawArgs.indexOf(arg)
-        if (index !== -1) rawArgs.splice(index, count)
-      }
-      removeArg('--mode', 2)
-      removeArg('--dest', 2)
-      removeArg('--legacy', 1)
-      removeArg('--skipBundle', 1)
-      // Parse the raw arguments using electron-builder yargs config
-      const builderArgs = yargs
-        .command(['build', '*'], 'Build', configureBuildCommand)
-        .parse(rawArgs)
-      //   Base config used in electron-builder build
-      const outputDir = args.dest || pluginOptions.outputDir || 'dist_electron'
-      const defaultBuildConfig = {
-        directories: {
-          output: outputDir,
-          app: `${outputDir}/bundled`
-        },
-        files: ['**'],
-        extends: null
-      }
-      //   User-defined electron-builder config, overwrites/adds to default config
-      const userBuildConfig = pluginOptions.builderOptions || {}
-      if (args.skipBundle) {
-        console.log('Not bundling app as --skipBundle was passed')
-        // Build with electron-builder
-        buildApp()
-      } else {
-        //   Arguments to be passed to renderer build
-        const vueArgs = {
-          _: [],
-          // For the cli-ui webpack dashboard
-          dashboard: args.dashboard,
-          // Make sure files are outputted to proper directory
-          dest: outputDir + '/bundled',
-          // Enable modern mode unless --legacy is passed
-          modern: !args.legacy
+    (args, rawArgs) =>
+      new Promise(async (resolve, reject) => {
+        // Use custom config for webpack
+        process.env.IS_ELECTRON = true
+        const builder = require('electron-builder')
+        const yargs = require('yargs')
+        //   Import the yargs options from electron-builder
+        const configureBuildCommand = require('electron-builder/out/builder')
+          .configureBuildCommand
+        // Prevent custom args from interfering with electron-builder
+        const removeArg = (arg, count) => {
+          const index = rawArgs.indexOf(arg)
+          if (index !== -1) rawArgs.splice(index, count)
         }
-        //   Set the base url so that the app protocol is used
-        options.baseUrl = './'
-        console.log('Bundling render process:')
-        //   Build the render process with the custom args
-        await api.service.run('build', vueArgs)
-        // Copy package.json to output dir
-        fs.copySync(
-          api.resolve('./package.json'),
-          `${outputDir}/bundled/package.json`
-        )
-        // Prevent electron-builder from installing app deps
-        fs.ensureDirSync(`${outputDir}/bundled/node_modules`)
-        //   Copy fonts to css/fonts. Fixes some issues with static font imports
-        if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
-          fs.ensureDirSync(api.resolve(outputDir + '/bundled/css/fonts'))
-          fs.copySync(
-            api.resolve(outputDir + '/bundled/fonts'),
-            api.resolve(outputDir + '/bundled/css/fonts')
-          )
+        removeArg('--mode', 2)
+        removeArg('--dest', 2)
+        removeArg('--legacy', 1)
+        removeArg('--skipBundle', 1)
+        // Parse the raw arguments using electron-builder yargs config
+        const builderArgs = yargs
+          .command(['build', '*'], 'Build', configureBuildCommand)
+          .parse(rawArgs)
+        //   Base config used in electron-builder build
+        const outputDir =
+          args.dest || pluginOptions.outputDir || 'dist_electron'
+        const defaultBuildConfig = {
+          directories: {
+            output: outputDir,
+            app: `${outputDir}/bundled`
+          },
+          files: ['**'],
+          extends: null
         }
-        //   Build the main process into the renderer process output dir
-        const bundle = bundleMain({
-          mode: 'build',
-          api,
-          args,
-          pluginOptions,
-          outputDir,
-          mainProcessFile,
-          mainProcessChain,
-          usesTypescript
-        })
-        console.log('Bundling main process:\n')
-        bundle.run((err, stats) => {
-          if (err) {
-            console.error(err.stack || err)
-            if (err.details) {
-              console.error(err.details)
-            }
-            process.exit(1)
-          }
-
-          const info = stats.toJson()
-
-          if (stats.hasErrors()) {
-            console.error(info.errors)
-            process.exit(1)
-          }
-
-          if (stats.hasWarnings()) {
-            console.warn(info.warnings)
-          }
-
-          console.log(
-            stats.toString({
-              chunks: false,
-              colors: true
-            })
-          )
-
+        //   User-defined electron-builder config, overwrites/adds to default config
+        const userBuildConfig = pluginOptions.builderOptions || {}
+        if (args.skipBundle) {
+          console.log('Not bundling app as --skipBundle was passed')
+          // Build with electron-builder
           buildApp()
-        })
-      }
-      function buildApp () {
-        console.log('\nBuilding app with electron-builder:\n')
-        // Build the app using electron builder
-        builder
-          .build({
-            //   Args parsed with yargs
-            ...builderArgs,
-            config: merge(
-              defaultBuildConfig,
-              //   User-defined config overwrites defaults
-              userBuildConfig
+        } else {
+          //   Arguments to be passed to renderer build
+          const vueArgs = {
+            _: [],
+            // For the cli-ui webpack dashboard
+            dashboard: args.dashboard,
+            // Make sure files are outputted to proper directory
+            dest: outputDir + '/bundled',
+            // Enable modern mode unless --legacy is passed
+            modern: !args.legacy
+          }
+          //   Set the base url so that the app protocol is used
+          options.baseUrl = './'
+          console.log('Bundling render process:')
+          //   Build the render process with the custom args
+          await api.service.run('build', vueArgs)
+          // Copy package.json to output dir
+          fs.copySync(
+            api.resolve('./package.json'),
+            `${outputDir}/bundled/package.json`
+          )
+          // Prevent electron-builder from installing app deps
+          fs.ensureDirSync(`${outputDir}/bundled/node_modules`)
+          //   Copy fonts to css/fonts. Fixes some issues with static font imports
+          if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
+            fs.ensureDirSync(api.resolve(outputDir + '/bundled/css/fonts'))
+            fs.copySync(
+              api.resolve(outputDir + '/bundled/fonts'),
+              api.resolve(outputDir + '/bundled/css/fonts')
             )
+          }
+          //   Build the main process into the renderer process output dir
+          const bundle = bundleMain({
+            mode: 'build',
+            api,
+            args,
+            pluginOptions,
+            outputDir,
+            mainProcessFile,
+            mainProcessChain,
+            usesTypescript
           })
-          .then(() => {
-            // handle result
-            console.log('\nBuild complete!\n')
+          console.log('Bundling main process:\n')
+          bundle.run((err, stats) => {
+            if (err) {
+              console.error(err.stack || err)
+              if (err.details) {
+                console.error(err.details)
+              }
+              return reject(err)
+            }
+
+            const info = stats.toJson()
+
+            if (stats.hasErrors()) {
+              return reject(info.errors)
+            }
+
+            if (stats.hasWarnings()) {
+              console.warn(info.warnings)
+            }
+
+            console.log(
+              stats.toString({
+                chunks: false,
+                colors: true
+              })
+            )
+
+            buildApp()
           })
-          .catch(err => {
-            // handle error
-            throw err
-          })
-      }
-    }
+        }
+        function buildApp () {
+          console.log('\nBuilding app with electron-builder:\n')
+          // Build the app using electron builder
+          builder
+            .build({
+              //   Args parsed with yargs
+              ...builderArgs,
+              config: merge(
+                defaultBuildConfig,
+                //   User-defined config overwrites defaults
+                userBuildConfig
+              )
+            })
+            .then(() => {
+              // handle result
+              console.log('\nBuild complete!\n')
+              resolve()
+            })
+            .catch(err => {
+              // handle error
+              return reject(err)
+            })
+        }
+      })
   )
   api.registerCommand(
     'serve:electron',
