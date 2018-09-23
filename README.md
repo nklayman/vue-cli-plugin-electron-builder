@@ -22,20 +22,20 @@ That's It! You're ready to go!
 
 If you use [Yarn](https://yarnpkg.com/en/) (strongly recommended):
 
-`yarn electron:serve`
+`yarn serve:electron`
 
 or if you use NPM:
 
-`npm run electron:serve`
+`npm run serve:electron`
 
 ### To build your app:
 
 With Yarn:
 
-`yarn electron:build`
+`yarn build:electron`
 
 or with NPM:
 
-`npm run electron:build`
+`npm run build:electron`
 
 To see more documentation, [visit our website](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html).
