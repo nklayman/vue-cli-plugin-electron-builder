@@ -21,6 +21,8 @@ module.exports = (api, options) => {
   const mainProcessChain =
     pluginOptions.chainWebpackMainProcess || (config => config)
 
+  const mainProcessArgs = pluginOptions.mainProcessArgs || []
+
   // Apply custom webpack config
   api.chainWebpack(async config => {
     chainWebpack(api, pluginOptions, config)
@@ -264,12 +266,20 @@ module.exports = (api, options) => {
             console.log(`$outputDir=${outputDir}`)
             console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
           } else {
+            if(mainProcessArgs){
+              console.log('\nLaunching Electron with arguments: '+ mainProcessArgs.join(" ") +' ...')
+            }else{
+              console.log('\nLaunching Electron...')
+            }
             // Launch electron with execa
-            console.log('\nLaunching Electron...')
             child = execa(
               require('electron'),
-              // Have it load the main process file built with webpack
-              [outputDir],
+              [
+                // Have it load the main process file built with webpack
+                outputDir,
+                // Append other arguments specified in the options
+                ...mainProcessArgs
+              ],
               {
                 cwd: api.resolve('.'),
                 env: {
