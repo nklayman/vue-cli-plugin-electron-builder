@@ -62,7 +62,11 @@ module.exports = {
       mainProcessFile: 'src/myBackgroundFile.js',
       // Provide an array of files that, when changed, will recompile the main process and restart Electron
       // Your main process file will be added by default
-      mainProcessWatch: ['src/myFile1', 'src/myFile2']
+      mainProcessWatch: ['src/myFile1', 'src/myFile2'],
+      // Provide a list of arguments that will be used in "serve:electron" to launch electron with,
+      // which can be accessed from src/myBackgroundFile.js.
+      // Note that it is ignored when --debug flag is used with "serve:electron" 
+      mainProcessArgs: ['--arg-name', 'arg-value']
     }
   }
 }
