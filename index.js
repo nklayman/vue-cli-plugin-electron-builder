@@ -187,6 +187,7 @@ module.exports = (api, options) => {
         mainProcessFile,
         ...(pluginOptions.mainProcessWatch || [])
       ]
+      const mainProcessArgs = pluginOptions.mainProcessArgs || []
 
       console.log('\nStarting development server:\n')
       // Run the serve command
@@ -265,11 +266,23 @@ module.exports = (api, options) => {
             console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
           } else {
             // Launch electron with execa
-            console.log('\nLaunching Electron...')
+            if (mainProcessArgs) {
+              console.log(
+                '\nLaunching Electron with arguments: ' +
+                  mainProcessArgs.join(' ') +
+                  ' ...'
+              )
+            } else {
+              console.log('\nLaunching Electron...')
+            }
             child = execa(
               require('electron'),
-              // Have it load the main process file built with webpack
-              [outputDir],
+              [
+                // Have it load the main process file built with webpack
+                outputDir,
+                // Append other arguments specified in plugin options
+                ...mainProcessArgs
+              ],
               {
                 cwd: api.resolve('.'),
                 env: {

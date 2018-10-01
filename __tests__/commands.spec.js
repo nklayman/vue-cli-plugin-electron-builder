@@ -340,6 +340,39 @@ describe('electron:serve', () => {
     expect(mainConfig.node.shouldBe).toBe('expected')
   })
 
+  test('Custom launch arguments is used if provided', async () => {
+    let watchCb
+    fs.watchFile.mockImplementation((file, cb) => {
+      // Set callback to be called later
+      watchCb = cb
+    })
+    await runCommand('electron:serve', {
+      pluginOptions: {
+        electronBuilder: {
+          mainProcessFile: 'customBackground',
+          mainProcessArgs: ['--a-flag', 'a-value']
+        }
+      }
+    })
+
+    expect(execa).toHaveBeenCalledTimes(1)
+    expect(execa.mock.calls[0][1]).toEqual([
+      'dist_electron',
+      '--a-flag',
+      'a-value'
+    ])
+
+    // Mock change of background file
+    watchCb()
+
+    expect(execa).toHaveBeenCalledTimes(2)
+    expect(execa.mock.calls[0][1]).toEqual([
+      'dist_electron',
+      '--a-flag',
+      'a-value'
+    ])
+  })
+
   test('process.env.IS_ELECTRON is set to true', async () => {
     await runCommand('electron:serve')
     expect(process.env.IS_ELECTRON).toBe('true')
