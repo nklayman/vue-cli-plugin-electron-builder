@@ -20,6 +20,10 @@ module.exports = (api, options) => {
     (usesTypescript ? 'src/background.ts' : 'src/background.js')
   const mainProcessChain =
     pluginOptions.chainWebpackMainProcess || (config => config)
+  const bundleMainProcess =
+    pluginOptions.bundleMainProcess == null
+      ? true
+      : pluginOptions.bundleMainProcess
 
   // Apply custom webpack config
   api.chainWebpack(async config => {
@@ -106,46 +110,59 @@ module.exports = (api, options) => {
               api.resolve(outputDir + '/bundled/css/fonts')
             )
           }
-          //   Build the main process into the renderer process output dir
-          const bundle = bundleMain({
-            mode: 'build',
-            api,
-            args,
-            pluginOptions,
-            outputDir,
-            mainProcessFile,
-            mainProcessChain,
-            usesTypescript
-          })
-          console.log('Bundling main process:\n')
-          bundle.run((err, stats) => {
-            if (err) {
-              console.error(err.stack || err)
-              if (err.details) {
-                console.error(err.details)
+
+          if (bundleMainProcess) {
+            //   Build the main process into the renderer process output dir
+            const bundle = bundleMain({
+              mode: 'build',
+              api,
+              args,
+              pluginOptions,
+              outputDir,
+              mainProcessFile,
+              mainProcessChain,
+              usesTypescript
+            })
+            console.log('Bundling main process:\n')
+            bundle.run((err, stats) => {
+              if (err) {
+                console.error(err.stack || err)
+                if (err.details) {
+                  console.error(err.details)
+                }
+                return reject(err)
               }
-              return reject(err)
-            }
 
-            const info = stats.toJson()
+              const info = stats.toJson()
 
-            if (stats.hasErrors()) {
-              return reject(info.errors)
-            }
+              if (stats.hasErrors()) {
+                return reject(info.errors)
+              }
 
-            if (stats.hasWarnings()) {
-              console.warn(info.warnings)
-            }
+              if (stats.hasWarnings()) {
+                console.warn(info.warnings)
+              }
 
+              console.log(
+                stats.toString({
+                  chunks: false,
+                  colors: true
+                })
+              )
+
+              buildApp()
+            })
+          } else {
             console.log(
-              stats.toString({
-                chunks: false,
-                colors: true
-              })
+              'Not bundling main process as bundleMainProcess was set to false in plugin options'
             )
-
+            // Copy main process file instead of bundling it
+            fs.copySync(
+              api.resolve(mainProcessFile),
+              api.resolve(`${outputDir}/bundled/background.js`)
+            )
             buildApp()
-          })
+          }
         }
         function buildApp () {
           console.log('\nBuilding app with electron-builder:\n')
@@ -210,109 +227,60 @@ module.exports = (api, options) => {
           // Kill old Electron process
           child.kill()
         }
-        //   Build the main process
-        const bundle = bundleMain({
-          mode: 'serve',
-          api,
-          args,
-          pluginOptions,
-          outputDir,
-          mainProcessFile,
-          mainProcessChain,
-          usesTypescript,
-          server
-        })
-        console.log('Bundling main process:\n')
-        bundle.run((err, stats) => {
-          if (err) {
-            console.error(err.stack || err)
-            if (err.details) {
-              console.error(err.details)
-            }
-            process.exit(1)
-          }
 
-          const info = stats.toJson()
-
-          if (stats.hasErrors()) {
-            console.error(info.errors)
-            process.exit(1)
-          }
-
-          if (stats.hasWarnings()) {
-            console.warn(info.warnings)
-          }
-
-          console.log(
-            stats.toString({
-              chunks: false,
-              colors: true
-            })
-          )
-          if (args.debug) {
-            //   Do not launch electron and provide instructions on launching through debugger
-            console.log(
-              '\nNot launching electron as debug argument was passed. You must launch electron though your debugger.'
-            )
-            console.log(
-              `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
-            )
-            console.log(
-              'Learn more about debugging the main process at https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/testingAndDebugging.html#debugging.'
-            )
-          } else if (args.headless) {
-            // Log information for spectron
-            console.log(`$outputDir=${outputDir}`)
-            console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
-          } else {
-            // Launch electron with execa
-            if (mainProcessArgs) {
-              console.log(
-                '\nLaunching Electron with arguments: ' +
-                  mainProcessArgs.join(' ') +
-                  ' ...'
-              )
-            } else {
-              console.log('\nLaunching Electron...')
-            }
-            child = execa(
-              require('electron'),
-              [
-                // Have it load the main process file built with webpack
-                outputDir,
-                // Append other arguments specified in plugin options
-                ...mainProcessArgs
-              ],
-              {
-                cwd: api.resolve('.'),
-                env: {
-                  ...process.env,
-                  // Disable electron security warnings
-                  ELECTRON_DISABLE_SECURITY_WARNINGS: true
-                }
+        if (bundleMainProcess) {
+          //   Build the main process
+          const bundle = bundleMain({
+            mode: 'serve',
+            api,
+            args,
+            pluginOptions,
+            outputDir,
+            mainProcessFile,
+            mainProcessChain,
+            usesTypescript,
+            server
+          })
+          console.log('Bundling main process:\n')
+          bundle.run((err, stats) => {
+            if (err) {
+              console.error(err.stack || err)
+              if (err.details) {
+                console.error(err.details)
               }
-            )
-
-            if (pluginOptions.removeElectronJunk === false) {
-              // Pipe output to console
-              child.stdout.pipe(process.stdout)
-              child.stderr.pipe(process.stderr)
-            } else {
-              // Remove junk terminal output (#60)
-              child.stdout
-                .pipe(require('./lib/removeJunk.js')())
-                .pipe(process.stdout)
-              child.stderr
-                .pipe(require('./lib/removeJunk.js')())
-                .pipe(process.stderr)
+              process.exit(1)
             }
 
-            child.on('exit', () => {
-              //   Exit when electron is closed
-              process.exit(0)
-            })
-          }
-        })
+            const info = stats.toJson()
+
+            if (stats.hasErrors()) {
+              console.error(info.errors)
+              process.exit(1)
+            }
+
+            if (stats.hasWarnings()) {
+              console.warn(info.warnings)
+            }
+
+            console.log(
+              stats.toString({
+                chunks: false,
+                colors: true
+              })
+            )
+            launchElectron()
+          })
+        } else {
+          console.log(
+            'Not bundling main process as bundleMainProcess was set to false in plugin options'
+          )
+          // Copy main process file instead of bundling it
+          fs.copySync(
+            api.resolve(mainProcessFile),
+            api.resolve(`${outputDir}/index.js`)
+          )
+          launchElectron()
+        }
       }
       // Initial start of Electron
       startElectron()
@@ -320,6 +288,72 @@ module.exports = (api, options) => {
       mainProcessWatch.forEach(file => {
         fs.watchFile(api.resolve(file), startElectron)
       })
+
+      function launchElectron () {
+        if (args.debug) {
+          //   Do not launch electron and provide instructions on launching through debugger
+          console.log(
+            '\nNot launching electron as debug argument was passed. You must launch electron though your debugger.'
+          )
+          console.log(
+            `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
+          )
+          console.log(
+            'Learn more about debugging the main process at https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/testingAndDebugging.html#debugging.'
+          )
+        } else if (args.headless) {
+          // Log information for spectron
+          console.log(`$outputDir=${outputDir}`)
+          console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
+        } else {
+          // Launch electron with execa
+          if (mainProcessArgs) {
+            console.log(
+              '\nLaunching Electron with arguments: ' +
+                mainProcessArgs.join(' ') +
+                ' ...'
+            )
+          } else {
+            console.log('\nLaunching Electron...')
+          }
+          child = execa(
+            require('electron'),
+            [
+              // Have it load the main process file built with webpack
+              outputDir,
+              // Append other arguments specified in plugin options
+              ...mainProcessArgs
+            ],
+            {
+              cwd: api.resolve('.'),
+              env: {
+                ...process.env,
+                // Disable electron security warnings
+                ELECTRON_DISABLE_SECURITY_WARNINGS: true
+              }
+            }
+          )
+
+          if (pluginOptions.removeElectronJunk === false) {
+            // Pipe output to console
+            child.stdout.pipe(process.stdout)
+            child.stderr.pipe(process.stderr)
+          } else {
+            // Remove junk terminal output (#60)
+            child.stdout
+              .pipe(require('./lib/removeJunk.js')())
+              .pipe(process.stdout)
+            child.stderr
+              .pipe(require('./lib/removeJunk.js')())
+              .pipe(process.stderr)
+          }
+
+          child.on('exit', () => {
+            //   Exit when electron is closed
+            process.exit(0)
+          })
+        }
+      }
     }
   )
 

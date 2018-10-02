@@ -269,6 +269,26 @@ describe('electron:build', () => {
     // Env var is set correctly
     expect(mainConfig.plugins[1].defaultValues.VUE_APP_TEST).toBe('expected')
   })
+
+  test('Main process file is not bundled if pluginOptions.bundleMainProcess is false', async () => {
+    await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          bundleMainProcess: false,
+          mainProcessFile: 'myBackgroundFile.js',
+          outputDir: 'outputDir'
+        }
+      }
+    })
+
+    // Background file wasn't built
+    expect(webpack).not.toBeCalled()
+    // Copied to proper dir instead
+    expect(fs.copySync).toBeCalledWith(
+      'projectPath/myBackgroundFile.js',
+      'projectPath/outputDir/bundled/background.js'
+    )
+  })
 })
 
 describe('electron:serve', () => {
@@ -527,6 +547,26 @@ describe('electron:serve', () => {
     expect(fs.copySync).toBeCalledWith(
       `projectPath/./package.json`,
       'outputDir/package.json'
+    )
+  })
+
+  test('Main process file is not bundled if pluginOptions.bundleMainProcess is false', async () => {
+    await runCommand('electron:serve', {
+      pluginOptions: {
+        electronBuilder: {
+          bundleMainProcess: false,
+          mainProcessFile: 'myBackgroundFile.js',
+          outputDir: 'outputDir'
+        }
+      }
+    })
+
+    // Background file wasn't built
+    expect(webpack).not.toBeCalled()
+    // Copied to proper dir instead
+    expect(fs.copySync).toBeCalledWith(
+      'projectPath/myBackgroundFile.js',
+      'projectPath/outputDir/index.js'
     )
   })
 })
