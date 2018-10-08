@@ -12817,9 +12817,16 @@ webpack-bundle-analyzer@^2.13.1:
     opener "^1.4.3"
     ws "^4.0.0"
 
-webpack-chain@^4.6.0, webpack-chain@^4.8.0, webpack-chain@^4.9.0:
+webpack-chain@^4.6.0, webpack-chain@^4.8.0:
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/webpack-chain/-/webpack-chain-4.9.0.tgz#2f0794d34d79a7cc5db1416f497b76ad33df30ee"
+  dependencies:
+    deepmerge "^1.5.2"
+    javascript-stringify "^1.6.0"
+
+webpack-chain@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/webpack-chain/-/webpack-chain-5.0.0.tgz#dfb05b05db92ca6afe56a30c9928b4a4e51d4761"
   dependencies:
     deepmerge "^1.5.2"
     javascript-stringify "^1.6.0"
