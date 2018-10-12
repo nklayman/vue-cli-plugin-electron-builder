@@ -456,7 +456,7 @@ function bundleMain ({
       }
     ])
   }
-  config.entry('background').add(api.resolve(mainProcessFile))
+  config.entry('index').add(api.resolve(mainProcessFile))
   if (usesTypescript) {
     config.resolve.extensions.merge(['.js', '.ts'])
     config.module
