@@ -320,7 +320,7 @@ module.exports = (api, options) => {
             require('electron'),
             [
               // Have it load the main process file built with webpack
-              outputDir + '/background.js',
+              outputDir,
               // Append other arguments specified in plugin options
               ...mainProcessArgs
             ],
