@@ -43,26 +43,6 @@ afterEach(() => {
 })
 
 describe('chainWebpack', () => {
-  test('process.env.VUE_APP_NODE_MODULES_PATH is set to false in non-electron builds', () => {
-    // Simulate non-electron build
-    delete process.env.IS_ELECTRON
-    mockChain()
-    expect(process.env.VUE_APP_NODE_MODULES_PATH).toBe('false')
-  })
-
-  test('process.env.VUE_APP_NODE_MODULES_PATH is set to false in Electron production builds', () => {
-    mockChain()
-    expect(process.env.VUE_APP_NODE_MODULES_PATH).toBe('false')
-  })
-
-  test('process.env.VUE_APP_NODE_MODULES_PATH is set to projectPath/node_modules in Electron dev', () => {
-    // Simulate electron:serve
-    process.env.NODE_ENV = 'development'
-    mockChain()
-    // Is set to project's node_modules folder
-    expect(process.env.VUE_APP_NODE_MODULES_PATH).toBe('nodeModulesPath')
-  })
-
   test.each(['production', 'development'])(
     'User configuration is applied in %s',
     env => {
