@@ -372,7 +372,11 @@ module.exports = (api, options) => {
       console.log(
         'This command is deprecated. Please use electron:build instead.'
       )
-      return api.service.run('electron:build', args, rawArgs)
+      return api.service.run(
+        'electron:build',
+        { ...args, _: ['First arg is removed', ...args._] },
+        ['First arg is removed', ...rawArgs]
+      )
     }
   )
 
@@ -388,7 +392,11 @@ module.exports = (api, options) => {
       console.log(
         'This command is deprecated. Please use electron:serve instead.'
       )
-      return api.service.run('electron:serve', args, rawArgs)
+      return api.service.run(
+        'electron:serve',
+        { ...args, _: ['First arg is removed', ...args._] },
+        ['First arg is removed', ...rawArgs]
+      )
     }
   )
 }
