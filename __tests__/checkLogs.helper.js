@@ -86,17 +86,13 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
   })
 
   await client.getMainProcessLogs().then(logs => {
-    logs.forEach(log => {
-      //   Make sure there are no fatal errors
-      expect(log.level).not.toBe('SEVERE')
-    })
     let appStatic = logs
       //   Find __static log
       .find(m => m.indexOf('__static=') !== -1)
       // Get just the value
       .split('=')[1]
     // Remove any quotes
-    appStatic = appStatic.replace('"', '')
+    appStatic = appStatic.replace('"', '').split(',')[0]
     //   __static should point to public folder or packaged asar
     expect(path.normalize(appStatic)).toBe(
       isBuild ? outputPath : projectPath('public')
@@ -110,7 +106,7 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
     // Parse modulePaths array
     modulePaths = modulePaths.split(',')
     // Normalize paths
-    modulePaths = modulePaths.map(p => path.normalize(p))
+    modulePaths = modulePaths.map(p => path.normalize(p.replace('"', '')))
     // module.paths should include path to project's node_modules unless in build
     if (isBuild) {
       expect(modulePaths).not.toContain(
@@ -128,7 +124,7 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
       // Get just the value
       .split('=')[1]
     // Remove any quotes
-    mockExternalPath = mockExternalPath.replace('"', '')
+    mockExternalPath = mockExternalPath.replace('"', '').split(',')[0]
     // mockExternal should be externalized (can't check in build because of NamedModulePlugin)
     if (!isBuild) {
       expect(mockExternalPath).toBe('mockExternal')
