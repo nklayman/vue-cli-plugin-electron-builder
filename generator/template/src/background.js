@@ -6,10 +6,6 @@ import {
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
-if (isDevelopment) {
-  // Don't load any native (external) modules until the following line is run:
-  require('module').globalPaths.push(process.env.NODE_MODULES_PATH)
-}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

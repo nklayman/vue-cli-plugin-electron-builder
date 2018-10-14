@@ -40,7 +40,6 @@ const createProject = (projectName, useTS, customPlugins = {}) =>
       `let mainWindow${useTS ? ': any' : ''}
       ${useTS ? 'declare var __static: string' : ''}
         console.log('__static=' + __static)
-        console.log('modulePaths=' + require('module').globalPaths)
         console.log('mockExternalPath=' + require.resolve('mockExternal'))`
     )
     // Have render process log __static and BASE_URL to console to make sure they are correct
@@ -50,7 +49,6 @@ const createProject = (projectName, useTS, customPlugins = {}) =>
       ${useTS ? 'declare var __static: string' : ''}
       console.log('process.env.BASE_URL=' + process.env.BASE_URL)
       console.log('__static=' + __static )
-      console.log('modulePaths=' + require('module').globalPaths)
       console.log('vuePath=' + require.resolve('vue'))
       console.log('mockExternalPath=' + require.resolve('mockExternal'))`
     )

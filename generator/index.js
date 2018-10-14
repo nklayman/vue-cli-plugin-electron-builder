@@ -10,22 +10,13 @@ module.exports = api => {
     api.render('./template')
   }
   api.onCreateComplete(() => {
-    //   Read existing index.html and .gitignore
+    //   Read existing index.html
     let index = fs.readFileSync(api.resolve('./public/index.html'), 'utf8')
-
-    // List of tags that need to be included in index.html
-    const tags = [
-      `<% if (BASE_URL === './') { %><base href="app://./" /><% } %>`,
-      `<% if (VUE_APP_NODE_MODULES_PATH !== "false") { %><script>require('module').globalPaths.push('<%= VUE_APP_NODE_MODULES_PATH %>')</script><% } %>`
-    ]
-    let elements = '  <head>'
-    tags.forEach(tag => {
-      if (index.indexOf(tag) === -1) {
-        elements += `\n    ${tag}`
-      }
-    })
-    //   Add extra elements inside <head> tag
-    index = index.replace(/^\s*?<head.*?>\s*?$/m, elements)
+    const tag = `<% if (BASE_URL === './') { %><base href="app://./" /><% } %>`
+    if (index.indexOf(tag) === -1) {
+      // Inject base tag if it doesn't exist
+      index = index.replace(/^\s*?<head.*?>\s*?$/m, `  <head>\n    ${tag}`)
+    }
     //   Write updated index.html
     fs.writeFileSync(api.resolve('./public/index.html'), index)
 
@@ -36,45 +27,6 @@ module.exports = api => {
         //   Add /dist_electron to gitignore if it doesn't exist already
         gitignore = gitignore + '\n#Electron-builder output\n/dist_electron'
         fs.writeFileSync(api.resolve('./.gitignore'), gitignore)
-      }
-    }
-
-    if (hasBackground) {
-      // Find background file
-      let background
-      if (fs.existsSync(api.resolve('./src/background.js'))) {
-        background = fs.readFileSync(api.resolve('./src/background.js'), 'utf8')
-      } else if (fs.existsSync(api.resolve('./src/background.ts'))) {
-        background = fs.readFileSync(api.resolve('./src/background.ts'), 'utf8')
-      } else {
-        // Exit if background file cannot be found
-        return
-      }
-
-      if (
-        // Only change file if it is missing module path addition
-        !background.match(
-          /require\('module'\)\.globalPaths\.push\(process\.env\.NODE_MODULES_PATH\)/
-        )
-      ) {
-        // Remove old isDevelopment const
-        background = background.replace(
-          "const isDevelopment = process.env.NODE_ENV !== 'production'",
-          ''
-        )
-        // Add node_modules path and isDevelopment const
-        background =
-          `const isDevelopment = process.env.NODE_ENV !== 'production'
-if (isDevelopment) {
-  // Don't load any native (external) modules until the following line is run:
-  require('module').globalPaths.push(process.env.NODE_MODULES_PATH)
-}\n` + background
-
-        // Write new background
-        fs.writeFileSync(
-          api.resolve(`./src/background.${usesTS ? 'ts' : 'js'}`),
-          background
-        )
       }
     }
 

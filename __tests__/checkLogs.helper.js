@@ -36,28 +36,6 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
       isBuild ? outputPath : projectPath('public')
     )
 
-    let modulePaths = logs
-      //   Find modulePath log
-      .find(v => v.message.indexOf('modulePaths=') !== -1)
-      // Get just the value
-      .message.split('=')[1]
-    // Remove last quote
-    modulePaths = modulePaths.replace(/"$/, '')
-    // Parse modulePaths array
-    modulePaths = modulePaths.split(',')
-    // Normalize paths
-    modulePaths = modulePaths.map(p => path.normalize(p))
-    // module.paths should include path to project's node_modules unless in build
-    if (isBuild) {
-      expect(modulePaths).not.toContain(
-        path.join(__dirname, 'projects', projectName, 'node_modules')
-      )
-    } else {
-      expect(modulePaths).toContain(
-        path.join(__dirname, 'projects', projectName, 'node_modules')
-      )
-    }
-
     let vuePath = logs
       //   Find vuePath log
       .find(v => v.message.indexOf('vuePath=') !== -1)
@@ -97,26 +75,6 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
     expect(path.normalize(appStatic)).toBe(
       isBuild ? outputPath : projectPath('public')
     )
-
-    let modulePaths = logs
-      //   Find modulePath log
-      .find(m => m.indexOf('modulePaths=') !== -1)
-      // Get just the value
-      .split('=')[1]
-    // Parse modulePaths array
-    modulePaths = modulePaths.split(',')
-    // Normalize paths
-    modulePaths = modulePaths.map(p => path.normalize(p.replace('"', '')))
-    // module.paths should include path to project's node_modules unless in build
-    if (isBuild) {
-      expect(modulePaths).not.toContain(
-        path.join(__dirname, 'projects', projectName, 'node_modules')
-      )
-    } else {
-      expect(modulePaths).toContain(
-        path.join(__dirname, 'projects', projectName, 'node_modules')
-      )
-    }
 
     let mockExternalPath = logs
       //   Find externalModulePath log
