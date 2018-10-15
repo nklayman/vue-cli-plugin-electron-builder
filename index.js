@@ -3,6 +3,17 @@ const webpack = require('webpack')
 const Config = require('webpack-chain')
 const merge = require('lodash.merge')
 const fs = require('fs-extra')
+const path = require('path')
+const {
+  log,
+  done,
+  info,
+  logWithSpinner,
+  stopSpinner,
+  warn,
+  error
+} = require('@vue/cli-shared-utils')
+const formatStats = require('@vue/cli-service/lib/commands/build/formatStats')
 const { chainWebpack, getExternals } = require('./lib/webpackConfig')
 
 module.exports = (api, options) => {
@@ -92,7 +103,7 @@ module.exports = (api, options) => {
           }
           //   Set the base url so that the app protocol is used
           options.baseUrl = './'
-          console.log('Bundling render process:')
+          info('Bundling render process:')
           //   Build the render process with the custom args
           await api.service.run('build', vueArgs)
           // Copy package.json to output dir
@@ -123,37 +134,26 @@ module.exports = (api, options) => {
               mainProcessChain,
               usesTypescript
             })
-            console.log('Bundling main process:\n')
+            logWithSpinner('Bundling main process...')
             bundle.run((err, stats) => {
+              stopSpinner(false)
               if (err) {
-                console.error(err.stack || err)
-                if (err.details) {
-                  console.error(err.details)
-                }
                 return reject(err)
               }
-
-              const info = stats.toJson()
-
               if (stats.hasErrors()) {
-                return reject(info.errors)
+                // eslint-disable-next-line prefer-promise-reject-errors
+                return reject(`Build failed with errors.`)
               }
-
-              if (stats.hasWarnings()) {
-                console.warn(info.warnings)
-              }
-
-              console.log(
-                stats.toString({
-                  chunks: false,
-                  colors: true
-                })
+              const targetDirShort = path.relative(
+                api.service.context,
+                `${outputDir}/bundled`
               )
+              log(formatStats(stats, targetDirShort, api))
 
               buildApp()
             })
           } else {
-            console.log(
+            info(
               'Not bundling main process as bundleMainProcess was set to false in plugin options'
             )
             // Copy main process file instead of bundling it
@@ -165,7 +165,7 @@ module.exports = (api, options) => {
           }
         }
         function buildApp () {
-          console.log('\nBuilding app with electron-builder:\n')
+          info('Building app with electron-builder:')
           // Build the app using electron builder
           builder
             .build({
@@ -179,7 +179,7 @@ module.exports = (api, options) => {
             })
             .then(() => {
               // handle result
-              console.log('\nBuild complete!\n')
+              done('Build complete!')
               resolve()
             })
             .catch(err => {
@@ -206,7 +206,6 @@ module.exports = (api, options) => {
       ]
       const mainProcessArgs = pluginOptions.mainProcessArgs || []
 
-      console.log('\nStarting development server:\n')
       // Run the serve command
       const server = await api.service.run('serve', {
         _: [],
@@ -241,37 +240,22 @@ module.exports = (api, options) => {
             usesTypescript,
             server
           })
-          console.log('Bundling main process:\n')
+          logWithSpinner('Bundling main process...')
           bundle.run((err, stats) => {
+            stopSpinner(false)
             if (err) {
-              console.error(err.stack || err)
-              if (err.details) {
-                console.error(err.details)
-              }
-              process.exit(1)
+              throw err
             }
-
-            const info = stats.toJson()
-
             if (stats.hasErrors()) {
-              console.error(info.errors)
+              error(`Build failed with errors.`)
               process.exit(1)
             }
-
-            if (stats.hasWarnings()) {
-              console.warn(info.warnings)
-            }
-
-            console.log(
-              stats.toString({
-                chunks: false,
-                colors: true
-              })
-            )
+            const targetDirShort = path.relative(api.service.context, outputDir)
+            log(formatStats(stats, targetDirShort, api))
             launchElectron()
           })
         } else {
-          console.log(
+          info(
             'Not bundling main process as bundleMainProcess was set to false in plugin options'
           )
           // Copy main process file instead of bundling it
@@ -291,14 +275,16 @@ module.exports = (api, options) => {
 
       function launchElectron () {
         if (args.debug) {
+          console.log(info)
+
           //   Do not launch electron and provide instructions on launching through debugger
-          console.log(
-            '\nNot launching electron as debug argument was passed. You must launch electron though your debugger.'
+          info(
+            'Not launching electron as debug argument was passed. You must launch electron though your debugger.'
           )
-          console.log(
+          info(
             `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
           )
-          console.log(
+          info(
             'Learn more about debugging the main process at https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/testingAndDebugging.html#debugging.'
           )
         } else if (args.headless) {
@@ -307,14 +293,14 @@ module.exports = (api, options) => {
           console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
         } else {
           // Launch electron with execa
-          if (mainProcessArgs) {
-            console.log(
-              '\nLaunching Electron with arguments: ' +
+          if (mainProcessArgs.length > 0) {
+            info(
+              'Launching Electron with arguments: "' +
                 mainProcessArgs.join(' ') +
-                ' ...'
+                '" ...'
             )
           } else {
-            console.log('\nLaunching Electron...')
+            info('Launching Electron...')
           }
           child = execa(
             require('electron'),
@@ -369,9 +355,7 @@ module.exports = (api, options) => {
         `See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.`
     },
     (args, rawArgs) => {
-      console.log(
-        'This command is deprecated. Please use electron:build instead.'
-      )
+      warn('This command is deprecated. Please use electron:build instead.')
       return api.service.run(
         'electron:build',
         { ...args, _: ['First arg is removed', ...args._] },
@@ -389,9 +373,7 @@ module.exports = (api, options) => {
       details: `See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.`
     },
     (args, rawArgs) => {
-      console.log(
-        'This command is deprecated. Please use electron:serve instead.'
-      )
+      warn('This command is deprecated. Please use electron:serve instead.')
       return api.service.run(
         'electron:serve',
         { ...args, _: ['First arg is removed', ...args._] },
@@ -468,6 +450,18 @@ function bundleMain ({
   config
     .entry(isBuild ? 'background' : 'index')
     .add(api.resolve(mainProcessFile))
+  const {
+    transformer,
+    formatter
+  } = require('@vue/cli-service/lib/util/resolveLoaderError')
+  config
+    .plugin('friendly-errors')
+    .use(require('friendly-errors-webpack-plugin'), [
+      {
+        additionalTransformers: [transformer],
+        additionalFormatters: [formatter]
+      }
+    ])
   if (usesTypescript) {
     config.resolve.extensions.merge(['.js', '.ts'])
     config.module

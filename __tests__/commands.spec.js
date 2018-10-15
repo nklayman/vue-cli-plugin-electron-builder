@@ -16,6 +16,7 @@ const mockYargsCommand = jest.fn(() => ({ parse: mockYargsParse }))
 jest.mock('yargs', () => ({ command: mockYargsCommand }))
 jest.mock('@vue/cli-service/lib/commands/build')
 jest.mock('fs-extra')
+jest.mock('@vue/cli-service/lib/commands/build/formatStats')
 jest.mock('../lib/removeJunk.js', () => jest.fn(() => 'removeJunk'))
 jest.mock('electron-builder')
 const mockInstallAppDeps = jest.fn()
@@ -72,7 +73,8 @@ const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
     chainWebpack: jest.fn(),
     service: {
       // Mock api.service.run('build/serve')
-      run: serviceRun
+      run: serviceRun,
+      context: process.cwd()
     }
   }
   // Run the plugin, saving it's registered commands

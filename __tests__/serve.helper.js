@@ -9,7 +9,7 @@ portfinder.basePort = 9515
 const serve = (project, notifyUpdate) =>
   new Promise((resolve, reject) => {
     // --debug to prevent Electron from being launched
-    const child = project.run('vue-cli-service electron:serve --debug')
+    const child = project.run('vue-cli-service electron:serve --headless')
     let log = ''
     child.stdout.on('data', async data => {
       data = data.toString()
@@ -18,7 +18,7 @@ const serve = (project, notifyUpdate) =>
         if (
           data.match(
             // Dev server is finished and index.js is created
-            /Not launching electron as debug argument was passed\. You must launch electron though your debugger\./
+            /\$WEBPACK_DEV_SERVER_URL=/
           )
         ) {
           resolve({

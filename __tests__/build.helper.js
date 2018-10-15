@@ -14,13 +14,11 @@ const runTests = useTS =>
     const projectPath = p =>
       path.join(process.cwd(), '__tests__/projects/' + projectName, p)
 
-    const { stdout } = await project.run(
+    await project.run(
       `vue-cli-service electron:build --x64 ${
         isWin ? '--win zip' : ''
       } --linux zip`
     )
-    //   Ensure built completes
-    expect(stdout.indexOf('Build complete!')).not.toBe(-1)
     //   Ensure /dist is not modified
     expect(project.has('dist')).toBe(false)
     //   Ensure build successfully outputted files
