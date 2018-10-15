@@ -427,7 +427,7 @@ function bundleMain ({
   config.output
     .path(api.resolve(outputDir + (isBuild ? '/bundled' : '')))
     // Electron will not detect background.js on dev server, only index.js
-    .filename(isBuild ? 'background.js' : 'index.js')
+    .filename('[name].js')
   if (isBuild) {
     //   Set __static to __dirname (files in public get copied here)
     config
@@ -465,7 +465,9 @@ function bundleMain ({
       }
     ])
   }
-  config.entry('background').add(api.resolve(mainProcessFile))
+  config
+    .entry(isBuild ? 'background' : 'index')
+    .add(api.resolve(mainProcessFile))
   if (usesTypescript) {
     config.resolve.extensions.merge(['.js', '.ts'])
     config.module

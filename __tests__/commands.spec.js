@@ -311,7 +311,7 @@ describe('electron:serve', () => {
       mainConfig.resolve ? mainConfig.resolve.extensions : []
     ).not.toContain('ts')
     //   Proper entry file is used
-    expect(mainConfig.entry.background[0]).toBe('projectPath/src/background.js')
+    expect(mainConfig.entry.index[0]).toBe('projectPath/src/background.js')
   })
 
   test('custom background file is used if provided', async () => {
@@ -325,9 +325,7 @@ describe('electron:serve', () => {
 
     const mainConfig = webpack.mock.calls[0][0]
     //   Proper entry file is used
-    expect(mainConfig.entry.background[0]).toBe(
-      'projectPath/customBackground.js'
-    )
+    expect(mainConfig.entry.index[0]).toBe('projectPath/customBackground.js')
   })
 
   test('custom output dir is used if set in vue.config.js', async () => {
