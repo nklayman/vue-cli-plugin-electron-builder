@@ -15,9 +15,9 @@ const runTests = useTS =>
       path.join(process.cwd(), '__tests__/projects/' + projectName, p)
 
     await project.run(
-      `vue-cli-service electron:build --x64 ${
-        isWin ? '--win zip' : ''
-      } --linux zip`
+      `vue-cli-service electron:build --x64 --dir --linux${
+        isWin ? ' --windows' : ''
+      }`
     )
     //   Ensure /dist is not modified
     expect(project.has('dist')).toBe(false)
@@ -35,17 +35,14 @@ const runTests = useTS =>
     expect(project.has(`dist_electron/linux-unpacked/${projectName}`)).toBe(
       true
     )
-    //   Ensure that setup file was not created
+    //   Ensure that setup files were not created
     expect(project.has(`dist_electron/${projectName} Setup 0.1.0.exe`)).toBe(
       false
     )
-    // Ensure that zip files were created
-    if (isWin) {
-      expect(project.has(`dist_electron/${projectName}-0.1.0-win.zip`)).toBe(
-        true
-      )
-    }
-    expect(project.has(`dist_electron/${projectName}-0.1.0.zip`)).toBe(true)
+    expect(
+      project.has(`dist_electron/${projectName}-0.1.0-x86_64.AppImage`)
+    ).toBe(false)
+    expect(project.has(`dist_electron/${projectName}_0.1.0_amd64`)).toBe(false)
     //   Ensure base is set properly (for app protocol)
     const index = fs.readFileSync(
       projectPath('dist_electron/bundled/index.html'),
