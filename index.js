@@ -4,6 +4,7 @@ const Config = require('webpack-chain')
 const merge = require('lodash.merge')
 const fs = require('fs-extra')
 const path = require('path')
+const readline = require('readline')
 const {
   log,
   done,
@@ -310,6 +311,16 @@ module.exports = (api, options) => {
 
         killElectron()
       })
+
+      // Handle Ctrl+C on Windows
+      if (process.platform === 'win32') {
+        readline.createInterface({
+          input: process.stdin,
+          output: process.stdout
+        }).on('SIGINT', () => {
+          process.emit('SIGINT')
+        })
+      }
 
       function launchElectron () {
         if (args.debug) {
