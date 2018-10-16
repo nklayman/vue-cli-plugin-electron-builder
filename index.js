@@ -273,14 +273,18 @@ module.exports = (api, options) => {
         }
 
         // Attempt to kill gracefully
-        child.send('graceful-exit')
+        if (typeof child.send === 'function') {
+          child.send('graceful-exit')
 
-        // Kill after 2 seconds if unsuccessful
-        childExitTimeout = setTimeout(() => {
-          if (child) {
-            child.kill()
-          }
-        }, 2000)
+          // Kill after 2 seconds if unsuccessful
+          childExitTimeout = setTimeout(() => {
+            if (child) {
+              child.kill()
+            }
+          }, 2000)
+        } else {
+          child.kill()
+        }
       }
 
       // Initial start of Electron
@@ -391,7 +395,7 @@ module.exports = (api, options) => {
               .pipe(process.stderr)
           }
 
-          child.once('exit', () => {
+          child.on('exit', () => {
             child = null
 
             if (childExitTimeout) {
