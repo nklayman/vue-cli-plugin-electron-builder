@@ -312,11 +312,11 @@ module.exports = (api, options) => {
         killElectron()
       }
 
-      process.on('SIGINT', signalHandler)
-      process.on('SIGTERM', signalHandler)
+      if (!process.env.IS_TEST) process.on('SIGINT', signalHandler)
+      if (!process.env.IS_TEST) process.on('SIGTERM', signalHandler)
 
       // Handle Ctrl+C on Windows
-      if (process.platform === 'win32') {
+      if (process.platform === 'win32' && !process.env.IS_TEST) {
         readline
           .createInterface({
             input: process.stdin,

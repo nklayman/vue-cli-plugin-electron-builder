@@ -11,6 +11,7 @@ const { chainWebpack } = require('../lib/webpackConfig')
 // #endregion
 
 // #region Mocks
+process.env.IS_TEST = true
 const mockYargsParse = jest.fn()
 const mockYargsCommand = jest.fn(() => ({ parse: mockYargsParse }))
 jest.mock('yargs', () => ({ command: mockYargsCommand }))
