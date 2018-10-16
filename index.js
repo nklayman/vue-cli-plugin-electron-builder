@@ -300,8 +300,8 @@ module.exports = (api, options) => {
         })
       })
 
-      // Attempt to kill gracefully on SIGINT
-      process.on('SIGINT', () => {
+      // Attempt to kill gracefully on SIGINT and SIGTERM
+      const signalHandler = () => {
         if (!child) {
           process.exit(0)
         }
@@ -310,7 +310,10 @@ module.exports = (api, options) => {
         childRestartOnExit = -1
 
         killElectron()
-      })
+      }
+
+      process.on('SIGINT', signalHandler)
+      process.on('SIGTERM', signalHandler)
 
       // Handle Ctrl+C on Windows
       if (process.platform === 'win32') {
