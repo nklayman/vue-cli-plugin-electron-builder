@@ -59,3 +59,12 @@ app.on('ready', async () => {
   }
   createWindow()
 })
+
+// Exit cleanly on request from parent process in development mode.
+if (isDevelopment) {
+  process.on('message', data => {
+    if (data === 'graceful-exit') {
+      app.quit()
+    }
+  })
+}

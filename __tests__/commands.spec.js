@@ -11,6 +11,7 @@ const { chainWebpack } = require('../lib/webpackConfig')
 // #endregion
 
 // #region Mocks
+process.env.IS_TEST = true
 const mockYargsParse = jest.fn()
 const mockYargsCommand = jest.fn(() => ({ parse: mockYargsParse }))
 jest.mock('yargs', () => ({ command: mockYargsCommand }))
@@ -25,10 +26,14 @@ jest.mock('electron-builder/out/cli/install-app-deps.js', () => ({
 }))
 jest.mock('../lib/webpackConfig.js')
 const mockPipe = jest.fn()
+const childEvents = {}
 const mockExeca = {
-  on: jest.fn(),
+  on: jest.fn((eventName, cb) => {
+    childEvents[eventName] = cb
+  }),
   removeAllListeners: jest.fn(),
   kill: jest.fn(),
+  send: jest.fn(),
   stdout: {
     pipe: jest.fn(() => ({ pipe: mockPipe }))
   },
@@ -384,6 +389,7 @@ describe('electron:serve', () => {
 
     // Mock change of background file
     watchCb()
+    childEvents.exit()
 
     expect(execa).toHaveBeenCalledTimes(2)
     expect(execa.mock.calls[0][1]).toEqual([
@@ -442,7 +448,7 @@ describe('electron:serve', () => {
     // Proper file is watched
     expect(fs.watchFile.mock.calls[0][0]).toBe('projectPath/customBackground')
     // Child has not yet been killed or unwatched
-    expect(mockExeca.kill).not.toBeCalled()
+    expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.removeAllListeners).not.toBeCalled()
     // Main process was bundled and Electron was launched initially
     expect(webpack).toHaveBeenCalledTimes(1)
@@ -450,9 +456,10 @@ describe('electron:serve', () => {
 
     // Mock change of background file
     watchCb()
+    childEvents.exit()
     // Electron was killed and listeners removed
-    expect(mockExeca.kill).toHaveBeenCalledTimes(1)
-    expect(mockExeca.removeAllListeners).toHaveBeenCalledTimes(1)
+    expect(mockExeca.send).toHaveBeenCalledTimes(1)
+    expect(mockExeca.send).toHaveBeenCalledWith('graceful-exit')
     // Process did not exit on Electron close
     expect(process.exit).not.toBeCalled()
     // Main process file was recompiled
@@ -484,7 +491,7 @@ describe('electron:serve', () => {
     expect(fs.watchFile.mock.calls[0][0]).toBe('projectPath/customBackground')
     expect(fs.watchFile.mock.calls[1][0]).toBe('projectPath/listFile')
     // Child has not yet been killed or unwatched
-    expect(mockExeca.kill).not.toBeCalled()
+    expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.removeAllListeners).not.toBeCalled()
     // Main process was bundled and Electron was launched initially
     expect(webpack).toHaveBeenCalledTimes(1)
@@ -492,9 +499,10 @@ describe('electron:serve', () => {
 
     // Mock change of listed file
     watchCb['projectPath/listFile']()
+    childEvents.exit()
     // Electron was killed and listeners removed
-    expect(mockExeca.kill).toHaveBeenCalledTimes(1)
-    expect(mockExeca.removeAllListeners).toHaveBeenCalledTimes(1)
+    expect(mockExeca.send).toHaveBeenCalledTimes(1)
+    expect(mockExeca.send).toHaveBeenCalledWith('graceful-exit')
     // Process did not exit on Electron close
     expect(process.exit).not.toBeCalled()
     // Main process file was recompiled
@@ -504,9 +512,10 @@ describe('electron:serve', () => {
 
     // Mock change of background file
     watchCb['projectPath/customBackground']()
+    childEvents.exit()
     // Electron was killed and listeners removed
-    expect(mockExeca.kill).toHaveBeenCalledTimes(2)
-    expect(mockExeca.removeAllListeners).toHaveBeenCalledTimes(2)
+    expect(mockExeca.send).toHaveBeenCalledTimes(2)
+    expect(mockExeca.send).toHaveBeenCalledWith('graceful-exit')
     // Process did not exit on Electron close
     expect(process.exit).not.toBeCalled()
     // Main process file was recompiled

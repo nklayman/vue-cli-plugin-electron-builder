@@ -4,6 +4,7 @@ const Config = require('webpack-chain')
 const merge = require('lodash.merge')
 const fs = require('fs-extra')
 const path = require('path')
+const readline = require('readline')
 const {
   log,
   done,
@@ -216,17 +217,9 @@ module.exports = (api, options) => {
 
       // Copy package.json so electron can detect app's name
       fs.copySync(api.resolve('./package.json'), `${outputDir}/package.json`)
-      // Electron process
-      let child
+
       // Function to bundle main process and start Electron
       const startElectron = () => {
-        if (child) {
-          // Prevent self exit on Electron process death
-          child.removeAllListeners()
-          // Kill old Electron process
-          child.kill()
-        }
-
         if (bundleMainProcess) {
           //   Build the main process
           const bundle = bundleMain({
@@ -266,12 +259,73 @@ module.exports = (api, options) => {
           launchElectron()
         }
       }
+
+      // Electron process
+      let child
+      // Auto restart flag
+      let childRestartOnExit = 0
+      // Graceful exit timeout
+      let childExitTimeout
+      // Function to kill Electron process
+      const killElectron = () => {
+        if (!child) {
+          return
+        }
+
+        // Attempt to kill gracefully
+        child.send('graceful-exit')
+
+        // Kill after 2 seconds if unsuccessful
+        childExitTimeout = setTimeout(() => {
+          if (child) {
+            child.kill()
+          }
+        }, 2000)
+      }
+
       // Initial start of Electron
       startElectron()
       // Restart on main process file change
       mainProcessWatch.forEach(file => {
-        fs.watchFile(api.resolve(file), startElectron)
+        fs.watchFile(api.resolve(file), () => {
+          // Never restart after SIGINT
+          if (childRestartOnExit < 0) {
+            return
+          }
+
+          // Set auto restart flag
+          childRestartOnExit = 1
+
+          killElectron()
+        })
       })
+
+      // Attempt to kill gracefully on SIGINT and SIGTERM
+      const signalHandler = () => {
+        if (!child) {
+          process.exit(0)
+        }
+
+        // Prevent future restarts
+        childRestartOnExit = -1
+
+        killElectron()
+      }
+
+      if (!process.env.IS_TEST) process.on('SIGINT', signalHandler)
+      if (!process.env.IS_TEST) process.on('SIGTERM', signalHandler)
+
+      // Handle Ctrl+C on Windows
+      if (process.platform === 'win32' && !process.env.IS_TEST) {
+        readline
+          .createInterface({
+            input: process.stdin,
+            output: process.stdout
+          })
+          .on('SIGINT', () => {
+            process.emit('SIGINT')
+          })
+      }
 
       function launchElectron () {
         if (args.debug) {
@@ -302,6 +356,10 @@ module.exports = (api, options) => {
           } else {
             info('Launching Electron...')
           }
+
+          // Disable Electron process auto restart
+          childRestartOnExit = 0
+
           child = execa(
             require('electron'),
             [
@@ -316,7 +374,8 @@ module.exports = (api, options) => {
                 ...process.env,
                 // Disable electron security warnings
                 ELECTRON_DISABLE_SECURITY_WARNINGS: true
-              }
+              },
+              stdio: [null, null, null, 'ipc']
             }
           )
 
@@ -335,8 +394,18 @@ module.exports = (api, options) => {
           }
 
           child.on('exit', () => {
-            //   Exit when electron is closed
-            process.exit(0)
+            child = null
+
+            if (childExitTimeout) {
+              clearTimeout(childExitTimeout)
+              childExitTimeout = null
+            }
+
+            if (childRestartOnExit > 0) {
+              startElectron()
+            } else {
+              process.exit(0)
+            }
           })
         }
       }
