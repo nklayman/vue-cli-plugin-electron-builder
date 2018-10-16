@@ -273,18 +273,14 @@ module.exports = (api, options) => {
         }
 
         // Attempt to kill gracefully
-        if (typeof child.send === 'function') {
-          child.send('graceful-exit')
+        child.send('graceful-exit')
 
-          // Kill after 2 seconds if unsuccessful
-          childExitTimeout = setTimeout(() => {
-            if (child) {
-              child.kill()
-            }
-          }, 2000)
-        } else {
-          child.kill()
-        }
+        // Kill after 2 seconds if unsuccessful
+        childExitTimeout = setTimeout(() => {
+          if (child) {
+            child.kill()
+          }
+        }, 2000)
       }
 
       // Initial start of Electron
