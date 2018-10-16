@@ -217,12 +217,6 @@ module.exports = (api, options) => {
 
       // Copy package.json so electron can detect app's name
       fs.copySync(api.resolve('./package.json'), `${outputDir}/package.json`)
-      // Electron process
-      let child
-      // Auto restart flag
-      let childRestartOnExit = 0
-      // Graceful exit timeout
-      let childExitTimeout
 
       // Function to bundle main process and start Electron
       const startElectron = () => {
@@ -266,6 +260,12 @@ module.exports = (api, options) => {
         }
       }
 
+      // Electron process
+      let child
+      // Auto restart flag
+      let childRestartOnExit = 0
+      // Graceful exit timeout
+      let childExitTimeout
       // Function to kill Electron process
       const killElectron = () => {
         if (!child) {
@@ -317,12 +317,14 @@ module.exports = (api, options) => {
 
       // Handle Ctrl+C on Windows
       if (process.platform === 'win32') {
-        readline.createInterface({
-          input: process.stdin,
-          output: process.stdout
-        }).on('SIGINT', () => {
-          process.emit('SIGINT')
-        })
+        readline
+          .createInterface({
+            input: process.stdin,
+            output: process.stdout
+          })
+          .on('SIGINT', () => {
+            process.emit('SIGINT')
+          })
       }
 
       function launchElectron () {

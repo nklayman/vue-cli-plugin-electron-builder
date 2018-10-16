@@ -62,9 +62,9 @@ app.on('ready', async () => {
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
-  process.on('message', (data) => {
+  process.on('message', data => {
     if (data === 'graceful-exit') {
-      app.exit()
+      app.quit()
     }
   })
 }
