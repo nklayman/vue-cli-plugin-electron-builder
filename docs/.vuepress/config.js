@@ -30,6 +30,7 @@ module.exports = {
         'guide',
         'configuration',
         'testingAndDebugging',
+        'commonIssues',
         'upgrading'
       ]
     },
