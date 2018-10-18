@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-module.exports = api => {
+module.exports = (api, options = {}) => {
   const usesTS = api.hasPlugin('typescript')
   const hasBackground =
     fs.existsSync(api.resolve(`./src/background.ts`)) ||
@@ -72,15 +72,18 @@ module.exports = api => {
     // Create new postinstall script
     postinstallScript = 'electron-builder install-app-deps'
   }
+  const devDependencies = {}
+  if (options.electronBuilder && options.electronBuilder.electronVersion) {
+    // Use provided electron version
+    devDependencies.electron = options.electronBuilder.electronVersion
+  }
   api.extendPackage({
     scripts: {
       'electron:build': 'vue-cli-service electron:build',
       'electron:serve': 'vue-cli-service electron:serve',
       postinstall: postinstallScript
     },
-    devDependencies: {
-      electron: '^2.0.2'
-    },
+    devDependencies,
     main: 'background.js'
   })
 }
