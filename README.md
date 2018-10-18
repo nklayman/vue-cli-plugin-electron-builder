@@ -22,20 +22,29 @@ That's It! You're ready to go!
 
 If you use [Yarn](https://yarnpkg.com/en/) (strongly recommended):
 
-`yarn serve:electron`
+`yarn electron:serve`
 
 or if you use NPM:
 
-`npm run serve:electron`
+`npm run electron:serve`
 
 ### To build your app:
 
 With Yarn:
 
-`yarn build:electron`
+`yarn electron:build`
 
 or with NPM:
 
-`npm run build:electron`
+`npm run electron:build`
 
 To see more documentation, [visit our website](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html).
+
+## WARNING
+
+The command names have changed in `v1.0.0-rc.4`. If you are using an older version, the command names are:
+`yarn serve:electron`
+and
+`yarn build:electron`.
+
+Replace `yarn` with `npm run` if you are using npm.
