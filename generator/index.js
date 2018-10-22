@@ -10,16 +10,6 @@ module.exports = (api, options = {}) => {
     api.render('./template')
   }
   api.onCreateComplete(() => {
-    //   Read existing index.html
-    let index = fs.readFileSync(api.resolve('./public/index.html'), 'utf8')
-    const tag = `<% if (BASE_URL === './') { %><base href="app://./" /><% } %>`
-    if (index.indexOf(tag) === -1) {
-      // Inject base tag if it doesn't exist
-      index = index.replace(/^\s*?<head.*?>\s*?$/m, `  <head>\n    ${tag}`)
-    }
-    //   Write updated index.html
-    fs.writeFileSync(api.resolve('./public/index.html'), index)
-
     // Update .gitignore if it exists
     if (fs.existsSync(api.resolve('./.gitignore'))) {
       let gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')

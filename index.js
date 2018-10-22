@@ -103,7 +103,7 @@ module.exports = (api, options) => {
             modern: !args.legacy
           }
           //   Set the base url so that the app protocol is used
-          options.baseUrl = './'
+          options.baseUrl = pluginOptions.noAppProtocol ? './' : 'app://./'
           info('Bundling render process:')
           //   Build the render process with the custom args
           await api.service.run('build', vueArgs)

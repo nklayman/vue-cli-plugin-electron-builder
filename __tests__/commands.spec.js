@@ -86,6 +86,7 @@ const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
   pluginIndex(api, options)
   // Run the provided command
   await commands[command](args, rawArgs)
+  return { api, options }
 }
 // #endregion
 
@@ -295,6 +296,22 @@ describe('electron:build', () => {
       'projectPath/myBackgroundFile.js',
       'projectPath/outputDir/bundled/background.js'
     )
+  })
+
+  test('Base url is set to "app://./"', async () => {
+    const { options } = await runCommand('electron:build')
+    expect(options.baseUrl).toBe('app://./')
+  })
+
+  test('Base url is set to "./" if pluginOptions.noAppProtocol is set', async () => {
+    const { options } = await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          noAppProtocol: true
+        }
+      }
+    })
+    expect(options.baseUrl).toBe('./')
   })
 })
 

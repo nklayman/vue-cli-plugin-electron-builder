@@ -62,8 +62,8 @@ describe('.gitignore', () => {
       'apiResolve_./.gitignore',
       expect.any(String)
     )
-    // Only background.js should have been written
-    expect(fs.writeFileSync).toHaveBeenCalledTimes(1)
+    // Nothing should have been written
+    expect(fs.writeFileSync).toHaveBeenCalledTimes(0)
   })
 
   test.each(['#Electron-builder output', '/dist_electron'])(
@@ -90,41 +90,10 @@ describe('.gitignore', () => {
         'apiResolve_./.gitignore',
         expect.any(String)
       )
-      // Only index should have been written
-      expect(fs.writeFileSync).toHaveBeenCalledTimes(1)
+      // Nothing should have been written
+      expect(fs.writeFileSync).toHaveBeenCalledTimes(0)
     }
   )
-})
-
-describe('index.html', () => {
-  test.each([
-    // None
-    '',
-    // Base URL
-    `    <% if (BASE_URL === './') { %><base href="app://./" /><% } %>\n`
-  ])('Only add missing tags to index.html', existing => {
-    // Disable .gitignore modification
-    fs.existsSync.mockReturnValueOnce(false)
-    fs.readFileSync.mockImplementation((path, encoding) => {
-      // Check that utf8 encoding is set
-      expect(encoding).toBe('utf8')
-      if (path === 'apiResolve_./package.json') {
-        return JSON.stringify({ scripts: {} })
-      }
-      // return mock content
-      return `  <head>\n${existing}  </head>`
-    })
-
-    // Run the generator with mock api
-    generator(mockApi)
-    // Run the onCreateComplete callback
-    completionCb()
-
-    const index = fs.writeFileSync.mock.calls[0][1]
-    expect(index).toBe(`  <head>
-    <% if (BASE_URL === './') { %><base href="app://./" /><% } %>
-  </head>`)
-  })
 })
 
 describe('background.js', () => {

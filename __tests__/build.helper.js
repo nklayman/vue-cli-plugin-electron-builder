@@ -1,6 +1,5 @@
 const create = require('./createProject.helper.js')
 const path = require('path')
-const fs = require('fs-extra')
 const Application = require('spectron').Application
 const portfinder = require('portfinder')
 const checkLogs = require('./checkLogs.helper.js')
@@ -43,12 +42,6 @@ const runTests = useTS =>
       project.has(`dist_electron/${projectName}-0.1.0-x86_64.AppImage`)
     ).toBe(false)
     expect(project.has(`dist_electron/${projectName}_0.1.0_amd64`)).toBe(false)
-    //   Ensure base is set properly (for app protocol)
-    const index = fs.readFileSync(
-      projectPath('dist_electron/bundled/index.html'),
-      'utf8'
-    )
-    expect(index.indexOf('<base href=app://./ >')).not.toBe(-1)
     // Launch app with spectron
     const app = new Application({
       path: `./__tests__/projects/${projectName}/dist_electron/${
