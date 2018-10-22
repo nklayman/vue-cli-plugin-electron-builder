@@ -6,17 +6,22 @@ sidebarDepth: 2
 
 ## Blank screen on builds, but works fine on serve
 
-This issue is likely caused when vue-router is operating in `history` mode. Disable history mode like so:
+This issue is likely caused when vue-router is operating in `history` mode. To fix this, add a `mounted` hook to the root Vue component:
 
 ```javascript
-// src/router.js or src/router/index.js
-// ...
-export default new Router({
-  mode: 'hash' // instead of "mode: 'history'"
-  // ...
-})
-// ...
+// src/main.js
+
+new Vue({
+  router,
+  render: h => h(App),
+  mounted() {
+    // Prevent blank screen in Electron builds
+    this.$router.push('/')
+  }
+}).$mount('#app')
 ```
+
+This will fix the Electron build issues, but won't affect web builds.
 
 ## `electron:serve` freezes on `Launching Electron...`
 
