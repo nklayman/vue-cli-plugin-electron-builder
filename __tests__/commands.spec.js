@@ -316,6 +316,8 @@ describe('electron:build', () => {
 })
 
 describe('electron:serve', () => {
+  const isWin = process.platform === 'win32'
+
   process.env.NODE_ENV = 'development'
 
   test('typescript is disabled when set in options', async () => {
@@ -466,6 +468,7 @@ describe('electron:serve', () => {
     expect(fs.watchFile.mock.calls[0][0]).toBe('projectPath/customBackground')
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
+    expect(mockExeca.kill).not.toBeCalled()
     expect(mockExeca.removeAllListeners).not.toBeCalled()
     // Main process was bundled and Electron was launched initially
     expect(webpack).toHaveBeenCalledTimes(1)
@@ -475,8 +478,13 @@ describe('electron:serve', () => {
     watchCb()
     childEvents.exit()
     // Electron was killed and listeners removed
-    expect(mockExeca.send).toHaveBeenCalledTimes(1)
-    expect(mockExeca.send).toHaveBeenCalledWith('graceful-exit')
+    if (isWin) {
+      expect(mockExeca.send).toHaveBeenCalledTimes(1)
+      expect(mockExeca.send).toHaveBeenCalledWith('graceful-exit')
+    } else {
+      expect(mockExeca.kill).toHaveBeenCalledTimes(1)
+      expect(mockExeca.kill).toHaveBeenCalledWith('SIGTERM')
+    }
     // Process did not exit on Electron close
     expect(process.exit).not.toBeCalled()
     // Main process file was recompiled
@@ -509,6 +517,7 @@ describe('electron:serve', () => {
     expect(fs.watchFile.mock.calls[1][0]).toBe('projectPath/listFile')
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
+    expect(mockExeca.kill).not.toBeCalled()
     expect(mockExeca.removeAllListeners).not.toBeCalled()
     // Main process was bundled and Electron was launched initially
     expect(webpack).toHaveBeenCalledTimes(1)
@@ -518,8 +527,13 @@ describe('electron:serve', () => {
     watchCb['projectPath/listFile']()
     childEvents.exit()
     // Electron was killed and listeners removed
-    expect(mockExeca.send).toHaveBeenCalledTimes(1)
-    expect(mockExeca.send).toHaveBeenCalledWith('graceful-exit')
+    if (isWin) {
+      expect(mockExeca.send).toHaveBeenCalledTimes(1)
+      expect(mockExeca.send).toHaveBeenCalledWith('graceful-exit')
+    } else {
+      expect(mockExeca.kill).toHaveBeenCalledTimes(1)
+      expect(mockExeca.kill).toHaveBeenCalledWith('SIGTERM')
+    }
     // Process did not exit on Electron close
     expect(process.exit).not.toBeCalled()
     // Main process file was recompiled
@@ -531,8 +545,13 @@ describe('electron:serve', () => {
     watchCb['projectPath/customBackground']()
     childEvents.exit()
     // Electron was killed and listeners removed
-    expect(mockExeca.send).toHaveBeenCalledTimes(2)
-    expect(mockExeca.send).toHaveBeenCalledWith('graceful-exit')
+    if (isWin) {
+      expect(mockExeca.send).toHaveBeenCalledTimes(2)
+      expect(mockExeca.send).toHaveBeenCalledWith('graceful-exit')
+    } else {
+      expect(mockExeca.kill).toHaveBeenCalledTimes(2)
+      expect(mockExeca.kill).toHaveBeenCalledWith('SIGTERM')
+    }
     // Process did not exit on Electron close
     expect(process.exit).not.toBeCalled()
     // Main process file was recompiled
