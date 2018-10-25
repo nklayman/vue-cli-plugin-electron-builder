@@ -316,9 +316,8 @@ describe('electron:build', () => {
 })
 
 describe('electron:serve', () => {
-  const isWin = process.platform === 'win32'
-
   process.env.NODE_ENV = 'development'
+  const isWin = process.platform === 'win32'
 
   test('typescript is disabled when set in options', async () => {
     await runCommand('electron:serve', {
