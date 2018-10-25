@@ -273,12 +273,16 @@ module.exports = (api, options) => {
         }
 
         // Attempt to kill gracefully
-        child.send('graceful-exit')
+        if (process.platform === 'win32') {
+          child.send('graceful-exit')
+        } else {
+          child.kill('SIGTERM')
+        }
 
-        // Kill after 2 seconds if unsuccessful
+        // Kill unconditionally after 2 seconds if unsuccessful
         childExitTimeout = setTimeout(() => {
           if (child) {
-            child.kill()
+            child.kill('SIGKILL')
           }
         }, 2000)
       }
@@ -360,6 +364,11 @@ module.exports = (api, options) => {
           // Disable Electron process auto restart
           childRestartOnExit = 0
 
+          let stdioConfig = [null, null, null]
+
+          // Use an IPC on Windows for graceful exit
+          if (process.platform === 'win32') stdioConfig.push('ipc')
+
           child = execa(
             require('electron'),
             [
@@ -375,7 +384,7 @@ module.exports = (api, options) => {
                 // Disable electron security warnings
                 ELECTRON_DISABLE_SECURITY_WARNINGS: true
               },
-              stdio: [null, null, null, 'ipc']
+              stdio: stdioConfig
             }
           )
 

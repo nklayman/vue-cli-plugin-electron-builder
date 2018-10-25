@@ -62,9 +62,15 @@ app.on('ready', async () => {
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
-  process.on('message', data => {
-    if (data === 'graceful-exit') {
+  if (process.platform === 'win32') {
+    process.on('message', data => {
+      if (data === 'graceful-exit') {
+        app.quit()
+      }
+    })
+  } else {
+    process.on('SIGTERM', () => {
       app.quit()
-    }
-  })
+    })
+  }
 }
