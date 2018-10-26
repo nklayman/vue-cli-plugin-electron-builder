@@ -55,7 +55,7 @@ app.on('activate', () => {
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
-    installVueDevtools()
+    await installVueDevtools()
   }
   createWindow()
 })
