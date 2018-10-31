@@ -226,6 +226,7 @@ describe('electron:build', () => {
   test.each([
     ['--mode', 'someMode'],
     ['--legacy'],
+    ['--dashboard'],
     ['--skipBundle'],
     ['--dest', 'output']
   ])('%s argument is removed from electron-builder args', async (...args) => {

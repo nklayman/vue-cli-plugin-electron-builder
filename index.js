@@ -69,6 +69,7 @@ module.exports = (api, options) => {
         removeArg('--mode', 2)
         removeArg('--dest', 2)
         removeArg('--legacy', 1)
+        removeArg('--dashboard', 1)
         removeArg('--skipBundle', 1)
         // Parse the raw arguments using electron-builder yargs config
         const builderArgs = yargs
