@@ -24,7 +24,7 @@ function createWindow () {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL('app://./index.html')
+    win.loadFile('index.html')
   }
 
   win.on('closed', () => {
