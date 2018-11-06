@@ -1,13 +1,22 @@
 const fs = require('fs')
 
 module.exports = (api, options = {}) => {
+  if (!options.electronBuilder) options.electronBuilder = {}
   const usesTS = api.hasPlugin('typescript')
   const hasBackground =
     fs.existsSync(api.resolve(`./src/background.ts`)) ||
     fs.existsSync(api.resolve(`./src/background.js`))
   if (!hasBackground) {
     // If user does not have a background file so it should be created
-    api.render('./template')
+    api.render('./templates/base')
+  }
+  // Add tests
+  if (options.electronBuilder.addTests) {
+    let testFramework
+    // TODO: support mocha
+    // if (api.hasPlugin('unit-mocha')) testFramework = 'mocha'
+    if (api.hasPlugin('unit-jest')) testFramework = 'jest'
+    if (testFramework) api.render(`./templates/tests-${testFramework}`)
   }
   api.onCreateComplete(() => {
     // Update .gitignore if it exists
@@ -63,7 +72,7 @@ module.exports = (api, options = {}) => {
     postinstallScript = 'electron-builder install-app-deps'
   }
   const devDependencies = {}
-  if (options.electronBuilder && options.electronBuilder.electronVersion) {
+  if (options.electronBuilder.electronVersion) {
     // Use provided electron version
     devDependencies.electron = options.electronBuilder.electronVersion
   }
