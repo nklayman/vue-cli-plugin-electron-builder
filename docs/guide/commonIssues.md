@@ -36,9 +36,9 @@ if (isDevelopment && !process.env.IS_TEST) {
 
 ## Strict mime-type error when running a built app
 
-```tip Notice
+:::tip Notice
 As of v1.0.0-rc.5, this tag is no longer necessary. You can remove it if you wish.
-```
+:::
 
 This is likely caused because you are missing code in your `public/index.html` file. To add it, simply run `vue invoke electron-builder`. This will re-invoke the generator of VCP Electron Builder. Any missing code will be detected and added automatically. If you would not like to re-invoke the generator, you can paste this code into the top of the `<head>` of your `public/index.html`:
 
