@@ -58,6 +58,10 @@ process.on('unhandledRejection', error => {
 
 See [#118](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/118) for more details. Thanks to [dspangenberg](https://github.com/dspangenberg) for the fix.
 
+## Electron not opening on Node v11
+
+Make sure you are using Electron v2.0.14+ or v3.0.10+. Also, make sure Node is v11.2.0+. See [#107 (comment)](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/107#issuecomment-441168465) for more details.
+
 ## Other issues
 
 Many issues can be solved by re-invoking the generator of Vue CLI Plugin Electron Builder. This allows it to add newer code to your project files. You may need to do this after upgrading the plugin.
