@@ -50,6 +50,12 @@ module.exports = (api, options = {}) => {
         'let mainWindow: any'
       )
       fs.writeFileSync(api.resolve('./src/background.ts'), background)
+      if (api.hasPlugin('router')) {
+        console.log('\n')
+        require('@vue/cli-shared-utils/lib/logger').warn(
+          'It is detected that you are using Vue Router. If you are using history mode, you must push the default route when the root component is loaded. Learn more at http://shorturl.at/lsBEH.'
+        )
+      }
     }
   })
 
