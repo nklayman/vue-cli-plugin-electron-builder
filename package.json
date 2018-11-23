@@ -63,6 +63,7 @@
     "jest": "^23.5.0",
     "lnk": "^1.1.0",
     "rimraf": "^2.6.2",
+    "terminal-tasks": "^0.0.4",
     "typescript": "^3.0.1",
     "vue": "2.5.17",
     "vuepress": "^0.14.2"

@@ -1,24 +1,34 @@
 const execa = require('execa')
+const List = require('terminal-tasks')
+const list = new List([
+  'Build With Vuepress',
+  'Git Init',
+  'Git Add',
+  'Git Commit',
+  'Git Push'
+])
 const deploy = () =>
   new Promise(async resolve => {
     // Build docs
-    await execa('yarn', ['docs:build'], {
-      stdio: 'inherit'
-    })
+    await execa('yarn', ['docs:build'], {})
+    list.next()
 
     // Push to github
     await execa('git', ['init'], {
-      stdio: 'inherit',
       cwd: './docs/.vuepress/dist'
     })
+    list.next()
+
     await execa('git', ['add', '-A'], {
-      stdio: 'inherit',
       cwd: './docs/.vuepress/dist'
     })
+    list.next()
+
     await execa('git', ['commit', '-m', 'deploy'], {
-      stdio: 'inherit',
       cwd: './docs/.vuepress/dist'
     })
+    list.next()
+
     await execa(
       'git',
       [
@@ -28,12 +38,11 @@ const deploy = () =>
         'master:gh-pages'
       ],
       {
-        cwd: './docs/.vuepress/dist',
-        stdio: 'inherit'
+        cwd: './docs/.vuepress/dist'
       }
     )
     resolve()
   })
 deploy().then(() => {
-  console.log('Deploy Complete')
+  list.complete('Deploy Complete!')
 })

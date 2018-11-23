@@ -10549,6 +10549,18 @@ ora@^2.1.0:
     strip-ansi "^4.0.0"
     wcwidth "^1.0.1"
 
+ora@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/ora/-/ora-3.0.0.tgz#8179e3525b9aafd99242d63cc206fd64732741d0"
+  integrity sha512-LBS97LFe2RV6GJmXBi6OKcETKyklHNMV0xw7BtsVn2MlsgsydyZetSCbCANr+PFLmDyv4KV88nn0eCKza665Mg==
+  dependencies:
+    chalk "^2.3.1"
+    cli-cursor "^2.1.0"
+    cli-spinners "^1.1.0"
+    log-symbols "^2.2.0"
+    strip-ansi "^4.0.0"
+    wcwidth "^1.0.1"
+
 original@>=0.0.5:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/original/-/original-1.0.2.tgz#e442a61cffe1c5fd20a65f3261c26663b303f25f"
@@ -13726,6 +13738,13 @@ term-size@^1.2.0:
   integrity sha1-RYuDiH8oj8Vtb/+/rSYuJmOO+mk=
   dependencies:
     execa "^0.7.0"
+
+terminal-tasks@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/terminal-tasks/-/terminal-tasks-0.0.4.tgz#97b9cf32fa4d6c04555ca1a8558d71ae8479055d"
+  integrity sha512-wy4BGUNixau3liO5ZNIwXfAnD9IQdlmhtF+Klg/tH8PKWWE7msrmgMH0i8C56i85/U7mLEYZn051QsnCxfgLPQ==
+  dependencies:
+    ora "^3.0.0"
 
 terminate@^2.1.0:
   version "2.1.0"
