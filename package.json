@@ -66,7 +66,7 @@
     "terminal-tasks": "^0.0.4",
     "typescript": "^3.0.1",
     "vue": "^2.5.20",
-    "vue-template-compiler": "^2.5.18",
+    "vue-template-compiler": "^2.5.20",
     "vuepress": "^0.14.2"
   }
 }
