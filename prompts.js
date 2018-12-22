@@ -7,14 +7,19 @@ module.exports = [
     message: 'Choose Electron Version',
     choices: [
       {
-        name: '^2.0.0 (stable)',
+        name: '^2.0.0',
         value: '^2.0.0',
         short: '^2.0.0'
       },
       {
-        name: '^3.0.0 (may have small issues)',
+        name: '^3.0.0',
         value: '^3.0.0',
         short: '^3.0.0'
+      },
+      {
+        name: '^4.0.0 (may have small issues)',
+        value: '^4.0.0',
+        short: '^4.0.0'
       }
     ],
     when: () => {
