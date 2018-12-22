@@ -5,6 +5,7 @@ module.exports = [
     name: 'electronBuilder.electronVersion',
     type: 'list',
     message: 'Choose Electron Version',
+    default: '^3.0.0',
     choices: [
       {
         name: '^2.0.0',
