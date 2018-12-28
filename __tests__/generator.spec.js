@@ -126,7 +126,7 @@ describe('background.js', () => {
     fs.readFileSync.mockImplementation((path, encoding) => {
       // Check that utf8 encoding is set
       expect(encoding).toBe('utf8')
-      // Mock existing postinstall script in app's package.json
+      // Mock existing scripts in app's package.json
       if (path === 'apiResolve_./package.json') {
         return JSON.stringify({
           scripts: {}
@@ -144,22 +144,20 @@ describe('background.js', () => {
   })
 })
 
-describe('package.json', () => {
-  test('Adds electron-builder install-app-deps to postInstall', () => {
+describe.each(['postinstall', 'postuninstall'])('package.json (%s)', script => {
+  test(`Adds electron-builder install-app-deps to ${script}`, () => {
     generator(mockApi)
     completionCb()
-    expect(pkg.scripts.postinstall).toBe('electron-builder install-app-deps')
+    expect(pkg.scripts[script]).toBe('electron-builder install-app-deps')
   })
 
-  test('Adds on to existing postinstall script instead of replacing', () => {
+  test(`Adds on to existing ${script} script instead of replacing`, () => {
     fs.readFileSync.mockImplementation((path, encoding) => {
       // Check that utf8 encoding is set
       expect(encoding).toBe('utf8')
-      // Mock existing postinstall script in app's package.json
+      // Mock existing script in app's package.json
       if (path === 'apiResolve_./package.json') {
-        return JSON.stringify({
-          scripts: { postinstall: 'existingTask' }
-        })
+        return `{"scripts": { "${script}": "existingTask" }}`
       }
       // return mock content
       return 'existing_content'
@@ -168,7 +166,7 @@ describe('package.json', () => {
     generator(mockApi)
     completionCb()
 
-    expect(pkg.scripts.postinstall).toBe(
+    expect(pkg.scripts[script]).toBe(
       'existingTask && electron-builder install-app-deps'
     )
   })
@@ -177,13 +175,13 @@ describe('package.json', () => {
     fs.readFileSync.mockImplementation((path, encoding) => {
       // Check that utf8 encoding is set
       expect(encoding).toBe('utf8')
-      // Mock existing postinstall script in app's package.json
+      // Mock existing script in app's package.json
       if (path === 'apiResolve_./package.json') {
-        return JSON.stringify({
-          scripts: {
-            postinstall: 'existingTask && electron-builder install-app-deps'
+        return `{
+          "scripts": {
+            "${script}": "existingTask && electron-builder install-app-deps"
           }
-        })
+        }`
       }
       // return mock content
       return 'existing_content'
@@ -192,7 +190,7 @@ describe('package.json', () => {
     generator(mockApi)
     completionCb()
 
-    expect(pkg.scripts.postinstall).toBe(
+    expect(pkg.scripts[script]).toBe(
       'existingTask && electron-builder install-app-deps'
     )
   })

@@ -59,35 +59,38 @@ module.exports = (api, options = {}) => {
     }
   })
 
-  // Add electron-builder install-app-deps to postinstall
-  let postinstallScript
+  // Add electron-builder install-app-deps to postinstall and postuninstall
+  const scripts = {
+    'electron:build': 'vue-cli-service electron:build',
+    'electron:serve': 'vue-cli-service electron:serve'
+  }
   let pkg = fs.readFileSync(api.resolve('./package.json'), 'utf8')
   pkg = JSON.parse(pkg)
-  // Add on to existing script if it exists
-  if (pkg.scripts && pkg.scripts.postinstall) {
-    // Don't re-add script
-    if (!pkg.scripts.postinstall.match('electron-builder install-app-deps')) {
-      postinstallScript =
-        pkg.scripts.postinstall + ' && electron-builder install-app-deps'
+  const addScript = (name, command) => {
+    // Add on to existing script if it exists
+    if (pkg.scripts && pkg.scripts[name]) {
+      // Don't re-add script
+      if (!pkg.scripts[name].match(command)) {
+        // add command to existing script
+        scripts[name] = pkg.scripts[name] + ` && ${command}`
+      } else {
+        // command already exists, don't change it
+        scripts[name] = pkg.scripts[name]
+      }
     } else {
-      // electron-builder install-app-deps already exists
-      postinstallScript = pkg.scripts.postinstall
+      // Create new postinstall script
+      scripts[name] = command
     }
-  } else {
-    // Create new postinstall script
-    postinstallScript = 'electron-builder install-app-deps'
   }
+  addScript('postinstall', 'electron-builder install-app-deps')
+  addScript('postuninstall', 'electron-builder install-app-deps')
   const devDependencies = {}
   if (options.electronBuilder.electronVersion) {
     // Use provided electron version
     devDependencies.electron = options.electronBuilder.electronVersion
   }
   api.extendPackage({
-    scripts: {
-      'electron:build': 'vue-cli-service electron:build',
-      'electron:serve': 'vue-cli-service electron:serve',
-      postinstall: postinstallScript
-    },
+    scripts,
     devDependencies,
     main: 'background.js'
   })
