@@ -28,7 +28,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "electron-builder": "^20.29.0",
+    "electron-builder": "^20.38.4",
     "execa": "^1.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^7.0.0",
