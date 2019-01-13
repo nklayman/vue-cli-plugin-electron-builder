@@ -91,6 +91,24 @@ describe('chainWebpack', () => {
       expect(config.toConfig()).toEqual(new Config().toConfig())
     }
   )
+
+  test.each([true, false])(
+    'process.env.IS_ELECTRON is set properly',
+    async isElectron => {
+      // Set build mode (Electron or other)
+      if (isElectron) {
+        process.env.IS_ELECTRON = true
+      } else {
+        delete process.env.IS_ELECTRON
+      }
+      const config = mockChain()
+      // Definition is set accordingly
+      expect(
+        config.plugin('define').toConfig().definitions['process.env']
+          .IS_ELECTRON
+      )[`toBe${isElectron ? 'Truthy' : 'Falsy'}`]()
+    }
+  )
 })
 
 describe.each(['production', 'development'])('getExternals in %s', env => {
