@@ -66,6 +66,7 @@ module.exports = {
       // [1.0.0-rc.4+] Provide a list of arguments that Electron will be launched with during "electron:serve",
       // which can be accessed from the main process (src/background.js).
       // Note that it is ignored when --debug flag is used with "electron:serve", as you must launch Electron yourself
+      // Command line args (excluding --debug, --dashboard, and --headless) are passed to Electron as well
       mainProcessArgs: ['--arg-name', 'arg-value']
     }
   }
