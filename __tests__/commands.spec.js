@@ -614,6 +614,61 @@ describe('electron:serve', () => {
       'projectPath/outputDir/index.js'
     )
   })
+
+  test.each([['--dashboard'], ['--debug'], ['--headless']])(
+    '%s argument is not passed to electron',
+    async (...args) => {
+      await runCommand('electron:serve', {}, {}, [
+        '--keep1',
+        ...args,
+        '--keep2'
+      ])
+      // Custom args should have been removed, and other args kept
+      let calledArgs = execa.mock.calls[0][1]
+      // Remove dist_electron
+      calledArgs.shift()
+      expect(calledArgs).toEqual(['--keep1', '--keep2'])
+      execa.mockClear()
+
+      await runCommand('electron:serve', {}, {}, [...args, '--keep2'])
+      // Custom args should have been removed, and other args kept
+      calledArgs = execa.mock.calls[0][1]
+      // Remove dist_electron
+      calledArgs.shift()
+      expect(calledArgs).toEqual(['--keep2'])
+      execa.mockClear()
+
+      await runCommand('electron:serve', {}, {}, ['--keep1', ...args])
+      // Custom args should have been removed, and other args kept
+      calledArgs = execa.mock.calls[0][1]
+      // Remove dist_electron
+      calledArgs.shift()
+      expect(calledArgs).toEqual(['--keep1'])
+      execa.mockClear()
+
+      await runCommand('electron:serve', {}, {}, args)
+      // Custom args should have been removed
+      calledArgs = execa.mock.calls[0][1]
+      // Remove dist_electron
+      calledArgs.shift()
+      expect(calledArgs).toEqual([])
+      execa.mockClear()
+
+      await runCommand('electron:serve', {}, {}, ['--keep1', '--keep2'])
+      // Nothing should be removed
+      calledArgs = execa.mock.calls[0][1]
+      // Remove dist_electron
+      calledArgs.shift()
+      expect(calledArgs).toEqual(['--keep1', '--keep2'])
+      execa.mockClear()
+    }
+  )
+
+  test('Electron is launched with arguments', async () => {
+    await runCommand('electron:serve', {}, {}, ['--expected'])
+    const args = execa.mock.calls[0][1]
+    expect(args).toContain('--expected')
+  })
 })
 
 describe('Custom webpack chain', () => {

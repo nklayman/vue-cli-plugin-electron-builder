@@ -37,6 +37,11 @@ module.exports = (api, options) => {
       ? true
       : pluginOptions.bundleMainProcess
 
+  const removeArg = (arg, count, rawArgs) => {
+    const index = rawArgs.indexOf(arg)
+    if (index !== -1) rawArgs.splice(index, count)
+  }
+
   // Apply custom webpack config
   api.chainWebpack(async config => {
     chainWebpack(api, pluginOptions, config)
@@ -62,15 +67,11 @@ module.exports = (api, options) => {
         const configureBuildCommand = require('electron-builder/out/builder')
           .configureBuildCommand
         // Prevent custom args from interfering with electron-builder
-        const removeArg = (arg, count) => {
-          const index = rawArgs.indexOf(arg)
-          if (index !== -1) rawArgs.splice(index, count)
-        }
-        removeArg('--mode', 2)
-        removeArg('--dest', 2)
-        removeArg('--legacy', 1)
-        removeArg('--dashboard', 1)
-        removeArg('--skipBundle', 1)
+        removeArg('--mode', 2, rawArgs)
+        removeArg('--dest', 2, rawArgs)
+        removeArg('--legacy', 1, rawArgs)
+        removeArg('--dashboard', 1, rawArgs)
+        removeArg('--skipBundle', 1, rawArgs)
         // Parse the raw arguments using electron-builder yargs config
         const builderArgs = yargs
           .command(['build', '*'], 'Build', configureBuildCommand)
@@ -200,7 +201,7 @@ module.exports = (api, options) => {
       usage: 'vue-cli-service serve:electron',
       details: `See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.`
     },
-    async args => {
+    async (args, rawArgs) => {
       // Use custom config for webpack
       process.env.IS_ELECTRON = true
       const execa = require('execa')
@@ -209,6 +210,11 @@ module.exports = (api, options) => {
         ...(pluginOptions.mainProcessWatch || [])
       ]
       const mainProcessArgs = pluginOptions.mainProcessArgs || []
+
+      // Don't pass command args to electron
+      removeArg('--dashboard', 1, rawArgs)
+      removeArg('--debug', 1, rawArgs)
+      removeArg('--headless', 1, rawArgs)
 
       // Run the serve command
       const server = await api.service.run('serve', {
@@ -358,6 +364,8 @@ module.exports = (api, options) => {
             info(
               'Launching Electron with arguments: "' +
                 mainProcessArgs.join(' ') +
+                ' ' +
+                rawArgs.join(' ') +
                 '" ...'
             )
           } else {
@@ -378,7 +386,9 @@ module.exports = (api, options) => {
               // Have it load the main process file built with webpack
               outputDir,
               // Append other arguments specified in plugin options
-              ...mainProcessArgs
+              ...mainProcessArgs,
+              // Append args passed to command
+              ...rawArgs
             ],
             {
               cwd: api.resolve('.'),
