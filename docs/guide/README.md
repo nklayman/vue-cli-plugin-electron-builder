@@ -10,7 +10,7 @@ Your app must be created with Vue-CLI 3 (vue create my-app), will not work with 
 :::
 
 ::: tip Upgrade Notice
-These docs are for the v1.0.0-beta release of VCP Electron Builder. If you were previously using an older version of vue-cli-plugin-electron-builder (<1.0.0), please see the [upgrade guide](./upgrading.md) or [view the old docs](https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/legacy).
+These docs are for the v1.0.0 release of VCP Electron Builder. If you were previously using an older version of vue-cli-plugin-electron-builder (<1.0.0), please see the [upgrade guide](./upgrading.md) or [view the old docs](https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/legacy).
 :::
 
 ## Installation

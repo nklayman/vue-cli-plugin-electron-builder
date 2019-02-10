@@ -6,7 +6,7 @@ Windows (Appveyor): [![Build status](https://ci.appveyor.com/api/projects/status
 
 **IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
 
-**IMPORTANT: These docs are for the v1.0.0-beta release of VCP Electron Builder. If you were previously using an older version of vue-cli-plugin-electron-builder (<1.0.0), please see the [upgrade guide](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/upgrading.html) or [view the old docs](https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/legacy).**
+**IMPORTANT: These docs are for the v1.0.0 release of VCP Electron Builder. If you were previously using an older version of vue-cli-plugin-electron-builder (<1.0.0), please see the [upgrade guide](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/upgrading.html) or [view the old docs](https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/legacy).**
 
 ## Quick Start:
 

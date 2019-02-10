@@ -120,4 +120,4 @@ The serve command also consists of 3 main phases: main build, dev server launch,
 
 ## Is This Plugin Production Ready?
 
-This plugin is nearly production ready. It has test coverage for everything but the UI interface and proper error logging. It needs to be used more in the real world to iron out the last few bugs before it is considered safe to use in a large production environment. Please try it in your app and report any bugs or feature requests.
+This plugin is ready for use in a production environment. It has complete e2e and unit test coverage, and has been used in many apps, large and small alike. However, no code is immune to bugs and if you do find one, please report it so that it can be fixed.
