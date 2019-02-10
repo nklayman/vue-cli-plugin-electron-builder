@@ -113,6 +113,26 @@ module.exports = {
 If you decide to add the `@vue/typescript` plugin to your app later on, make sure to re-invoke the generator of VCP-Electron-Builder with `vue invoke electron-builder`. This will automatically insert missing type definitions to your `background.ts` file.
 :::
 
+## Changing the File Loading Protocol <Badge text="1.0.0+" type="info"/>
+
+By default, the `app` protocol is used to load files. This allows you to use ES6 `type="module"` scripts, created by Vue CLI's [modern mode](https://cli.vuejs.org/guide/browser-compatibility.html#modern-mode). If, for some reason, you would like to use a different protocol, set it with the `customFileProtocol` option, and change it in your `background.js` file.
+
+```javascript
+// vue.config.js
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      customFileProtocol: 'myCustomProtocol://' // You can also revert back to the file protocol with 'file://'
+    }
+  }
+}
+
+// src/background.js
+// ...
+win.loadURL('myCustomProtocol://./index.html') // Change it here as well
+// ...
+```
+
 ## Bundling Options <Badge text="1.0.0-rc.3+" type="info"/>
 
 By default, the app is built in [modern mode](https://cli.vuejs.org/guide/browser-compatibility.html#modern-mode). To disable this, use the `--legacy` argument in the `electron:build` command. If your app is already bundled and just needs to be built with electron-builder, pass the `--skipBundle` arg.

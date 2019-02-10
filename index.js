@@ -105,9 +105,9 @@ module.exports = (api, options) => {
             modern: !args.legacy
           }
           //   Set the base url so that the app protocol is used
-          options.baseUrl = pluginOptions.noAppProtocol ? './' : 'app://./'
+          options.baseUrl = pluginOptions.customFileProtocol || 'app://./'
           // Set publicPath as well (replaced baseUrl since @vue/cli 3.3.0)
-          options.publicPath = pluginOptions.noAppProtocol ? './' : 'app://./'
+          options.publicPath = pluginOptions.customFileProtocol || 'app://./'
           info('Bundling render process:')
           //   Build the render process with the custom args
           await api.service.run('build', vueArgs)

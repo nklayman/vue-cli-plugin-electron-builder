@@ -299,20 +299,22 @@ describe('electron:build', () => {
     )
   })
 
-  test('Base url is set to "app://./"', async () => {
+  test('Base url/public path is set to "app://./"', async () => {
     const { options } = await runCommand('electron:build')
     expect(options.baseUrl).toBe('app://./')
+    expect(options.publicPath).toBe('app://./')
   })
 
-  test('Base url is set to "./" if pluginOptions.noAppProtocol is set', async () => {
+  test('Custom file protocol is used if set', async () => {
     const { options } = await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
-          noAppProtocol: true
+          customFileProtocol: 'expected'
         }
       }
     })
-    expect(options.baseUrl).toBe('./')
+    expect(options.baseUrl).toBe('expected')
+    expect(options.publicPath).toBe('expected')
   })
 })
 
