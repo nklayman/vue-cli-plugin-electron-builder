@@ -31,7 +31,6 @@ describe('Application launch', function () {
       .should.eventually.have.at.least(1)
       .browserWindow.isMinimized()
       .should.eventually.be.false.browserWindow.isVisible()
-      .should.eventually.be.true.browserWindow.isFocused()
       .should.eventually.be.true.browserWindow.getBounds()
       .should.eventually.have.property('width')
       .and.be.above(0)
