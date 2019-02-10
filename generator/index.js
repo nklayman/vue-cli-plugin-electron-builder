@@ -7,14 +7,13 @@ module.exports = (api, options = {}) => {
     fs.existsSync(api.resolve(`./src/background.ts`)) ||
     fs.existsSync(api.resolve(`./src/background.js`))
   if (!hasBackground) {
-    // If user does not have a background file so it should be created
+    // If user does not have a background file it should be created
     api.render('./templates/base')
   }
   // Add tests
+  let testFramework
   if (options.electronBuilder.addTests) {
-    let testFramework
-    // TODO: support mocha
-    // if (api.hasPlugin('unit-mocha')) testFramework = 'mocha'
+    if (api.hasPlugin('unit-mocha')) testFramework = 'mocha'
     if (api.hasPlugin('unit-jest')) testFramework = 'jest'
     if (testFramework) api.render(`./templates/tests-${testFramework}`)
   }
@@ -89,8 +88,13 @@ module.exports = (api, options = {}) => {
     // Use provided electron version
     devDependencies.electron = options.electronBuilder.electronVersion
   }
+  const dependencies = {}
+  if (testFramework === 'mocha') {
+    dependencies['chai-as-promised'] = '^7.1.1'
+  }
   api.extendPackage({
     scripts,
+    dependencies,
     devDependencies,
     main: 'background.js'
   })

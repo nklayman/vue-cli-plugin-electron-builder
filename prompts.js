@@ -44,10 +44,10 @@ module.exports = [
         // Attempt to read package.json
         const pkg = require(path.join(process.cwd(), 'package.json'))
         // Don't show if electron version is already set
-        return pkg.devDependencies['@vue/cli-plugin-unit-jest']
-        // TODO: add support for mocha
-        // ||
-        // pkg.devDependencies['@vue/cli-plugin-unit-mocha']
+        return (
+          pkg.devDependencies['@vue/cli-plugin-unit-jest'] ||
+          pkg.devDependencies['@vue/cli-plugin-unit-mocha']
+        )
       } catch (e) {
         console.log('Unable to read package.json')
         return false

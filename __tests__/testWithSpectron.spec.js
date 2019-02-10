@@ -1,31 +1,31 @@
 jest.setTimeout(100000)
 
 const createProject = require('./createProject.helper.js')
+const { readFile, writeFile } = require('fs-extra')
+const { join } = require('path')
 
-test('basic tests pass', async () => {
-  const { project } = await createProject('spectron', false, {
-    '@vue/cli-plugin-unit-jest': {}
-  })
+test.each(['mocha', 'jest'])(
+  'testWithSpectron works with %s',
+  async testRunner => {
+    const plugins = {}
+    plugins[`@vue/cli-plugin-unit-${testRunner}`] = {}
+    const { project } = await createProject(
+      `spectron-${testRunner}`,
+      false,
+      plugins
+    )
+    // Remove example test
+    await project.rm('tests/unit/example.spec.js')
 
-  // Update jest config to find test
-  const config = JSON.parse(await project.read('package.json'))
-  config.jest.testMatch = ['<rootDir>/tests/unit/spectron.js']
-  await project.write('package.json', JSON.stringify(config))
+    // Copy electron test
+    const testFile = (await readFile(
+      `./generator/templates/tests-${testRunner}/tests/unit/electron.spec.js`,
+      'utf8'
+    ))
+      // Fix some unknown error
+      .replace('testWithSpectron()', 'testWithSpectron({ mode: "production" })')
+    await writeFile(join(project.dir, 'tests/unit/electron.spec.js'), testFile)
 
-  // Create spectron test
-  await project.write(
-    'tests/unit/spectron.js',
-    `jest.setTimeout(60000)
-  const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
-  test('app loads a window', async () => {
-    const { app, stdout, stopServe } = await testWithSpectron({mode: 'production'})
-    expect(await app.client.getWindowCount()).toBe(1)
-    // App is served in production mode
-    expect(stdout.indexOf('App is served in production mode.')).not.toBe(-1)
-    await stopServe()
-  })
-  `
-  )
-  process.env.NODE_ENV = 'production'
-  await project.run('vue-cli-service test:unit')
-})
+    await project.run('vue-cli-service test:unit')
+  }
+)
