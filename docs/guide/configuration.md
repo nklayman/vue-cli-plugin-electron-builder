@@ -122,7 +122,8 @@ By default, the `app` protocol is used to load files. This allows you to use ES6
 module.exports = {
   pluginOptions: {
     electronBuilder: {
-      customFileProtocol: 'myCustomProtocol://' // You can also revert back to the file protocol with 'file://'
+      customFileProtocol: 'myCustomProtocol://./' // Make sure to add "./" to the end of the protocol
+      customFileProtocol: 'file://./' // You can also revert back to the file protocol with 'file://'
     }
   }
 }
