@@ -22,7 +22,7 @@ interface Server {
   /** URL of dev server. */
   url: string
   /** Close spectron and stop dev server (must be called to prevent continued async operations). */
-  stopServe: function(): Promise
+  stopServe: () => Promise<Application>
   /** Log of dev server. */
   stdout: string
 }
