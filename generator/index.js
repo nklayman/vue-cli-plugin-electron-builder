@@ -45,8 +45,8 @@ module.exports = (api, options = {}) => {
         'process.env.WEBPACK_DEV_SERVER_URL as string)'
       )
       background = background.replace(
-        /let mainWindow\s*?$/m,
-        'let mainWindow: any'
+        /let win\s*?$/m,
+        'let win: any'
       )
       fs.writeFileSync(api.resolve('./src/background.ts'), background)
       if (api.hasPlugin('router')) {
