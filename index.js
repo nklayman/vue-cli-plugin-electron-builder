@@ -94,16 +94,27 @@ module.exports = (api, options) => {
           // Build with electron-builder
           buildApp()
         } else {
+          const bundleOutputDir = path.join(outputDir, 'bundled')
           //   Arguments to be passed to renderer build
           const vueArgs = {
             _: [],
             // For the cli-ui webpack dashboard
             dashboard: args.dashboard,
             // Make sure files are outputted to proper directory
-            dest: outputDir + '/bundled',
+            dest: bundleOutputDir,
             // Enable modern mode unless --legacy is passed
             modern: !args.legacy
           }
+          // With @vue/cli-service v3.4.1+, we can bypass legacy build
+          process.env.VUE_CLI_MODERN_BUILD = !args.legacy
+          // If the legacy builded is skipped the output dir won't be cleaned
+          fs.removeSync(bundleOutputDir)
+          fs.ensureDirSync(bundleOutputDir)
+          // Mock data from legacy build
+          fs.writeFileSync(
+            path.join(bundleOutputDir, 'legacy-assets-index.html.json'),
+            '[]'
+          )
           //   Set the base url so that the app protocol is used
           options.baseUrl = pluginOptions.customFileProtocol || 'app://./'
           // Set publicPath as well (replaced baseUrl since @vue/cli 3.3.0)
