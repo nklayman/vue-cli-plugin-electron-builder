@@ -4,6 +4,7 @@ const testWithSpectron = pluginIndex.testWithSpectron
 const webpack = require('webpack')
 const builder = require('electron-builder')
 const fs = require('fs-extra')
+const path = require('path')
 const execa = require('execa')
 const portfinder = require('portfinder')
 const Application = require('spectron').Application
@@ -142,7 +143,7 @@ describe('electron:build', () => {
     //   Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output/bundled')
     // cli-service build output is correct
-    expect(serviceRun.mock.calls[0][1].dest).toBe('output/bundled')
+    expect(serviceRun.mock.calls[0][1].dest).toBe(`output${path.sep}bundled`)
     //   Electron-builder output is correct
     expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
       'output'
@@ -156,7 +157,7 @@ describe('electron:build', () => {
     //   Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output/bundled')
     // cli-service build output is correct
-    expect(serviceRun.mock.calls[0][1].dest).toBe('output/bundled')
+    expect(serviceRun.mock.calls[0][1].dest).toBe(`output${path.sep}bundled`)
     //   Electron-builder output is correct
     expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
       'output'
