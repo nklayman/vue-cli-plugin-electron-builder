@@ -111,10 +111,17 @@ module.exports = (api, options) => {
           fs.removeSync(bundleOutputDir)
           fs.ensureDirSync(bundleOutputDir)
           // Mock data from legacy build
-          fs.writeFileSync(
-            path.join(bundleOutputDir, 'legacy-assets-index.html.json'),
-            '[]'
-          )
+          const pages = options.pages || { index: '' }
+          Object.keys(pages).forEach(page => {
+            if (pages[page].fileName) {
+              // If page is configured as an object, use the filename (without .html)
+              page = pages[page].fileName.replace(/\.html$/, '')
+            }
+            fs.writeFileSync(
+              path.join(bundleOutputDir, `legacy-assets-${page}.html.json`),
+              '[]'
+            )
+          })
           //   Set the base url so that the app protocol is used
           options.baseUrl = pluginOptions.customFileProtocol || 'app://./'
           // Set publicPath as well (replaced baseUrl since @vue/cli 3.3.0)

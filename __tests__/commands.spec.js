@@ -317,6 +317,35 @@ describe('electron:build', () => {
     expect(options.baseUrl).toBe('expected')
     expect(options.publicPath).toBe('expected')
   })
+
+  test('Adds mock legacy assets file for index', async () => {
+    await runCommand('electron:build')
+    expect(fs.writeFileSync).toBeCalledWith(
+      'dist_electron/bundled/legacy-assets-index.html.json',
+      '[]'
+    )
+  })
+
+  test.each(['string config', 'object config'])(
+    'Adds mock legacy assets file for each page (%s)',
+    async configType => {
+      const stringConfig = configType === 'string config'
+      await runCommand('electron:build', {
+        pages: {
+          index: stringConfig ? '' : { fileName: 'index.html' },
+          subpage: stringConfig ? '' : { fileName: 'subpage.html' }
+        }
+      })
+      expect(fs.writeFileSync).toBeCalledWith(
+        'dist_electron/bundled/legacy-assets-index.html.json',
+        '[]'
+      )
+      expect(fs.writeFileSync).toBeCalledWith(
+        'dist_electron/bundled/legacy-assets-subpage.html.json',
+        '[]'
+      )
+    }
+  )
 })
 
 describe('electron:serve', () => {
