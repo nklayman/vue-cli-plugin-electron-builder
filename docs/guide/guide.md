@@ -100,6 +100,65 @@ console.log(fileContents)
 
 Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes (Only available in main process since `1.0.0-rc.4`).
 
+## Multipage App <Badge text="1.1.1+" type="warn"/>
+
+Have a look at the [Multipage demo app](https://github.com/nklayman/electron-multipage-example) to learn, how to create an electron app with multiple windows.
+
+### How to set up a Multipage/-window App:
+
+Add a `pages`-configuration with all entry-files to `vue.config.js`:
+
+```javascript
+// vue.config.js
+module.exports = {
+  pages: {
+    index: 'src/main.js',
+    subpage: 'src/subpage/main.js',
+    ...
+  }
+}
+```
+
+Create additional window(s) inside `background.js`. `loadURL` should use the key from the page-configuration in `vue.config.js`:
+
+```javascript
+// background.js
+let secondWin
+function createSubpageWindow(entryKey = "subpage") {
+  // Create the browser window.
+  secondWin = new BrowserWindow({ width: 800, height: 600, x: 800, y: 0 })
+
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    // Load the url of the dev server if in development mode
+    secondWin.loadURL(process.env.WEBPACK_DEV_SERVER_URL + `${entryKey}`)
+    if (!process.env.IS_TEST) secondWin.webContents.openDevTools()
+  } else {
+    if (!createdAppProtocol) {
+      createProtocol('app')
+      createdAppProtocol = true
+    }
+    // Load the index.html when not in development
+    secondWin.loadURL(`app://./${entryKey}.html`)
+    secondWin.webContents.openDevTools()
+  }
+
+  secondWin.on('closed', () => {
+    secondWin = null
+  })
+}
+
+```
+Create html files for all additional pages inside the public directory. `index.html` acts as fallback, if no html-file is created.
+
+```
+├── ...
+├── public/
+│ ├── index.html # main page, fallback for pages that have no html-file
+│ ├── subpage.html # page for second window
+│ └── ...
+├── ...
+```
+
 ## How it works
 
 ### Build Command
