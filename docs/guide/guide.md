@@ -100,6 +100,77 @@ console.log(fileContents)
 
 Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes (Only available in main process since `1.0.0-rc.4`).
 
+## Multipage App <Badge text="1.1.1+" type="warn"/>
+
+Check out the [Multipage demo app](https://github.com/nklayman/electron-multipage-example) for an insight into how to create an electron app with multiple windows.
+
+### Configuration
+
+Set the entry points for all windows with the `pages` option:
+
+```javascript
+// vue.config.js
+module.exports = {
+  pages: {
+    index: 'src/main.js',
+    subpage: 'src/subpage/main.js',
+    ...
+  }
+}
+```
+
+### Window creation
+
+In the loadURL method it is important to use the appropriate key from the `pages` configuration. In the above case this is `subpage`.
+
+- Development: WEBPACK_DEV_SERVER_URL + key
+- Production: key.html
+
+```javascript
+// background.js
+let secondWin
+function createSubpageWindow(entryKey = "subpage") {
+  // Create the browser window.
+  secondWin = new BrowserWindow({ width: 800, height: 600, x: 800, y: 0 })
+
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    // Load the url of the dev server if in development mode
+    secondWin.loadURL(process.env.WEBPACK_DEV_SERVER_URL + `${entryKey}`)
+    if (!process.env.IS_TEST) secondWin.webContents.openDevTools()
+  } else {
+    if (!createdAppProtocol) {
+      createProtocol('app')
+      createdAppProtocol = true
+    }
+    // Load the index.html when not in development
+    secondWin.loadURL(`app://./${entryKey}.html`)
+  }
+
+  secondWin.on('closed', () => {
+    secondWin = null
+  })
+}
+```
+
+::: tip
+
+This also works if the specified HTML file does not exist. If `subpage.html` from the above example does not exist, `index.html` is loaded as default fallback.
+
+:::
+
+### HTML files
+
+If you want your additional windows to use a HTML file other than the default `index.html`, you can create separate HTML files for each configured page in the public directory. The filenames should also match the keys from the pages configuration:
+
+```
+├── ...
+├── public/
+│ ├── index.html # main page, default for all windows
+│ ├── subpage.html # own HTML file for additional page
+│ └── ...
+├── ...
+```
+
 ## How it works
 
 ### Build Command
