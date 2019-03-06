@@ -321,7 +321,7 @@ describe('electron:build', () => {
   test('Adds mock legacy assets file for index', async () => {
     await runCommand('electron:build')
     expect(fs.writeFileSync).toBeCalledWith(
-      'dist_electron/bundled/legacy-assets-index.html.json',
+      `dist_electron${path.sep}bundled${path.sep}legacy-assets-index.html.json`,
       '[]'
     )
   })
@@ -337,11 +337,11 @@ describe('electron:build', () => {
         }
       })
       expect(fs.writeFileSync).toBeCalledWith(
-        'dist_electron/bundled/legacy-assets-index.html.json',
+        `dist_electron${path.sep}bundled${path.sep}legacy-assets-index.html.json`,
         '[]'
       )
       expect(fs.writeFileSync).toBeCalledWith(
-        'dist_electron/bundled/legacy-assets-subpage.html.json',
+        `dist_electron${path.sep}bundled${path.sep}legacy-assets-subpage.html.json`,
         '[]'
       )
     }
