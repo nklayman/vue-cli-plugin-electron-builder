@@ -102,11 +102,11 @@ Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to
 
 ## Multipage App <Badge text="1.1.1+" type="warn"/>
 
-Have a look at the [Multipage demo app](https://github.com/nklayman/electron-multipage-example) to learn, how to create an electron app with multiple windows.
+Check out the [Multipage demo app](https://github.com/nklayman/electron-multipage-example) for an insight into how to create an electron app with multiple windows.
 
-### How to set up a Multipage/-window App:
+### Configuration
 
-Add a `pages`-configuration with all entry-files to `vue.config.js`:
+Set the entry points for all windows with the `pages` option:
 
 ```javascript
 // vue.config.js
@@ -119,7 +119,12 @@ module.exports = {
 }
 ```
 
-Create additional window(s) inside `background.js`. `loadURL` should use the key from the page-configuration in `vue.config.js`:
+### Window creation
+
+In the loadURL method it is important to use the appropriate key from the `pages` configuration. In the above case this is `subpage`.
+
+- Development: WEBPACK_DEV_SERVER_URL + key
+- Production: key.html
 
 ```javascript
 // background.js
@@ -139,22 +144,29 @@ function createSubpageWindow(entryKey = "subpage") {
     }
     // Load the index.html when not in development
     secondWin.loadURL(`app://./${entryKey}.html`)
-    secondWin.webContents.openDevTools()
   }
 
   secondWin.on('closed', () => {
     secondWin = null
   })
 }
-
 ```
-Create html files for all additional pages inside the public directory. `index.html` acts as fallback, if no html-file is created.
+
+::: tip
+
+This also works if the specified HTML file does not exist. If `subpage.html` from the above example does not exist, `index.html` is loaded as default fallback.
+
+:::
+
+### HTML files
+
+If you want your additional windows to use a HTML file other than the default `index.html`, you can create separate HTML files for each configured page in the public directory. The filenames should also match the keys from the pages configuration:
 
 ```
 ├── ...
 ├── public/
-│ ├── index.html # main page, fallback for pages that have no html-file
-│ ├── subpage.html # page for second window
+│ ├── index.html # main page, default for all windows
+│ ├── subpage.html # own HTML file for additional page
 │ └── ...
 ├── ...
 ```
