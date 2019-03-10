@@ -183,6 +183,19 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     hasExternal(externals)
   })
 
+  test('Dep should be found if external includes a child path', async () => {
+    const { externals } = await mockGetExternals(
+      // Prevent it from getting marked as an external by default
+      { main: 'It will not be an external by default', name: 'mockExternal' },
+      // Add it to external list
+      { externals: ['mockExternal/lib'] }
+    )
+    // External is properly added
+    expect(externals).toEqual({
+      'mockExternal/lib': 'require("mockExternal/lib")'
+    })
+  })
+
   test('If dep is listed in user list and prefixed with "!" it should not be an external', async () => {
     const { externals } = await mockGetExternals(
       // Make sure it would have been marked as an external by default
