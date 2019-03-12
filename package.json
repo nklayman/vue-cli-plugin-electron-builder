@@ -43,8 +43,7 @@
     "through2-map": "^3.0.0",
     "unzip-crx": "^0.2.0",
     "webpack": "^4.18.0",
-    "webpack-chain": "^5.0.0",
-    "webpack-target-electron-renderer": "^0.4.0"
+    "webpack-chain": "^5.0.0"
   },
   "devDependencies": {
     "@vue/cli": "^3.0.1",
