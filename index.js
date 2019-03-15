@@ -360,8 +360,6 @@ module.exports = (api, options) => {
 
       function launchElectron () {
         if (args.debug) {
-          console.log(info)
-
           //   Do not launch electron and provide instructions on launching through debugger
           info(
             'Not launching electron as debug argument was passed. You must launch electron though your debugger.'
