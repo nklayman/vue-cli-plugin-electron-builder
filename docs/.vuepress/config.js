@@ -29,6 +29,7 @@ module.exports = {
         '',
         'guide',
         'configuration',
+        'recipes',
         'testingAndDebugging',
         'commonIssues',
         'upgrading'
