@@ -8,7 +8,7 @@ sidebarDepth: 2
 
 [[toc]]
 
-## Native Modules <Badge text="1.0.0-rc.1+" type="warn"/>
+## Native Modules <Badge text="1.0.0-rc.1+" type="info"/>
 
 Native modules are supported and should work without any configuration. If you get errors, first make sure VCP-Electron-Builder's version is set to `1.0.0-rc.1` or greater. If it still fails, re-invoke the generator with `vue invoke electron-builder`. The generator will automatically detect missing code (such as native module support) and add it, without interfering with the rest. If you have done both these things, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
 
