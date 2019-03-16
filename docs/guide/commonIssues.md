@@ -66,7 +66,7 @@ Make sure you are using Electron v2.0.14+ or v3.0.10+. Also, make sure Node is v
 
 Many issues can be solved by re-invoking the generator of Vue CLI Plugin Electron Builder. This allows it to add newer code to your project files. You may need to do this after upgrading the plugin.
 
-```shell
+```bash
 # In the root dir of your project
 vue invoke electron-builder
 ```
