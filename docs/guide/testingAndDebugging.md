@@ -6,16 +6,20 @@ sidebarDepth: 2
 
 ## Debugging
 
+### Visual Studio Code
+
+See the [VSCode testing recipe](./recipes.md#debugging-with-vscode) for information on debugging the main and renderer process in [Visual Studio Code](https://code.visualstudio.com/).
+
 ### Renderer Process (Main App)
 
-You can debug the renderer process using [Vue Devtools](https://github.com/vuejs/vue-devtools). Vue Devtools are automatically installed for you (powered by [electron-devtools-installer](https://github.com/MarshallOfSound/electron-devtools-installer)).
+You can debug the renderer process using [Vue Devtools](https://github.com/vuejs/vue-devtools). Vue Devtools are automatically installed for you (powered by [electron-devtools-installer](https://github.com/MarshallOfSound/electron-devtools-installer)). You can also use the [Chrome debugger](https://developers.google.com/web/tools/chrome-devtools/javascript/).
 
 ### Main Process (Background File)
 
-First, read [Electron's instructions](https://electronjs.org/docs/tutorial/debugging-main-process#command-line-switches) for debugging the main process. Before launching Electron through your debugger, run `electron:serve` in debug mode with the `--debug` argument. This will prevent Electron from launching automatically and enable source map support. Make sure to set the background file `dist_electron/background.js`.
+First, read [Electron's instructions](https://electronjs.org/docs/tutorial/debugging-main-process) for debugging the main process. Before launching Electron through your debugger, run `electron:serve` in debug mode with the `--debug` argument. This will prevent Electron from launching automatically and enable source map support. Have Electron target your output directory (`dist_electron` by default) by passing it as an argument (ie `electron --inspect=5858 dist_electron`).
 
 ::: tip
-If you are testing with spectron, make sure to set `process.env.IS_TEST` to `true`. This will prevent dev tools from being loaded which results in errors.
+If you are testing with [Spectron](https://electronjs.org/spectron), make sure to set `process.env.IS_TEST` to `true`. This will prevent dev tools from being loaded which results in errors.
 :::
 
 ## Testing
