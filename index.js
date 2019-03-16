@@ -319,6 +319,11 @@ module.exports = (api, options) => {
       // Restart on main process file change
       mainProcessWatch.forEach(file => {
         fs.watchFile(api.resolve(file), () => {
+          if (args.debug) {
+            // Rebuild main process
+            startElectron()
+            return
+          }
           // Never restart after SIGINT
           if (childRestartOnExit < 0) {
             return
