@@ -220,10 +220,12 @@ Add the `electron-debug` task to `.vscode/tasks.json`, which will start the Elec
     {
       "label": "electron-debug",
       "type": "process",
-      "command": "node",
+      "command": "./node_modules/.bin/vue-cli-service",
       "isBackground": true,
+      "windows": {
+          "command": "./node_modules/.bin/vue-cli-service.cmd",
+      },
       "args": [
-        "./node_modules/.bin/vue-cli-service",
         "electron:serve",
         "--debug"
       ],
