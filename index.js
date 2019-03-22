@@ -113,9 +113,9 @@ module.exports = (api, options) => {
           // Mock data from legacy build
           const pages = options.pages || { index: '' }
           Object.keys(pages).forEach(page => {
-            if (pages[page].fileName) {
+            if (pages[page].filename) {
               // If page is configured as an object, use the filename (without .html)
-              page = pages[page].fileName.replace(/\.html$/, '')
+              page = pages[page].filename.replace(/\.html$/, '')
             }
             fs.writeFileSync(
               path.join(bundleOutputDir, `legacy-assets-${page}.html.json`),

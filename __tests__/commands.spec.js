@@ -332,8 +332,8 @@ describe('electron:build', () => {
       const stringConfig = configType === 'string config'
       await runCommand('electron:build', {
         pages: {
-          index: stringConfig ? '' : { fileName: 'index.html' },
-          subpage: stringConfig ? '' : { fileName: 'subpage.html' }
+          index: stringConfig ? '' : { filename: 'index.html' },
+          subpage: stringConfig ? '' : { filename: 'subpage.html' }
         }
       })
       expect(fs.writeFileSync).toBeCalledWith(
