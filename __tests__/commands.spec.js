@@ -369,7 +369,7 @@ describe('electron:build', () => {
     await runCommand('electron:build')
 
     expect(fs.writeFileSync).toBeCalledWith(
-      `dist_electron${path.sep}bundled${path.sep}package.json`,
+      `dist_electron/bundled/package.json`,
       JSON.stringify({
         dependencies: {
           external: '^0.0.1'
