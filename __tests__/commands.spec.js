@@ -8,7 +8,7 @@ const path = require('path')
 const execa = require('execa')
 const portfinder = require('portfinder')
 const Application = require('spectron').Application
-const { chainWebpack } = require('../lib/webpackConfig')
+const { chainWebpack, getExternals } = require('../lib/webpackConfig')
 // #endregion
 
 // #region Mocks
@@ -47,6 +47,12 @@ jest.mock('@vue/cli-service/lib/commands/serve', () => ({
   serve: jest.fn().mockResolvedValue({ url: 'serveUrl' })
 }))
 jest.mock('electron-builder', () => ({ build: jest.fn().mockResolvedValue() }))
+// Mock package.json
+fs.readFileSync.mockReturnValue(
+  JSON.stringify({
+    dependencies: {}
+  })
+)
 const mockWait = jest.fn().mockResolvedValue()
 const mockStart = jest.fn()
 jest.mock('spectron', () => ({
@@ -204,14 +210,12 @@ describe('electron:build', () => {
     fs.existsSync.mockReturnValueOnce(true)
     await runCommand('electron:build')
     // css/fonts folder was created
-    expect(fs.ensureDirSync.mock.calls[2][0]).toBe(
+    expect(fs.ensureDirSync).toBeCalledWith(
       'projectPath/dist_electron/bundled/css/fonts'
     )
     // fonts was copied to css/fonts
-    expect(fs.copySync.mock.calls[1][0]).toBe(
-      'projectPath/dist_electron/bundled/fonts'
-    )
-    expect(fs.copySync.mock.calls[1][1]).toBe(
+    expect(fs.copySync).toBeCalledWith(
+      'projectPath/dist_electron/bundled/fonts',
       'projectPath/dist_electron/bundled/css/fonts'
     )
   })
@@ -337,15 +341,42 @@ describe('electron:build', () => {
         }
       })
       expect(fs.writeFileSync).toBeCalledWith(
-        `dist_electron${path.sep}bundled${path.sep}legacy-assets-index.html.json`,
+        `dist_electron${path.sep}bundled${
+          path.sep
+        }legacy-assets-index.html.json`,
         '[]'
       )
       expect(fs.writeFileSync).toBeCalledWith(
-        `dist_electron${path.sep}bundled${path.sep}legacy-assets-subpage.html.json`,
+        `dist_electron${path.sep}bundled${
+          path.sep
+        }legacy-assets-subpage.html.json`,
         '[]'
       )
     }
   )
+
+  test('Only external deps are included in the package.json', async () => {
+    fs.readFileSync.mockReturnValueOnce(
+      JSON.stringify({
+        dependencies: {
+          nonExternal: '^0.0.1',
+          external: '^0.0.1'
+        }
+      })
+    )
+    getExternals.mockReturnValueOnce({ external: 'require("external")' })
+
+    await runCommand('electron:build')
+
+    expect(fs.writeFileSync).toBeCalledWith(
+      `dist_electron${path.sep}bundled${path.sep}package.json`,
+      JSON.stringify({
+        dependencies: {
+          external: '^0.0.1'
+        }
+      })
+    )
+  })
 })
 
 describe('electron:serve', () => {

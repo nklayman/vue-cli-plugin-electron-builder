@@ -130,9 +130,20 @@ module.exports = (api, options) => {
           //   Build the render process with the custom args
           await api.service.run('build', vueArgs)
           // Copy package.json to output dir
-          fs.copySync(
-            api.resolve('./package.json'),
-            `${outputDir}/bundled/package.json`
+          const pkg = JSON.parse(
+            fs.readFileSync(api.resolve('./package.json'), 'utf8')
+          )
+          const externals = getExternals(api, pluginOptions)
+          // https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/223
+          // Strip non-externals from dependencies so they won't be copied into app.asar
+          Object.keys(pkg.dependencies).forEach(dependency => {
+            if (!Object.keys(externals).includes(dependency)) {
+              delete pkg.dependencies[dependency]
+            }
+          })
+          fs.writeFileSync(
+            `${outputDir}/bundled/package.json`,
+            JSON.stringify(pkg, 2)
           )
           // Prevent electron-builder from installing app deps
           fs.ensureDirSync(`${outputDir}/bundled/node_modules`)
