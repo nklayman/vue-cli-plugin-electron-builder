@@ -17,7 +17,7 @@ function createWindow () {
   // Create the browser window.
   win = new BrowserWindow({ width: 800, height: 600 })
 
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
+  if (process.env.NODE_ENV !== 'production' && process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) win.webContents.openDevTools()
@@ -52,20 +52,20 @@ app.on('activate', () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', async () => {
-  if (isDevelopment && !process.env.IS_TEST) {
+if (process.env.NODE_ENV !== 'production' && !process.env.IS_TEST) {
+  app.on('ready', async () => {
     // Install Vue Devtools
     try {
       await installVueDevtools()
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
     }
-  }
-  createWindow()
-})
+    createWindow()
+  })
+}
 
 // Exit cleanly on request from parent process in development mode.
-if (isDevelopment) {
+if (process.env.NODE_ENV !== 'production') {
   if (process.platform === 'win32') {
     process.on('message', data => {
       if (data === 'graceful-exit') {
