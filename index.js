@@ -298,6 +298,9 @@ module.exports = (api, options) => {
         }
       }
 
+      // Prevent multiple restart at the same time
+      let isRestarting = false
+
       // Electron process
       let child
       // Auto restart flag
@@ -331,6 +334,9 @@ module.exports = (api, options) => {
       const chokidar = require('chokidar')
       mainProcessWatch.forEach(file => {
         chokidar.watch(api.resolve(file)).on('all', () => {
+          if (isRestarting) return
+          isRestarting = true
+
           if (args.debug) {
             // Rebuild main process
             startElectron()
@@ -376,6 +382,8 @@ module.exports = (api, options) => {
       }
 
       function launchElectron () {
+        isRestarting = false
+
         if (args.debug) {
           //   Do not launch electron and provide instructions on launching through debugger
           info(
