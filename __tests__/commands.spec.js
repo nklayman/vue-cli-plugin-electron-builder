@@ -9,6 +9,7 @@ const execa = require('execa')
 const portfinder = require('portfinder')
 const Application = require('spectron').Application
 const { chainWebpack, getExternals } = require('../lib/webpackConfig')
+const chokidar = require('chokidar')
 // #endregion
 
 // #region Mocks
@@ -26,6 +27,7 @@ jest.mock('electron-builder/out/cli/install-app-deps.js', () => ({
   installAppDeps: mockInstallAppDeps
 }))
 jest.mock('../lib/webpackConfig.js')
+jest.mock('chokidar')
 const mockPipe = jest.fn()
 const childEvents = {}
 const mockExeca = {
@@ -65,6 +67,11 @@ jest.mock('spectron', () => ({
 console.log = jest.fn()
 beforeEach(() => {
   jest.clearAllMocks()
+})
+chokidar.watch.mockImplementation((file) => {
+  return {
+    on: (type, cb) => {}
+  }
 })
 // #endregion
 
@@ -449,9 +456,13 @@ describe('electron:serve', () => {
 
   test('Custom launch arguments is used if provided', async () => {
     let watchCb
-    fs.watchFile.mockImplementation((file, cb) => {
-      // Set callback to be called later
-      watchCb = cb
+    chokidar.watch.mockImplementation((file) => {
+      return {
+        on: (type, cb) => {
+          // Set callback to be called later
+          watchCb = cb
+        }
+      }
     })
     await runCommand('electron:serve', {
       pluginOptions: {
@@ -514,9 +525,13 @@ describe('electron:serve', () => {
     // So we can make sure it wasn't called
     jest.spyOn(process, 'exit')
     let watchCb
-    fs.watchFile.mockImplementation((file, cb) => {
-      // Set callback to be called later
-      watchCb = cb
+    chokidar.watch.mockImplementation((file) => {
+      return {
+        on: (type, cb) => {
+          // Set callback to be called later
+          watchCb = cb
+        }
+      }
     })
     await runCommand('electron:serve', {
       pluginOptions: {
@@ -528,7 +543,7 @@ describe('electron:serve', () => {
     })
 
     // Proper file is watched
-    expect(fs.watchFile.mock.calls[0][0]).toBe('projectPath/customBackground')
+    expect(chokidar.watch.mock.calls[0][0]).toBe('projectPath/customBackground')
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.kill).not.toBeCalled()
@@ -560,9 +575,13 @@ describe('electron:serve', () => {
     // So we can make sure it wasn't called
     jest.spyOn(process, 'exit')
     let watchCb = {}
-    fs.watchFile.mockImplementation((file, cb) => {
-      // Set callback to be called later
-      watchCb[file] = cb
+    chokidar.watch.mockImplementation((file) => {
+      return {
+        on: (type, cb) => {
+          // Set callback to be called later
+          watchCb[file] = cb
+        }
+      }
     })
     await runCommand('electron:serve', {
       pluginOptions: {
@@ -576,8 +595,8 @@ describe('electron:serve', () => {
     })
 
     // Proper file is watched
-    expect(fs.watchFile.mock.calls[0][0]).toBe('projectPath/customBackground')
-    expect(fs.watchFile.mock.calls[1][0]).toBe('projectPath/listFile')
+    expect(chokidar.watch.mock.calls[0][0]).toBe('projectPath/customBackground')
+    expect(chokidar.watch.mock.calls[1][0]).toBe('projectPath/listFile')
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.kill).not.toBeCalled()
