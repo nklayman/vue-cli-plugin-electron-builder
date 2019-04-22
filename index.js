@@ -328,8 +328,9 @@ module.exports = (api, options) => {
       // Initial start of Electron
       startElectron()
       // Restart on main process file change
+      const chokidar = require('chokidar')
       mainProcessWatch.forEach(file => {
-        fs.watchFile(api.resolve(file), () => {
+        chokidar.watch(api.resolve(file)).on('all', () => {
           if (args.debug) {
             // Rebuild main process
             startElectron()
