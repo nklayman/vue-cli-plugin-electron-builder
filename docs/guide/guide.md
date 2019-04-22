@@ -41,7 +41,7 @@ If you do not use native dependencies in your code, you can remove the `postinst
 
 ## Handling Static Assets
 
-### Renderer Process (Main App)
+### Renderer Process (Vue App)
 
 In the renderer process, static assets work similarly to a regular app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html) before continuing. However, there are a few changes made:
 
