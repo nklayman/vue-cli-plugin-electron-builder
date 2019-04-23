@@ -298,9 +298,8 @@ module.exports = (api, options) => {
         }
       }
 
-      // Prevent multiple restart at the same time
-      let isRestarting = false
-
+      // Prevent multiple restarts at the same time
+      let queuedBuilds = 0
       // Electron process
       let child
       // Auto restart flag
@@ -334,8 +333,7 @@ module.exports = (api, options) => {
       const chokidar = require('chokidar')
       mainProcessWatch.forEach(file => {
         chokidar.watch(api.resolve(file)).on('all', () => {
-          if (isRestarting) return
-          isRestarting = true
+          queuedBuilds++
 
           if (args.debug) {
             // Rebuild main process
@@ -349,8 +347,10 @@ module.exports = (api, options) => {
 
           // Set auto restart flag
           childRestartOnExit = 1
-
-          killElectron()
+          if (child) {
+            // Start Electron if it hasn't been already launched
+            startElectron()
+          }
         })
       })
 
@@ -382,7 +382,11 @@ module.exports = (api, options) => {
       }
 
       function launchElectron () {
-        isRestarting = false
+        // Kill existing instances
+        killElectron()
+        // Don't launch if a new background file is being bundled
+        queuedBuilds--
+        if (queuedBuilds > 0) return
 
         if (args.debug) {
           //   Do not launch electron and provide instructions on launching through debugger
@@ -412,9 +416,6 @@ module.exports = (api, options) => {
           } else {
             info('Launching Electron...')
           }
-
-          // Disable Electron process auto restart
-          childRestartOnExit = 0
 
           let stdioConfig = [null, null, null]
 
@@ -457,7 +458,9 @@ module.exports = (api, options) => {
           }
 
           child.on('exit', () => {
-            child = null
+            if (child.killed) {
+              child = null
+            }
 
             if (childExitTimeout) {
               clearTimeout(childExitTimeout)
@@ -465,7 +468,8 @@ module.exports = (api, options) => {
             }
 
             if (childRestartOnExit > 0) {
-              startElectron()
+              // Disable Electron process auto restart
+              childRestartOnExit = 0
             } else {
               process.exit(0)
             }
