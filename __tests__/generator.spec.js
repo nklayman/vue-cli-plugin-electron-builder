@@ -22,7 +22,10 @@ beforeEach(() => {
     // Check that utf8 encoding is set
     expect(encoding).toBe('utf8')
     if (path === 'apiResolve_./package.json') {
-      return JSON.stringify({ scripts: {} })
+      return JSON.stringify({
+        scripts: {},
+        devDependencies: { electron: '^5.0.0' }
+      })
     }
     // return mock content
     return 'existing_content'
@@ -73,7 +76,10 @@ describe('.gitignore', () => {
         // Check that utf8 encoding is set
         expect(encoding).toBe('utf8')
         if (path === 'apiResolve_./package.json') {
-          return JSON.stringify({ scripts: {} })
+          return JSON.stringify({
+            scripts: {},
+            devDependencies: { electron: '^5.0.0' }
+          })
         }
         // return mock content
         return `ignore-this\n${existing}\nignore-that`

@@ -1,14 +1,25 @@
 const fs = require('fs')
+const semver = require('semver')
 
 module.exports = (api, options = {}) => {
   if (!options.electronBuilder) options.electronBuilder = {}
+  const electronVersion = options.electronBuilder.electronVersion
+  let pkg = fs.readFileSync(api.resolve('./package.json'), 'utf8')
+  pkg = JSON.parse(pkg)
   const usesTS = api.hasPlugin('typescript')
   const hasBackground =
     fs.existsSync(api.resolve(`./src/background.ts`)) ||
     fs.existsSync(api.resolve(`./src/background.js`))
+
   if (!hasBackground) {
     // If user does not have a background file it should be created
-    api.render('./templates/base')
+    api.render('./templates/base', {
+      // Scheme registration changed in Electron 5.0.0
+      newSchemeRegistrationFunction: semver.gte(
+        (electronVersion || pkg.devDependencies.electron).replace('^', ''),
+        '5.0.0'
+      )
+    })
   }
   // Add tests
   let testFramework
@@ -44,7 +55,10 @@ module.exports = (api, options = {}) => {
         /process\.env\.WEBPACK_DEV_SERVER_URL\s*?\)$/m,
         'process.env.WEBPACK_DEV_SERVER_URL as string)'
       )
-      background = background.replace(/let win\s*?$/m, 'let win: BrowserWindow | null')
+      background = background.replace(
+        /let win\s*?$/m,
+        'let win: BrowserWindow | null'
+      )
       fs.writeFileSync(api.resolve('./src/background.ts'), background)
       if (api.hasPlugin('router')) {
         console.log('\n')
@@ -60,8 +74,6 @@ module.exports = (api, options = {}) => {
     'electron:build': 'vue-cli-service electron:build',
     'electron:serve': 'vue-cli-service electron:serve'
   }
-  let pkg = fs.readFileSync(api.resolve('./package.json'), 'utf8')
-  pkg = JSON.parse(pkg)
   const addScript = (name, command) => {
     // Add on to existing script if it exists
     if (pkg.scripts && pkg.scripts[name]) {
@@ -81,9 +93,9 @@ module.exports = (api, options = {}) => {
   addScript('postinstall', 'electron-builder install-app-deps')
   addScript('postuninstall', 'electron-builder install-app-deps')
   const devDependencies = {}
-  if (options.electronBuilder.electronVersion) {
+  if (electronVersion) {
     // Use provided electron version
-    devDependencies.electron = options.electronBuilder.electronVersion
+    devDependencies.electron = electronVersion
   }
   const dependencies = {}
   if (testFramework === 'mocha') {

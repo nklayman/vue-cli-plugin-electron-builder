@@ -17,7 +17,9 @@ const createProject = (projectName, useTS, customPlugins = {}) =>
       projectName += '-ts'
     }
     // Install vcp-electron-builder
-    preset.plugins['vue-cli-plugin-electron-builder'] = {}
+    preset.plugins['vue-cli-plugin-electron-builder'] = {
+      electronBuilder: { electronVersion: '^4.0.0' }
+    }
     preset.plugins = { ...preset.plugins, ...customPlugins }
     const projectPath = p =>
       path.join(process.cwd(), '__tests__/projects/' + projectName, p)
