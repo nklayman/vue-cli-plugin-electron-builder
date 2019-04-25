@@ -258,6 +258,7 @@ module.exports = (api, options) => {
 
       // Function to bundle main process and start Electron
       const startElectron = () => {
+        queuedBuilds++
         if (bundleMainProcess) {
           //   Build the main process
           const bundle = bundleMain({
@@ -333,8 +334,6 @@ module.exports = (api, options) => {
       const chokidar = require('chokidar')
       mainProcessWatch.forEach(file => {
         chokidar.watch(api.resolve(file)).on('all', () => {
-          queuedBuilds++
-
           if (args.debug) {
             // Rebuild main process
             startElectron()
@@ -345,10 +344,12 @@ module.exports = (api, options) => {
             return
           }
 
-          // Set auto restart flag
-          childRestartOnExit = 1
-          if (child) {
-            // Start Electron if it hasn't been already launched
+          // Chokidar calls this on initial launch,
+          // so don't do anything if Electron hasn't been launched yet
+          if (child || childRestartOnExit === 1) {
+            // Set auto restart flag
+            childRestartOnExit = 1
+            // Start Electron
             startElectron()
           }
         })
