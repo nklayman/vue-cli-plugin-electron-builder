@@ -258,6 +258,10 @@ module.exports = (api, options) => {
 
       // Function to bundle main process and start Electron
       const startElectron = () => {
+        if (child) {
+          child.off('exit', onChildExit)
+        }
+
         queuedBuilds++
         if (bundleMainProcess) {
           //   Build the main process
@@ -303,27 +307,26 @@ module.exports = (api, options) => {
       let queuedBuilds = 0
       // Electron process
       let child
-      // Auto restart flag
-      let childRestartOnExit = 0
-      // Graceful exit timeout
-      let childExitTimeout
       // Function to kill Electron process
       const killElectron = () => {
         if (!child) {
           return
         }
 
+        const currentChild = child
+
         // Attempt to kill gracefully
         if (process.platform === 'win32') {
-          child.send('graceful-exit')
+          currentChild.send('graceful-exit')
         } else {
-          child.kill('SIGTERM')
+          currentChild.kill('SIGTERM')
         }
 
         // Kill unconditionally after 2 seconds if unsuccessful
-        childExitTimeout = setTimeout(() => {
-          if (child) {
-            child.kill('SIGKILL')
+        setTimeout(() => {
+          if (!currentChild.killed) {
+            console.log('force kill', currentChild.pid)
+            currentChild.kill('SIGKILL')
           }
         }, 2000)
       }
@@ -334,22 +337,7 @@ module.exports = (api, options) => {
       const chokidar = require('chokidar')
       mainProcessWatch.forEach(file => {
         chokidar.watch(api.resolve(file)).on('all', () => {
-          if (args.debug) {
-            // Rebuild main process
-            startElectron()
-            return
-          }
-          // Never restart after SIGINT
-          if (childRestartOnExit < 0) {
-            return
-          }
-
-          // Chokidar calls this on initial launch,
-          // so don't do anything if Electron hasn't been launched yet
-          if (child || childRestartOnExit === 1) {
-            // Set auto restart flag
-            childRestartOnExit = 1
-            // Start Electron
+          if (args.debug || child) {
             startElectron()
           }
         })
@@ -458,24 +446,16 @@ module.exports = (api, options) => {
               .pipe(process.stderr)
           }
 
-          child.on('exit', () => {
-            if (child.killed) {
-              child = null
-            }
-
-            if (childExitTimeout) {
-              clearTimeout(childExitTimeout)
-              childExitTimeout = null
-            }
-
-            if (childRestartOnExit > 0) {
-              // Disable Electron process auto restart
-              childRestartOnExit = 0
-            } else {
-              process.exit(0)
-            }
-          })
+          child.on('exit', onChildExit)
         }
+      }
+
+      function onChildExit (...args) {
+        if (child.killed) {
+          child = null
+        }
+
+        process.exit(0)
       }
     }
   )
