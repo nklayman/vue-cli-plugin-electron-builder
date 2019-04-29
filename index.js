@@ -450,7 +450,7 @@ module.exports = (api, options) => {
         }
       }
 
-      function onChildExit (...args) {
+      function onChildExit () {
         if (child.killed) {
           child = null
         }
