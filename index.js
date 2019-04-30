@@ -258,10 +258,6 @@ module.exports = (api, options) => {
 
       // Function to bundle main process and start Electron
       const startElectron = () => {
-        if (child) {
-          child.off('exit', onChildExit)
-        }
-
         queuedBuilds++
         if (bundleMainProcess) {
           //   Build the main process
@@ -307,6 +303,7 @@ module.exports = (api, options) => {
       let queuedBuilds = 0
       // Electron process
       let child
+      let firstBundleCompleted = false
       // Function to kill Electron process
       const killElectron = () => {
         if (!child) {
@@ -325,7 +322,7 @@ module.exports = (api, options) => {
         // Kill unconditionally after 2 seconds if unsuccessful
         setTimeout(() => {
           if (!currentChild.killed) {
-            console.log('force kill', currentChild.pid)
+            warn(`Force killing Electron (process #${currentChild.pid})`)
             currentChild.kill('SIGKILL')
           }
         }, 2000)
@@ -337,7 +334,8 @@ module.exports = (api, options) => {
       const chokidar = require('chokidar')
       mainProcessWatch.forEach(file => {
         chokidar.watch(api.resolve(file)).on('all', () => {
-          if (args.debug || child) {
+          // This function gets triggered on first launch
+          if (firstBundleCompleted) {
             startElectron()
           }
         })
@@ -348,9 +346,6 @@ module.exports = (api, options) => {
         if (!child) {
           process.exit(0)
         }
-
-        // Prevent future restarts
-        childRestartOnExit = -1
 
         killElectron()
       }
@@ -371,6 +366,11 @@ module.exports = (api, options) => {
       }
 
       function launchElectron () {
+        firstBundleCompleted = true
+        // Don't exit process when electron is killed
+        if (child) {
+          child.off('exit', onChildExit)
+        }
         // Kill existing instances
         killElectron()
         // Don't launch if a new background file is being bundled
@@ -451,10 +451,6 @@ module.exports = (api, options) => {
       }
 
       function onChildExit () {
-        if (child.killed) {
-          child = null
-        }
-
         process.exit(0)
       }
     }
