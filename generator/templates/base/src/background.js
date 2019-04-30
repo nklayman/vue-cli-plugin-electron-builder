@@ -12,7 +12,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 let win
 
 // Scheme must be registered before the app is ready
-<% if (newSchemeRegistrationFunction) { %>protocol.registerSchemesAsPrivileged([{scheme: 'app', secure: true }])
+<% if (newSchemeRegistrationFunction) { %>protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true } }])
 <% } else { %>protocol.registerStandardSchemes(['app'], { secure: true })
 <% } %>
 function createWindow () {
