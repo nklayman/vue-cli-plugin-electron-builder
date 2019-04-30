@@ -303,27 +303,27 @@ module.exports = (api, options) => {
       let queuedBuilds = 0
       // Electron process
       let child
-      // Auto restart flag
-      let childRestartOnExit = 0
-      // Graceful exit timeout
-      let childExitTimeout
+      let firstBundleCompleted = false
       // Function to kill Electron process
       const killElectron = () => {
         if (!child) {
           return
         }
 
+        const currentChild = child
+
         // Attempt to kill gracefully
         if (process.platform === 'win32') {
-          child.send('graceful-exit')
+          currentChild.send('graceful-exit')
         } else {
-          child.kill('SIGTERM')
+          currentChild.kill('SIGTERM')
         }
 
         // Kill unconditionally after 2 seconds if unsuccessful
-        childExitTimeout = setTimeout(() => {
-          if (child) {
-            child.kill('SIGKILL')
+        setTimeout(() => {
+          if (!currentChild.killed) {
+            warn(`Force killing Electron (process #${currentChild.pid})`)
+            currentChild.kill('SIGKILL')
           }
         }, 2000)
       }
@@ -334,22 +334,8 @@ module.exports = (api, options) => {
       const chokidar = require('chokidar')
       mainProcessWatch.forEach(file => {
         chokidar.watch(api.resolve(file)).on('all', () => {
-          if (args.debug) {
-            // Rebuild main process
-            startElectron()
-            return
-          }
-          // Never restart after SIGINT
-          if (childRestartOnExit < 0) {
-            return
-          }
-
-          // Chokidar calls this on initial launch,
-          // so don't do anything if Electron hasn't been launched yet
-          if (child || childRestartOnExit === 1) {
-            // Set auto restart flag
-            childRestartOnExit = 1
-            // Start Electron
+          // This function gets triggered on first launch
+          if (firstBundleCompleted) {
             startElectron()
           }
         })
@@ -360,9 +346,6 @@ module.exports = (api, options) => {
         if (!child) {
           process.exit(0)
         }
-
-        // Prevent future restarts
-        childRestartOnExit = -1
 
         killElectron()
       }
@@ -383,6 +366,11 @@ module.exports = (api, options) => {
       }
 
       function launchElectron () {
+        firstBundleCompleted = true
+        // Don't exit process when electron is killed
+        if (child) {
+          child.off('exit', onChildExit)
+        }
         // Kill existing instances
         killElectron()
         // Don't launch if a new background file is being bundled
@@ -458,24 +446,12 @@ module.exports = (api, options) => {
               .pipe(process.stderr)
           }
 
-          child.on('exit', () => {
-            if (child.killed) {
-              child = null
-            }
-
-            if (childExitTimeout) {
-              clearTimeout(childExitTimeout)
-              childExitTimeout = null
-            }
-
-            if (childRestartOnExit > 0) {
-              // Disable Electron process auto restart
-              childRestartOnExit = 0
-            } else {
-              process.exit(0)
-            }
-          })
+          child.on('exit', onChildExit)
         }
+      }
+
+      function onChildExit () {
+        process.exit(0)
       }
     }
   )

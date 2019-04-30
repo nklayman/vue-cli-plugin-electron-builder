@@ -28,12 +28,14 @@ jest.mock('electron-builder/out/cli/install-app-deps.js', () => ({
 }))
 jest.mock('../lib/webpackConfig.js')
 jest.mock('chokidar')
+global.setTimeout = jest.fn()
 const mockPipe = jest.fn()
 const childEvents = {}
 const mockExeca = {
   on: jest.fn((eventName, cb) => {
     childEvents[eventName] = cb
   }),
+  off: jest.fn(),
   removeAllListeners: jest.fn(),
   kill: jest.fn(),
   send: jest.fn(),
@@ -68,7 +70,7 @@ console.log = jest.fn()
 beforeEach(() => {
   jest.clearAllMocks()
 })
-chokidar.watch.mockImplementation((file) => {
+chokidar.watch.mockImplementation(file => {
   return {
     on: (type, cb) => {}
   }
@@ -456,7 +458,7 @@ describe('electron:serve', () => {
 
   test('Custom launch arguments is used if provided', async () => {
     let watchCb
-    chokidar.watch.mockImplementation((file) => {
+    chokidar.watch.mockImplementation(() => {
       return {
         on: (type, cb) => {
           // Set callback to be called later
@@ -482,7 +484,7 @@ describe('electron:serve', () => {
 
     // Mock change of background file
     watchCb()
-    childEvents.exit()
+    expect(mockExeca.off.mock.calls[0][0]).toBe('exit')
 
     expect(execa).toHaveBeenCalledTimes(2)
     expect(execa.mock.calls[0][1]).toEqual([
@@ -525,7 +527,7 @@ describe('electron:serve', () => {
     // So we can make sure it wasn't called
     jest.spyOn(process, 'exit')
     let watchCb
-    chokidar.watch.mockImplementation((file) => {
+    chokidar.watch.mockImplementation(() => {
       return {
         on: (type, cb) => {
           // Set callback to be called later
@@ -554,7 +556,7 @@ describe('electron:serve', () => {
 
     // Mock change of background file
     watchCb()
-    childEvents.exit()
+    expect(mockExeca.off.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
       expect(mockExeca.send).toHaveBeenCalledTimes(1)
@@ -575,7 +577,7 @@ describe('electron:serve', () => {
     // So we can make sure it wasn't called
     jest.spyOn(process, 'exit')
     let watchCb = {}
-    chokidar.watch.mockImplementation((file) => {
+    chokidar.watch.mockImplementation(file => {
       return {
         on: (type, cb) => {
           // Set callback to be called later
@@ -607,7 +609,7 @@ describe('electron:serve', () => {
 
     // Mock change of listed file
     watchCb['projectPath/listFile']()
-    childEvents.exit()
+    expect(mockExeca.off.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
       expect(mockExeca.send).toHaveBeenCalledTimes(1)
@@ -625,7 +627,7 @@ describe('electron:serve', () => {
 
     // Mock change of background file
     watchCb['projectPath/customBackground']()
-    childEvents.exit()
+    expect(mockExeca.off.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
       expect(mockExeca.send).toHaveBeenCalledTimes(2)
