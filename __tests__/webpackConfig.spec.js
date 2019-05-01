@@ -206,6 +206,16 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     expect(externals).toBeUndefined()
   })
 
+  test('If multiple deps are listed in user list and prefixed with "!" it should not be an external', async () => {
+    const { externals } = await mockGetExternals(
+      // Make sure it would have been marked as an external by default
+      { binary: 'It will be an external by default', name: 'mockExternal' },
+      // Add it to user externals whitelist
+      { externals: ['!mockExternal2', '!mockExternal'] }
+    )
+    expect(externals).toBeUndefined()
+  })
+
   test("Dep's package.json is read from nodeModulesPath", async () => {
     await mockGetExternals({}, { nodeModulesPath: 'customNodeModulesPath' })
 
