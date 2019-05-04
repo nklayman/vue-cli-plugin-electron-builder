@@ -295,3 +295,18 @@ Run the `Electron: All` launch configuration. Execution should stop upon reachin
 :::warning
 Breakpoints will not be detected in your Vue app during the initial launch of Electron. Reload the window to stop on these breakpoints.
 :::
+
+## Multi Platform Build 
+> To build your app for many/other platforms 
+
+By default electron-builder builds for current platform and current arch. However you can use the electron-builder CLI to define other platforms you might want to build (more info [here](https://www.electron.build/multi-platform-build)). 
+
+All arguments passed to the `electron:build` command will be forwarded to the electron-builder. Available arguments are [here](https://www.electron.build/cli) 
+
+#### Example using npm 
+`npm electron:build -- --mac --win` <sub><sup>(Do NOT remove the double dashes)</sup></sub> 
+
+#### Example using yarn 
+`yarn electron:build --mac --win`
+
+
