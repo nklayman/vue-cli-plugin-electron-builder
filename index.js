@@ -369,7 +369,7 @@ module.exports = (api, options) => {
         firstBundleCompleted = true
         // Don't exit process when electron is killed
         if (child) {
-          child.off('exit', onChildExit)
+          child.removeListener('exit', onChildExit)
         }
         // Kill existing instances
         killElectron()

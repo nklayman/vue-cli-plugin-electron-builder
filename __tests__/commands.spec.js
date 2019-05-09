@@ -35,7 +35,7 @@ const mockExeca = {
   on: jest.fn((eventName, cb) => {
     childEvents[eventName] = cb
   }),
-  off: jest.fn(),
+  removeListener: jest.fn(),
   removeAllListeners: jest.fn(),
   kill: jest.fn(),
   send: jest.fn(),
@@ -484,7 +484,7 @@ describe('electron:serve', () => {
 
     // Mock change of background file
     watchCb()
-    expect(mockExeca.off.mock.calls[0][0]).toBe('exit')
+    expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
 
     expect(execa).toHaveBeenCalledTimes(2)
     expect(execa.mock.calls[0][1]).toEqual([
@@ -556,7 +556,7 @@ describe('electron:serve', () => {
 
     // Mock change of background file
     watchCb()
-    expect(mockExeca.off.mock.calls[0][0]).toBe('exit')
+    expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
       expect(mockExeca.send).toHaveBeenCalledTimes(1)
@@ -609,7 +609,7 @@ describe('electron:serve', () => {
 
     // Mock change of listed file
     watchCb['projectPath/listFile']()
-    expect(mockExeca.off.mock.calls[0][0]).toBe('exit')
+    expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
       expect(mockExeca.send).toHaveBeenCalledTimes(1)
@@ -627,7 +627,7 @@ describe('electron:serve', () => {
 
     // Mock change of background file
     watchCb['projectPath/customBackground']()
-    expect(mockExeca.off.mock.calls[0][0]).toBe('exit')
+    expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
       expect(mockExeca.send).toHaveBeenCalledTimes(2)
