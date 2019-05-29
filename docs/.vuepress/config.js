@@ -1,8 +1,9 @@
 module.exports = {
   title: 'Vue CLI Plugin Electron Builder',
   description:
-    'A Vue CLI 3 plugin for Electron with no required configuration.',
+  'A Vue CLI 3 plugin for Electron with no required configuration.',
   base: '/vue-cli-plugin-electron-builder/',
+  ga: 'UA-134189455-2',
   head: [
     ['link', { rel: 'shortcut icon', href: '/favicon.ico' }],
     // Google search property verification
