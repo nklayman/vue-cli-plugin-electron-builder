@@ -196,6 +196,21 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     })
   })
 
+  test('Package names which have a substring in user externals should not be external', async () => {
+    // If user sets `express-ws` as an external, `express` should not be external
+    const { externals } = await mockGetExternals(
+      // Prevent it from getting marked as an external by default
+      {
+        main: 'It will not be an external by default',
+        name: 'mockExternal'
+      },
+      // Add string that includes package name to external list
+      { externals: ['mockExternal-special'] }
+    )
+    // External is properly added
+    expect(externals).toBeUndefined()
+  })
+
   test('If dep is listed in user list and prefixed with "!" it should not be an external', async () => {
     const { externals } = await mockGetExternals(
       // Make sure it would have been marked as an external by default
