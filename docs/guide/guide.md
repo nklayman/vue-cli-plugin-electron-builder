@@ -27,17 +27,13 @@ module.exports = {
 }
 ```
 
-::: tip
+### Notes
 
-You can prefix an item in the `externals` array with `!` to prevent it being automatically marked as an external. (`!not-external`)
+- You can prefix an item in the `externals` array with `!` to prevent it being automatically marked as an external. (`!not-external`)
 
-:::
+- If you do not use native dependencies in your code, you can remove the `postinstall` script from your `package.json`. Native modules may not work, but dependency install times will be faster.
 
-::: tip
-
-If you do not use native dependencies in your code, you can remove the `postinstall` script from your `package.json`. Native modules may not work, but dependency install times will be faster.
-
-:::
+- Using a database such as MySQL or MongoDB requires extra configuration. See [Issue #76 (comment)](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/76#issuecomment-420060179) for more info.
 
 ## Handling Static Assets
 
