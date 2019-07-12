@@ -14,9 +14,7 @@ branches:
     - master
     - /^dependabot/.*$/
 
-cache:
-  directories:
-    - node_modules
+cache: yarn
 
 notifications:
   email:
