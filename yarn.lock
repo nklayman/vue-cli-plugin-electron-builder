@@ -11316,19 +11316,7 @@ optionator@^0.8.1, optionator@^0.8.2:
     type-check "~0.3.2"
     wordwrap "~1.0.0"
 
-ora@^3.0.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ora/-/ora-3.2.0.tgz#67e98a7e11f7f0ac95deaaaf11bb04de3d09e481"
-  integrity sha512-XHMZA5WieCbtg+tu0uPF8CjvwQdNzKCX6BVh3N6GFsEXH40mTk5dsw/ya1lBTUGJslcEFJFQ8cBhOgkkZXQtMA==
-  dependencies:
-    chalk "^2.4.2"
-    cli-cursor "^2.1.0"
-    cli-spinners "^2.0.0"
-    log-symbols "^2.2.0"
-    strip-ansi "^5.0.0"
-    wcwidth "^1.0.1"
-
-ora@^3.4.0:
+ora@^3.0.0, ora@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/ora/-/ora-3.4.0.tgz#bf0752491059a3ef3ed4c85097531de9fdbcd318"
   integrity sha512-eNwHudNbO1folBP3JsZ19v9azXWtQZjICdr3Q0TDPIaeBQ3mXLrh54wM+er0+hSp+dWKf+Z8KM58CYzEyIYxYg==
@@ -14461,10 +14449,10 @@ term-size@^1.2.0:
   dependencies:
     execa "^0.7.0"
 
-terminal-tasks@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/terminal-tasks/-/terminal-tasks-0.0.4.tgz#97b9cf32fa4d6c04555ca1a8558d71ae8479055d"
-  integrity sha512-wy4BGUNixau3liO5ZNIwXfAnD9IQdlmhtF+Klg/tH8PKWWE7msrmgMH0i8C56i85/U7mLEYZn051QsnCxfgLPQ==
+terminal-tasks@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/terminal-tasks/-/terminal-tasks-0.0.5.tgz#ff376de2db601001adb9dfc0727a27f1656d338a"
+  integrity sha512-K4FV44C5mZdxW0OPS7RjSydrkh+01U8jZhADTIsG4uB4aQ1y3fuuf5QO9rr2MDpEU7S9UL5c1Yu3rO+6BcBJTQ==
   dependencies:
     ora "^3.0.0"
 
