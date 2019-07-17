@@ -35,7 +35,7 @@
     "fs-extra": "^8.1.0",
     "lodash.merge": "^4.6.1",
     "portfinder": "^1.0.16",
-    "pumpify": "^1.5.1",
+    "pumpify": "^2.0.0",
     "semver": "^6.0.0",
     "shebang-loader": "^0.0.1",
     "spectron": "^7.0.0",
