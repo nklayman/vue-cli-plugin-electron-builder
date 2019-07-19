@@ -2356,20 +2356,20 @@
     serve-handler "^6.0.1"
     strip-ansi "^5.2.0"
 
-"@vue/cli-ui-addon-webpack@^3.9.2":
-  version "3.9.2"
-  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-webpack/-/cli-ui-addon-webpack-3.9.2.tgz#bc61c7a2afffdaae4abd9995c20970ad6ff9ed7b"
-  integrity sha512-YMeERzmWjrXd3JgH3ybDs5YOBDGJnTQ5+vz1/zeuYt5PAek63Zw+37Zu1qf6Z13gJZTSInD1XVo/MhAREI+9/Q==
+"@vue/cli-ui-addon-webpack@^3.9.3":
+  version "3.9.3"
+  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-webpack/-/cli-ui-addon-webpack-3.9.3.tgz#6124fc2bd0494dae8ca98deca82122d5a170b4fb"
+  integrity sha512-BQro2UwHx7w1DcM2MJoF7qfa/Pp48mZWLwqJjCJVqg1utFkAqwjlIM9VweYWEWO7/jJ5B4JfuKCzRrGTtGDbdw==
 
-"@vue/cli-ui-addon-widgets@^3.9.2":
-  version "3.9.2"
-  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-widgets/-/cli-ui-addon-widgets-3.9.2.tgz#396d89c82c9ba95efcfbae9cea5d76a67736d558"
-  integrity sha512-nehd1JqV/1mLrMLv+7wGZj+Lj2/q1lVOVGF12skcfknkwLRDfBN4BQyegvgmNRlxVYyt8Q13Ni8TsE8UibrUnA==
+"@vue/cli-ui-addon-widgets@^3.9.3":
+  version "3.9.3"
+  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-widgets/-/cli-ui-addon-widgets-3.9.3.tgz#199b77a720272e1f7676a2b797ffc0b7c0ef0c10"
+  integrity sha512-DnIvWNbhilouNyaevH2aBKSzdUK1zhveQvGp3z9ddVNgD6MadY9qf0YIrGrtzK4gn2Jc42BpOh64Slzwq9KhcQ==
 
-"@vue/cli-ui@^3.9.2":
-  version "3.9.2"
-  resolved "https://registry.yarnpkg.com/@vue/cli-ui/-/cli-ui-3.9.2.tgz#c45dcc58132f7030027db32bfc27e0465bd8a67a"
-  integrity sha512-jEDd+QnY8xcRflJcHjbHAPmeC8uvxHip+RRlBvvLRzLJy04Wka7r6LPO5JMD/BwTgh8NS/DUYxYCNaO35ghdCA==
+"@vue/cli-ui@^3.9.3":
+  version "3.9.3"
+  resolved "https://registry.yarnpkg.com/@vue/cli-ui/-/cli-ui-3.9.3.tgz#30ea67b26a6e3d3257ec83cf70342e773d84a77b"
+  integrity sha512-CDMQn1An4OlaLoB0paZfXBSvuUUkR3BPU/EWTLszP1lHqTecAkj7ESIdelXfpPwRhxchE/7c9s9XXEhpHublrQ==
   dependencies:
     "@akryum/winattr" "^3.0.0"
     "@vue/cli-shared-utils" "^3.9.0"
@@ -2404,14 +2404,14 @@
     watch "^1.0.2"
 
 "@vue/cli@^3.0.1":
-  version "3.9.2"
-  resolved "https://registry.yarnpkg.com/@vue/cli/-/cli-3.9.2.tgz#62834ff6dc38ecfa92bb109070caeac5c01196b0"
-  integrity sha512-JKDt7plf3FOCK6X4OpK6ZETFFFw0AkrnmPqwyyi1Jc/irFz6eNVRBlodXk8rikQuY5MKbi+6hVOXitHPXbZc+w==
+  version "3.9.3"
+  resolved "https://registry.yarnpkg.com/@vue/cli/-/cli-3.9.3.tgz#b9c23c67ffaa2ae11dd89a95853506255f7584e2"
+  integrity sha512-+l/N5sNSwvDe6UsVrqcz8GIWp8QO5Q72OUW7P0X3xdcVo0XPnzwJ/jzKaYGnp7/syOFTIfL6KyW4gVezPE2oPA==
   dependencies:
     "@vue/cli-shared-utils" "^3.9.0"
-    "@vue/cli-ui" "^3.9.2"
-    "@vue/cli-ui-addon-webpack" "^3.9.2"
-    "@vue/cli-ui-addon-widgets" "^3.9.2"
+    "@vue/cli-ui" "^3.9.3"
+    "@vue/cli-ui-addon-webpack" "^3.9.3"
+    "@vue/cli-ui-addon-widgets" "^3.9.3"
     chalk "^2.4.1"
     cmd-shim "^2.0.2"
     commander "^2.20.0"
