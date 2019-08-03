@@ -33,13 +33,15 @@ beforeEach(() => {
   // Reset mock status
   jest.clearAllMocks()
 })
+const runGenerator = () =>
+  generator(mockApi, { electronBuilder: { electronVersion: '^5.0.0' } })
 
 describe('.gitignore', () => {
   test('extends gitignore if it exists', () => {
     // Mock existence of .gitignore
     fs.existsSync = jest.fn(path => path === 'apiResolve_./.gitignore')
     // Run the generator with mock api
-    generator(mockApi)
+    runGenerator()
     // Run the onCreateComplete callback
     completionCb()
     // New .gitignore should have been written
@@ -53,7 +55,7 @@ describe('.gitignore', () => {
     // Mock lack of .gitignore
     fs.existsSync = jest.fn(path => !(path === 'apiResolve_./.gitignore'))
     // Run the generator with mock api
-    generator(mockApi)
+    runGenerator()
     // Run the onCreateComplete callback
     completionCb()
     // New .gitignore should not have been read from or written
@@ -88,7 +90,7 @@ describe('.gitignore', () => {
       // Mock existence of .gitignore
       fs.existsSync = jest.fn(path => path === 'apiResolve_./.gitignore')
       // Run the generator with mock api
-      generator(mockApi)
+      runGenerator()
       // Run the onCreateComplete callback
       completionCb()
       // New .gitignore should not have been written
@@ -113,7 +115,7 @@ describe('background.js', () => {
       )
       // Mock existence of background file
       fs.existsSync.mockImplementation(path => path === `apiResolve_./${file}`)
-      generator(mockApi)
+      runGenerator()
       completionCb()
       expect(mockApi.render).not.toBeCalled()
     }
@@ -141,7 +143,7 @@ describe('background.js', () => {
       // return mock content
       return background
     })
-    generator(mockApi)
+    runGenerator()
     completionCb()
     expect(fs.writeFileSync).toBeCalledWith(
       'apiResolve_./src/background.ts',
@@ -152,7 +154,7 @@ describe('background.js', () => {
 
 describe.each(['postinstall', 'postuninstall'])('package.json (%s)', script => {
   test(`Adds electron-builder install-app-deps to ${script}`, () => {
-    generator(mockApi)
+    runGenerator()
     completionCb()
     expect(pkg.scripts[script]).toBe('electron-builder install-app-deps')
   })
@@ -169,7 +171,7 @@ describe.each(['postinstall', 'postuninstall'])('package.json (%s)', script => {
       return 'existing_content'
     })
 
-    generator(mockApi)
+    runGenerator()
     completionCb()
 
     expect(pkg.scripts[script]).toBe(
@@ -193,7 +195,7 @@ describe.each(['postinstall', 'postuninstall'])('package.json (%s)', script => {
       return 'existing_content'
     })
 
-    generator(mockApi)
+    runGenerator()
     completionCb()
 
     expect(pkg.scripts[script]).toBe(
