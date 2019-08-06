@@ -2233,11 +2233,11 @@
     vue-jest "^3.0.4"
 
 "@vue/cli-plugin-unit-mocha@^3.4.0":
-  version "3.9.0"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-mocha/-/cli-plugin-unit-mocha-3.9.0.tgz#4fad75c7df06a2190305d591e1992c4f1f126dca"
-  integrity sha512-ukaPvFExcZ3Bw/ERpuVJX6+h29tY2zYYFdOQ6Vv4+MyL/tUfzSoWOB9y065mqe0nBzvRJlhq5FJ8zMYFkoSdow==
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-mocha/-/cli-plugin-unit-mocha-3.10.0.tgz#1ef0c6bd56e2b4f660c2b641444fd7cb208e34cf"
+  integrity sha512-78yf/R0qxKrbLnFh8tksZ90xRkAW/iVheqHDlQp5QOhJwXJmJVUi+Qm7UxBoRomkg1scuSSugSqT7fyCbkVS9w==
   dependencies:
-    "@vue/cli-shared-utils" "^3.9.0"
+    "@vue/cli-shared-utils" "^3.10.0"
     jsdom "^13.2.0"
     jsdom-global "^3.0.2"
     mocha "^5.2.0"
