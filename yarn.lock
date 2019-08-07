@@ -2324,9 +2324,9 @@
     string.prototype.padstart "^3.0.0"
 
 "@vue/cli-test-utils@^3.0.1":
-  version "3.9.3"
-  resolved "https://registry.yarnpkg.com/@vue/cli-test-utils/-/cli-test-utils-3.9.3.tgz#cb2ad0e8cdf013a0fc4f172740574433248dfa96"
-  integrity sha512-QsXFD3jMub5AYaOR5b2TUPHoht6qe77CkwDge+1M8QQbxmYSnUywSGF4J32EzsdZDLONl6JclxP+dzJ+3x2DGA==
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/@vue/cli-test-utils/-/cli-test-utils-3.10.0.tgz#456052854e2a5164f5b4f5e52f41f387c0a164e7"
+  integrity sha512-kBmCLhlWQej/vcm5qLfVIKeSa0q5SUKSYfTzT4RKtbyT8GWIF6D9TRWTfwgKiiTfd5ySmY6zQ4eIBV9laToanA==
   dependencies:
     execa "^1.0.0"
     fs-extra "^7.0.1"
