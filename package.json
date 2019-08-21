@@ -46,7 +46,7 @@
     "unzip-crx": "^0.2.0",
     "webpack": "^4.18.0",
     "webpack-chain": "^5.0.0",
-    "yargs": "^13.2.2"
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@vue/cli": "^3.0.1",
