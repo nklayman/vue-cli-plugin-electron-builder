@@ -2134,10 +2134,10 @@
     babel-plugin-dynamic-import-node "^1.2.0"
     babel-plugin-transform-vue-jsx "^4.0.1"
 
-"@vue/babel-preset-app@^3.10.0":
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/@vue/babel-preset-app/-/babel-preset-app-3.10.0.tgz#3f89d631dd0f174c8a72e769b55f081c533c4677"
-  integrity sha512-NzJLI4Qe0SYm9gVHQC9RXyP0YcPjI28TmZ0ds2RJa9NO96LXHLES2U1HqiMDN4+CVjOQFrWUNd7wWeaETRPXbg==
+"@vue/babel-preset-app@^3.11.0":
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/@vue/babel-preset-app/-/babel-preset-app-3.11.0.tgz#52bf79c15560a304a13f4770e3e5530e01dd6173"
+  integrity sha512-fcCq9nuGGx1WGnyaKHvIC8RnWjISXGf1rJH4mN9+bymDfosgDbwnfV4TYvTZlyK1/aTHEEpIoO3XimTXBo7QBw==
   dependencies:
     "@babel/helper-module-imports" "^7.0.0"
     "@babel/plugin-proposal-class-properties" "^7.0.0"
@@ -2206,15 +2206,15 @@
   integrity sha512-yYZP27vjioWmohwXQ9mTPHHxktfAaTM6RDehyG83yvY07wcdxhwrNNCMm8eE9My/K2F8oAPf8uoDZZmkr/EXBw==
 
 "@vue/cli-plugin-babel@^3.0.1":
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-babel/-/cli-plugin-babel-3.10.0.tgz#3c5300bd6daf30b53292a6c3982e3a681cba2c18"
-  integrity sha512-NHrg6ZYN2fh5ZiMMzCNRuDlH9mcTOu+GIti1Va/zPnG3qMkX2iZ0zZGFaOCltIFoVSXdyOfa0sMtJGDoP9Q7ZA==
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-babel/-/cli-plugin-babel-3.11.0.tgz#247a7233100a33ea0fd9f7d30bdf2b9b554e9e88"
+  integrity sha512-RSq9goefilvUMYxbeQS8cZxt6zZnvBIb1xK4NWX0NBtqKzJmIjtJzDAQvKgjnZ/USRu6p6X2IRj4Wum8UCUqow==
   dependencies:
     "@babel/core" "^7.0.0"
-    "@vue/babel-preset-app" "^3.10.0"
-    "@vue/cli-shared-utils" "^3.10.0"
+    "@vue/babel-preset-app" "^3.11.0"
+    "@vue/cli-shared-utils" "^3.11.0"
     babel-loader "^8.0.5"
-    webpack ">=4 < 4.29"
+    webpack "^4.0.0"
 
 "@vue/cli-plugin-eslint@^3.0.1":
   version "3.11.0"
