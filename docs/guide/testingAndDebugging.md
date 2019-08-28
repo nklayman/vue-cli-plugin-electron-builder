@@ -8,7 +8,7 @@ sidebarDepth: 2
 
 ### Visual Studio Code
 
-See the [VSCode testing recipe](./recipes.md#debugging-with-vscode) for information on debugging the main and renderer process in [Visual Studio Code](https://code.visualstudio.com/).
+See the [VSCode debugging recipe](./recipes.md#debugging-with-vscode) for information on debugging the main and renderer process in [Visual Studio Code](https://code.visualstudio.com/).
 
 ### Renderer Process (Main App)
 
