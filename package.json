@@ -40,7 +40,7 @@
     "shebang-loader": "^0.0.1",
     "spectron": "^7.0.0",
     "split2": "^3.0.0",
-    "terser-webpack-plugin": "^1.1.0",
+    "terser-webpack-plugin": "^2.0.1",
     "through2-filter": "^3.0.0",
     "through2-map": "^3.0.0",
     "unzip-crx": "^0.2.0",
