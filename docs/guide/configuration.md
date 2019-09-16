@@ -157,7 +157,7 @@ App logging
 ...
 ```
 
-VCP Electron Builder will automatically remove this for you (powered by [run-electron](https://github.com/sindresorhus/run-electron)). If you don't want this removed, set `electronJunkOutput` to `false` in plugin options:
+VCP Electron Builder will automatically remove this for you (powered by [run-electron](https://github.com/sindresorhus/run-electron)). If you don't want this removed, set `removeElectronJunk` to `false` in plugin options:
 
 ```javascript
 // vue.config.js
