@@ -575,6 +575,9 @@ function bundleMain ({
         additionalFormatters: [formatter]
       }
     ])
+  
+  config.resolve.alias.set('@', api.resolve('src'))
+  
   if (usesTypescript) {
     config.resolve.extensions.merge(['.js', '.ts'])
     config.module
