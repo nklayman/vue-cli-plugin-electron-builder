@@ -30,7 +30,7 @@
   "dependencies": {
     "chokidar": "^3.0.2",
     "electron-builder": "^21.2.0",
-    "execa": "^1.0.0",
+    "execa": "^2.0.5",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^8.1.0",
     "lodash.merge": "^4.6.1",
