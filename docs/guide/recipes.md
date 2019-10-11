@@ -4,13 +4,103 @@
 
 [[toc]]
 
+## Auto Update
+
+> Configure app updates with [electron-builder auto update](https://www.electron.build/auto-update)
+
+[Example Repo](https://github.com/nklayman/electron-auto-update-example)
+
+### Install Required Deps
+
+First, install [electron-updater](https://www.npmjs.com/package/electron-updater):
+
+With Yarn:
+
+`yarn add electron-updater`
+
+or with NPM:
+
+`npm install electron-updater`
+
+### Enable Publishing to GitHub
+
+Add `publish: ['github']` to Electron Builder's config in your `vue.config.js`:
+
+```js
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      builderOptions: {
+        publish: ['github']
+      }
+    }
+  }
+}
+```
+
+### Check for Updates in `background.(js|ts)`
+
+Add the following to your main process file (`background.(js|ts)` by default):
+
+```diff
+...
++  import { autoUpdater } from "electron-updater"
+...
+
+if (process.env.WEBPACK_DEV_SERVER_URL) {
+    // Load the url of the dev server if in development mode
+    win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
+    if (!process.env.IS_TEST) win.webContents.openDevTools()
+  } else {
+    createProtocol('app')
+    // Load the index.html when not in development
+    win.loadURL('app://./index.html')
++   autoUpdater.checkForUpdatesAndNotify()
+  }
+...
+```
+
+### GitHub Personal Access Token
+
+**Note:** You will need a GitHub personal access token for this step. To get one, go to [https://github.com/settings/tokens](https://github.com/settings/tokens) and click `Generate new token`.
+
+In order for Electron Builder to upload a release to GitHub, you will need to make your token available by setting the `GH_TOKEN` env variable to your token:
+
+On Linux/MacOS:
+
+`export GH_TOKEN=TOKEN-GOES-HERE`
+
+On Windows:
+
+`set GH_TOKEN=TOKEN-GOES-HERE`
+
+### Upload Release to GitHub
+
+Now that you have configured everything, tell electron-builder to upload your app to GitHub by running `electron:build` with the `-p always` argument:
+
+With Yarn:
+
+`yarn electron:build -p always`
+
+or with NPM:
+
+`npm run electron:build -- -p always`
+
+### Publish Release
+
+Open your repo in GitHub, and click on the releases tab. You should see a draft of your new version with all the binaries included. Publish this release so users can update to it.
+
+### Check for Updates
+
+Install your app, then run it. You won't get an update notification yet, because this is the latest version. You will have to publish a new version by increasing the `version` field in your `package.json`, then repeating the 3 previous steps. Now, your old app should give you an update notification.
+
 ## Icons
 
 > Customize your app's launcher and tray icon
 
 [Example Repo](https://github.com/nklayman/electron-icon-example)
 
-#### Install Required Deps
+### Install Required Deps
 
 First, add [electron-icon-builder](https://www.npmjs.com/package/electron-icon-builder) as a `devDependency`:
 
@@ -22,11 +112,11 @@ or with NPM:
 
 `npm install --save-dev electron-icon-builder`
 
-#### Add Icon to App
+### Add Icon to App
 
 Place your square icon in `public/icon.png`.
 
-#### Add Generation Script
+### Add Generation Script
 
 Add the following script to your `package.json`:
 
@@ -34,7 +124,7 @@ Add the following script to your `package.json`:
 "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten"
 ```
 
-#### Generate Icons
+### Generate Icons
 
 Run the new script:
 
@@ -46,7 +136,7 @@ or with NPM:
 
 `npm run electron:generate-icons`
 
-#### Set Tray Icon
+### Set Tray Icon
 
 Edit your background file (`src/background.(js|ts)` by default):
 
@@ -74,11 +164,11 @@ If you get the linting error `'__static' is not defined`, add `/* global __stati
 
 [Example Repo](https://github.com/nklayman/electron-multipage-example)
 
-#### Add Your Pages
+### Add Your Pages
 
 Follow [Vue CLI's instructions](https://cli.vuejs.org/config/#pages) for adding pages to your app.
 
-#### Create Variable for Second Page
+### Create Variable for Second Page
 
 Add the `secondWin` and `createdAppProtocol` variables to your background file (`src/background.(js|ts)` by default):
 
@@ -90,7 +180,7 @@ let secondWin
 let createdAppProtocol = false
 ```
 
-#### Accept Page Arguments for `createWindow` Function
+### Accept Page Arguments for `createWindow` Function
 
 In your background file, update the `createWindow` function to take arguments about the page:
 
@@ -143,7 +233,7 @@ function createWindow(winVar, devPath, prodPath) {
 }
 ```
 
-#### Create Both Windows on App Launch
+### Create Both Windows on App Launch
 
 Create both windows inside the `app.on('ready')` callback in your background file:
 
@@ -165,7 +255,7 @@ app.on('ready', async () => {
 })
 ```
 
-#### Recreate Both Windows When Dock Icon is Clicked
+### Recreate Both Windows When Dock Icon is Clicked
 
 Create both windows inside the `app.on('activate')` callback in your background file:
 
@@ -195,7 +285,7 @@ if (secondWin === null) {
 
 Read [Visual Studio Code's docs on debugging](https://code.visualstudio.com/docs/editor/debugging) before following this guide.
 
-#### Enable Sourcemaps
+### Enable Sourcemaps
 
 Enable sourcemaps in your `vue.config.js`:
 
@@ -207,7 +297,7 @@ module.exports = {
 }
 ```
 
-#### Add Debug Task
+### Add Debug Task
 
 Add the `electron-debug` task to `.vscode/tasks.json`, which will start the Electron dev server in debug mode:
 
@@ -241,7 +331,7 @@ Add the `electron-debug` task to `.vscode/tasks.json`, which will start the Elec
 }
 ```
 
-#### Add Debugging Configurations
+### Add Debugging Configurations
 
 Add `Electron: Main`, `Electron: Renderer`, and `Electron: All` debug configurations to `.vscode/launch.json`:
 
@@ -284,11 +374,11 @@ Add `Electron: Main`, `Electron: Renderer`, and `Electron: All` debug configurat
 }
 ```
 
-#### Add Some Breakpoints
+### Add Some Breakpoints
 
 Add "red dot" [breakpoints](https://code.visualstudio.com/docs/editor/debugging#_breakpoints) by clicking VSCode's gutter in your Vue app or background file.
 
-#### Launch Debug Mode
+### Launch Debug Mode
 
 Run the `Electron: All` launch configuration. Execution should stop upon reaching one of your breakpoints, and VSCode will allow you to debug your code.
 
