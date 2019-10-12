@@ -2232,12 +2232,12 @@
     eslint-plugin-vue "^4.7.1"
 
 "@vue/cli-plugin-typescript@^3.0.1":
-  version "3.11.0"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-typescript/-/cli-plugin-typescript-3.11.0.tgz#5396905af9df574935e47a0507450f76fae6b196"
-  integrity sha512-oL0ctNVvbD7gZr3DDv6gxxWjw0lUrh4sGMk7InCakEooo/790DqZRX6lx9stXEv/+zELkgddcY3hjNEopbJg+w==
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-typescript/-/cli-plugin-typescript-3.12.0.tgz#24f1147dcc7e66be611351c376ad7ca80d6d1ec6"
+  integrity sha512-DNQyvIZoMWkbmbKFfYNN7BHry5a0WSeTQSE4Acd0LlUrYw1xia29IusIGdWqvsB3zTkihg99LYUfAK5xCRGtrw==
   dependencies:
     "@types/webpack-env" "^1.13.9"
-    "@vue/cli-shared-utils" "^3.11.0"
+    "@vue/cli-shared-utils" "^3.12.0"
     fork-ts-checker-webpack-plugin "^0.5.2"
     globby "^9.2.0"
     ts-loader "^5.3.3"
