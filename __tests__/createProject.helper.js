@@ -9,7 +9,12 @@ jest.mock('electron-builder/out/cli/install-app-deps.js')
 const createProject = (projectName, useTS, customPlugins = {}) =>
   new Promise(async resolve => {
     //   Prevent modification of import
-    let preset = { ...defaultPreset }
+    let preset = {
+      ...defaultPreset,
+      configs: {
+        vue: { lintOnSave: false }
+      }
+    }
     if (useTS) {
       // Install typescript plugin
       preset.plugins['@vue/cli-plugin-typescript'] = {}
