@@ -36,6 +36,7 @@ vue-cli-plugin-electron-builder exports a `testWithSpectron` function. This func
 // This example uses Jest, but any testing framework will work as well
 
 const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
+jest.setTimeout(50000)
 
 test('a window is created', async () => {
   const { stdout, url, stopServe, app } = await testWithSpectron()
@@ -49,6 +50,8 @@ test('a window is created', async () => {
   await stopServe()
 })
 ```
+
+Complete examples are available for [jest](https://github.com/nklayman/vue-cli-plugin-electron-builder/blob/master/generator/templates/tests-jest/tests/unit/electron.spec.js) and [mocha](https://github.com/nklayman/vue-cli-plugin-electron-builder/blob/master/generator/templates/tests-mocha/tests/unit/electron.spec.js). They will be automatically added with this plugin if you have jest or mocha already installed in your project.
 
 `testWithSpectron` takes a config argument. That config argument has properties as defined:
 
