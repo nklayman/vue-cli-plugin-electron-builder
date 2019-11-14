@@ -19,7 +19,7 @@ This guide is for upgrading from <=v0.3.2 to >=v1.0.0.
 - This means there is no need to change your config to work with stylus, sass, or any other special files.
 - The commands have been renamed from `command:electron` to `electron:command` (since 1.0.0-rc.4)
 - Typescript support is [automatic](./configuration.md#typescript-options) for both processes, just add the `@vue/typescript` plugin.
-- Your normal build will not be overwritten by `build:electron`.
+- Your normal build will not be overwritten by `electron:build`.
 - The [folder structure](./guide.md#folder-structure) has changed dramatically.
-- Electron-builder's [config](./configuration.md#configuring-electron-builder) is now taken from the `builderConfig` key in vue-cli-plugin-electron-builder's plugin options.
+- Electron-builder's [config](./configuration.md#configuring-electron-builder) is now taken from the `builderOptions` key in vue-cli-plugin-electron-builder's plugin options.
 - To learn more about the internals of this plugin, see [how it works](./guide.md#how-it-works).
