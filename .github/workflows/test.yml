@@ -7,19 +7,27 @@ on:
     branches: [master]
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v1
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - name: yarn install and test
+    - name: yarn install
       run: |
         yarn install
-        xvfb-run yarn test --runInBand
+    - name: yarn test
+      if: runner.os != 'Windows'
+      run: |
+        xvfv-run yarn test --runInBand
+    - name: yarn test
+      if: runner.os == 'Windows'
+      run: |
+       yarn test --runInBand
       env:
         CI: true
