@@ -24,7 +24,7 @@ jobs:
     - name: yarn test
       if: runner.os != 'Windows'
       run: |
-        xvfv-run yarn test --runInBand
+        xvfb-run yarn test --runInBand
     - name: yarn test
       if: runner.os == 'Windows'
       run: |
