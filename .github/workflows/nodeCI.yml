@@ -1,4 +1,4 @@
-name: Test
+name: Node CI
 
 on: 
   push:
@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  test:
+  build:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
