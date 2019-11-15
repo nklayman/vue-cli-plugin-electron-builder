@@ -11,6 +11,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
+        include:
+        - os: windows-latest
+          commandPrefix: ''
+          electronCacheDir: '%USERPROFILE%\.electron'
+        - os: ubuntu-latest
+          commandPrefix: xfvb-run
+          electronCacheDir: '~/.cache/electron'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v1
@@ -18,16 +25,25 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
+    - name: Get yarn cache
+      id: yarn-cache
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v1
+      with:
+        path: ${{ steps.yarn-cache.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - name: Get electron cache
+      uses: actions/cache@v1
+      with:
+        path: ${{ matrix.electronCacheDir }}
+        key: ${{ runner.os }}-electron-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-electron-
     - name: yarn install
-      run: |
-        yarn install
+      run: yarn install
     - name: yarn test
-      if: runner.os != 'Windows'
-      run: |
-        xvfb-run yarn test --runInBand
-    - name: yarn test
-      if: runner.os == 'Windows'
-      run: |
-       yarn test --runInBand
+      run: ${{ matrix.commandPrefix }} yarn test --runInBand
       env:
         CI: true
