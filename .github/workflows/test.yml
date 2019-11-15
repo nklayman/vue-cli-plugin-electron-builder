@@ -9,22 +9,17 @@ on:
 jobs:
   build:
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        node-version: [8.x, 10.x, 12.x]
-        os: [ubuntu-latest, windows-latest]
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 12.x
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 12.x
     - name: yarn install and test
       run: |
         yarn install
-        yarn test --runInBand
+        xvfb-run yarn test --runInBand
       env:
         CI: true
