@@ -36,6 +36,11 @@ jobs:
     - name: yarn install
       run: yarn install
     - name: yarn test
-      run: ${{ matrix.commandPrefix }} yarn test --runInBand
+      run: ${{ matrix.commandPrefix }} yarn test --runInBand --coverage
       env:
         CI: true
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1.0.3
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+        file: ./coverage/clover.xml
