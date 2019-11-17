@@ -123,7 +123,7 @@ describe('electron:build', () => {
     expect(Object.keys(mainConfig)).not.toContain('module')
     //   Ts files are not resolved
     expect(
-      mainConfig.resolve ? mainConfig.resolve.extensions : []
+      mainConfig.resolve.extensions ? mainConfig.resolve.extensions : []
     ).not.toContain('ts')
     //   Proper entry file is used
     expect(mainConfig.entry.background[0]).toBe('projectPath/src/background.js')
@@ -406,7 +406,7 @@ describe('electron:serve', () => {
     expect(Object.keys(mainConfig)).not.toContain('module')
     //   Ts files are not resolved
     expect(
-      mainConfig.resolve ? mainConfig.resolve.extensions : []
+      mainConfig.resolve.extensions ? mainConfig.resolve.extensions : []
     ).not.toContain('ts')
     //   Proper entry file is used
     expect(mainConfig.entry.index[0]).toBe('projectPath/src/background.js')
