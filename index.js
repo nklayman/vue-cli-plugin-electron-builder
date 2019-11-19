@@ -128,7 +128,12 @@ module.exports = (api, options) => {
           options.publicPath = pluginOptions.customFileProtocol || 'app://./'
           info('Bundling render process:')
           //   Build the render process with the custom args
-          await api.service.run('build', vueArgs)
+          try {
+            await api.service.run('build', vueArgs)
+          } catch (e) {
+            error('Vue CLI build failed. Please resolve any issues with your build and try again.')
+            process.exit(1)
+          }
           // Copy package.json to output dir
           const pkg = JSON.parse(
             fs.readFileSync(api.resolve('./package.json'), 'utf8')
