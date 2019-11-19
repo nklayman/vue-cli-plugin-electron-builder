@@ -6,6 +6,10 @@ actionLink: /guide/
 footer: MIT Licensed | Copyright © 2018-present Noah Klayman
 ---
 
+<div style="text-align: center">
+  <Sponsor/>
+</div>
+
 <div class="features">
   <div class="feature">
     <h2>Write Once, Run Everywhere</h2>
