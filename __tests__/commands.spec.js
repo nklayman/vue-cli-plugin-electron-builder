@@ -350,15 +350,11 @@ describe('electron:build', () => {
         }
       })
       expect(fs.writeFileSync).toBeCalledWith(
-        `dist_electron${path.sep}bundled${
-          path.sep
-        }legacy-assets-index.html.json`,
+        `dist_electron${path.sep}bundled${path.sep}legacy-assets-index.html.json`,
         '[]'
       )
       expect(fs.writeFileSync).toBeCalledWith(
-        `dist_electron${path.sep}bundled${
-          path.sep
-        }legacy-assets-subpage.html.json`,
+        `dist_electron${path.sep}bundled${path.sep}legacy-assets-subpage.html.json`,
         '[]'
       )
     }
@@ -384,6 +380,17 @@ describe('electron:build', () => {
           external: '^0.0.1'
         }
       })
+    )
+  })
+
+  test('Config arguments overwrite config', async () => {
+    jest.unmock('yargs')
+    await runCommand('electron:build', undefined, undefined, [
+      '-c.directories.output=customDist'
+    ])
+
+    expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
+      'customDist'
     )
   })
 })

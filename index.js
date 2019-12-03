@@ -131,7 +131,9 @@ module.exports = (api, options) => {
           try {
             await api.service.run('build', vueArgs)
           } catch (e) {
-            error('Vue CLI build failed. Please resolve any issues with your build and try again.')
+            error(
+              'Vue CLI build failed. Please resolve any issues with your build and try again.'
+            )
             process.exit(1)
           }
           // Copy package.json to output dir
@@ -207,15 +209,17 @@ module.exports = (api, options) => {
           info('Building app with electron-builder:')
           // Build the app using electron builder
           builder
-            .build({
-              //   Args parsed with yargs
-              ...builderArgs,
-              config: merge(
-                defaultBuildConfig,
-                //   User-defined config overwrites defaults
-                userBuildConfig
-              )
-            })
+            .build(
+              merge({
+                config: merge(
+                  defaultBuildConfig,
+                  //   User-defined config overwrites defaults
+                  userBuildConfig
+                ),
+                //   Args parsed with yargs
+                ...builderArgs
+              })
+            )
             .then(() => {
               // handle result
               done('Build complete!')
