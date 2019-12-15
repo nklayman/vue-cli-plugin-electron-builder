@@ -72,6 +72,8 @@ module.exports = (api, options) => {
         removeArg('--legacy', 1, rawArgs)
         removeArg('--dashboard', 1, rawArgs)
         removeArg('--skipBundle', 1, rawArgs)
+        removeArg('--report', 1, rawArgs)
+        removeArg('--report-json', 1, rawArgs)
         // Parse the raw arguments using electron-builder yargs config
         const builderArgs = yargs
           .command(['build', '*'], 'Build', configureBuildCommand)
@@ -103,7 +105,10 @@ module.exports = (api, options) => {
             // Make sure files are outputted to proper directory
             dest: bundleOutputDir,
             // Enable modern mode unless --legacy is passed
-            modern: !args.legacy
+            modern: !args.legacy,
+            // --report and --report-json args
+            report: args.report,
+            'report-json': args['report-json']
           }
           // With @vue/cli-service v3.4.1+, we can bypass legacy build
           process.env.VUE_CLI_MODERN_BUILD = !args.legacy

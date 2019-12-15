@@ -242,7 +242,9 @@ describe('electron:build', () => {
     ['--legacy'],
     ['--dashboard'],
     ['--skipBundle'],
-    ['--dest', 'output']
+    ['--dest', 'output'],
+    ['--report'],
+    ['--report-json']
   ])('%s argument is removed from electron-builder args', async (...args) => {
     await runCommand('electron:build', {}, {}, ['--keep1', ...args, '--keep2'])
     // Custom args should have been removed, and other args kept
@@ -278,6 +280,16 @@ describe('electron:build', () => {
     await runCommand('electron:build', {}, { legacy: true })
     expect(serviceRun.mock.calls[0][1].modern).toBe(false)
   })
+
+  test.each(['report', 'report-json'])(
+    '--%s arg is passed to renderer build',
+    async argName => {
+      const args = {}
+      args[argName] = true
+      await runCommand('electron:build', {}, args)
+      expect(serviceRun.mock.calls[0][1][argName]).toBe(true)
+    }
+  )
 
   test('App is not bundled if --skipBundle arg is passed', async () => {
     await runCommand('electron:build', {}, { skipBundle: true })
