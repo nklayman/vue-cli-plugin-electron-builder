@@ -394,7 +394,7 @@ module.exports = (api, options) => {
         if (args.debug) {
           //   Do not launch electron and provide instructions on launching through debugger
           info(
-            'Not launching electron as debug argument was passed. You must launch electron though your debugger.'
+            'Not launching electron as debug argument was passed. You must launch electron through your debugger.'
           )
           info(
             `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
