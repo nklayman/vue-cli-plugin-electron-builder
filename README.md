@@ -6,9 +6,7 @@ Windows (Appveyor): [![Build status](https://ci.appveyor.com/api/projects/status
 
 [![Sponsor](./docs/.vuepress/public/sponsorShield.svg)](https://github.com/sponsors/nklayman)
 
-**IMPORTANT: Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
-
-**IMPORTANT: These docs are for the v1.0.0 release of VCP Electron Builder. If you were previously using an older version of vue-cli-plugin-electron-builder (<1.0.0), please see the [upgrade guide](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/upgrading.html) or [view the old docs](https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/legacy).**
+**IMPORTANT: Your app must be created with Vue-CLI 3 or 4 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
 
 ## Quick Start:
 
@@ -42,11 +40,8 @@ or with NPM:
 
 To see more documentation, [visit our website](https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html).
 
-## WARNING
+## Supporters
 
-The command names have changed in `v1.0.0-rc.4`. If you are using an older version, the command names are:
-`yarn serve:electron`
-and
-`yarn build:electron`.
-
-Replace `yarn` with `npm run` if you are using npm.
+| [![Andrew LeTourneau](https://avatars2.githubusercontent.com/u/2807807?s=64&v=4)](https://github.com/centerorbit) |
+| ----------------------------------------------------------------------------------------------------------------- |
+| [Andrew LeTourneau](https://github.com/centerorbit)                                                               |
