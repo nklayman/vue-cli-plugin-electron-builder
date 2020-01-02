@@ -123,7 +123,9 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       customFileProtocol: 'myCustomProtocol://./' // Make sure to add "./" to the end of the protocol
-      customFileProtocol: 'file://./' // You can also revert back to the file protocol with 'file://'
+      // If you want to use the file:// protocol, add win.loadURL(`file://${__dirname}/index.html`) to your main process file
+      // In place of win.loadURL('app://./index.html'), and set customFileProtocol to './'
+      customFileProtocol: './'
     }
   }
 }
