@@ -11,6 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
+        node: [ '12', '10', '8' ]
         include:
         - os: windows-latest
           commandPrefix: ''
@@ -19,10 +20,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js 12.x
+    - name: Setup Node
       uses: actions/setup-node@v1
       with:
-        node-version: 12.x
+        node-version: ${{ matrix.node }}
     - name: Get yarn cache dir
       id: yarn-cache
       run: echo "::set-output name=dir::$(yarn cache dir)"
