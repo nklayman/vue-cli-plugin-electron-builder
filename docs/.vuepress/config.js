@@ -36,8 +36,7 @@ module.exports = {
         'configuration',
         'recipes',
         'testingAndDebugging',
-        'commonIssues',
-        'upgrading'
+        'commonIssues'
       ]
     },
     repo: 'nklayman/vue-cli-plugin-electron-builder',
