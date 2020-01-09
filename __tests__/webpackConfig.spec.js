@@ -12,7 +12,7 @@ const mockApi = {
     // Mock api.resolve paths for tests
     if (path.match(/\.\/node_modules$/)) {
       return 'nodeModulesPath'
-    } else if (path.match(/^.\/package.json/)) {
+    } else if (path.match(/^(\.\/)?package.json/)) {
       return '../__tests__/mock_package.json'
     } else if (path.match('./node_modules/mockExternal/package.json')) {
       return 'mockExternalPath'
