@@ -561,6 +561,8 @@ function bundleMain ({
       envVars[k] = process.env[k]
     }
   })
+  // Enable/disable nodeIntegration
+  envVars.ELECTRON_NODE_INTEGRATION = pluginOptions.nodeIntegration || false
   config.plugin('env').use(webpack.EnvironmentPlugin, [envVars])
 
   if (args.debug) {

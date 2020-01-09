@@ -8,9 +8,9 @@ sidebarDepth: 2
 
 [[toc]]
 
-## Native Modules <Badge text="1.0.0-rc.1+" type="info"/>
+## Native Modules
 
-Native modules are supported and should work without any configuration. If you get errors, first make sure VCP-Electron-Builder's version is set to `1.0.0-rc.1` or greater. If it still fails, re-invoke the generator with `vue invoke electron-builder`. The generator will automatically detect missing code (such as native module support) and add it, without interfering with the rest. If you have done both these things, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
+Native modules are supported and should work without any configuration, assuming [nodeIntegration is enabled](./configuration.md#node-integration). If you get errors, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
 
 ```javascript
 // vue.config.js
@@ -31,7 +31,7 @@ module.exports = {
 
 - You can prefix an item in the `externals` array with `!` to prevent it being automatically marked as an external. (`!not-external`)
 
-- If you do not use native dependencies in your code, you can remove the `postinstall` script from your `package.json`. Native modules may not work, but dependency install times will be faster.
+- If you do not use native dependencies in your code, you can remove the `postinstall` and `postuninstall` scripts from your `package.json`. Native modules may not work, but dependency install times will be faster.
 
 - Using a database such as MySQL or MongoDB requires extra configuration. See [Issue #76 (comment)](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/76#issuecomment-420060179) for more info.
 

@@ -73,6 +73,20 @@ module.exports = {
 }
 ```
 
+## Node Integration
+
+As of v2.0, electron `nodeIntegration` is disabled by default. This blocks all node APIs such as `require`. This reduces [security risks](https://electronjs.org/docs/tutorial/security#2-do-not-enable-nodejs-integration-for-remote-content), and is a recommended best practice by the electron team. If you need to use native modules such as `fs` or `sqlite` in the renderer process, you can enable `nodeIntegration` in `vue.config.js`:
+
+```js
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      nodeIntegration: true
+    }
+  }
+}
+```
+
 ## Changing the Output Directory
 
 If you don't want your files outputted into dist_electron, you can choose a custom folder in vue-cli-plugin-electron-builder's plugin options. If you are using `v1.0.0-rc.4` or later, you can use the `--dest` argument to change the output dir as well.
