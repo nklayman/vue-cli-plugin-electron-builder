@@ -30,7 +30,7 @@
   "private": false,
   "dependencies": {
     "chokidar": "^3.0.2",
-    "electron-builder": "^21.2.0",
+    "electron-builder": "^22.2.0",
     "execa": "^3.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^8.1.0",
