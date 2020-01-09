@@ -23,6 +23,10 @@ module.exports = {
         text: 'Changelog',
         link:
           'https://github.com/nklayman/vue-cli-plugin-electron-builder/releases'
+      },
+      {
+        text: 'Sponsor',
+        link: 'https://github.com/sponsors/nklayman'
       }
     ],
     sidebar: {

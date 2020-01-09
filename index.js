@@ -72,6 +72,8 @@ module.exports = (api, options) => {
         removeArg('--legacy', 1, rawArgs)
         removeArg('--dashboard', 1, rawArgs)
         removeArg('--skipBundle', 1, rawArgs)
+        removeArg('--report', 1, rawArgs)
+        removeArg('--report-json', 1, rawArgs)
         // Parse the raw arguments using electron-builder yargs config
         const builderArgs = yargs
           .command(['build', '*'], 'Build', configureBuildCommand)
@@ -103,7 +105,10 @@ module.exports = (api, options) => {
             // Make sure files are outputted to proper directory
             dest: bundleOutputDir,
             // Enable modern mode unless --legacy is passed
-            modern: !args.legacy
+            modern: !args.legacy,
+            // --report and --report-json args
+            report: args.report,
+            'report-json': args['report-json']
           }
           // With @vue/cli-service v3.4.1+, we can bypass legacy build
           process.env.VUE_CLI_MODERN_BUILD = !args.legacy
@@ -128,7 +133,14 @@ module.exports = (api, options) => {
           options.publicPath = pluginOptions.customFileProtocol || 'app://./'
           info('Bundling render process:')
           //   Build the render process with the custom args
-          await api.service.run('build', vueArgs)
+          try {
+            await api.service.run('build', vueArgs)
+          } catch (e) {
+            error(
+              'Vue CLI build failed. Please resolve any issues with your build and try again.'
+            )
+            process.exit(1)
+          }
           // Copy package.json to output dir
           const pkg = JSON.parse(
             fs.readFileSync(api.resolve('./package.json'), 'utf8')
@@ -202,15 +214,17 @@ module.exports = (api, options) => {
           info('Building app with electron-builder:')
           // Build the app using electron builder
           builder
-            .build({
-              //   Args parsed with yargs
-              ...builderArgs,
-              config: merge(
-                defaultBuildConfig,
-                //   User-defined config overwrites defaults
-                userBuildConfig
-              )
-            })
+            .build(
+              merge({
+                config: merge(
+                  defaultBuildConfig,
+                  //   User-defined config overwrites defaults
+                  userBuildConfig
+                ),
+                //   Args parsed with yargs
+                ...builderArgs
+              })
+            )
             .then(() => {
               // handle result
               done('Build complete!')
@@ -380,7 +394,7 @@ module.exports = (api, options) => {
         if (args.debug) {
           //   Do not launch electron and provide instructions on launching through debugger
           info(
-            'Not launching electron as debug argument was passed. You must launch electron though your debugger.'
+            'Not launching electron as debug argument was passed. You must launch electron through your debugger.'
           )
           info(
             `If you are using Spectron, make sure to set the IS_TEST env variable to true.`
@@ -575,6 +589,8 @@ function bundleMain ({
         additionalFormatters: [formatter]
       }
     ])
+  config.resolve.alias.set('@', api.resolve('src'))
+
   if (usesTypescript) {
     config.resolve.extensions.merge(['.js', '.ts'])
     config.module

@@ -6,6 +6,10 @@ actionLink: /guide/
 footer: MIT Licensed | Copyright © 2018-present Noah Klayman
 ---
 
+<div style="text-align: center">
+  <Sponsor/>
+</div>
+
 <div class="features">
   <div class="feature">
     <h2>Write Once, Run Everywhere</h2>
@@ -21,8 +25,6 @@ footer: MIT Licensed | Copyright © 2018-present Noah Klayman
   </div>
 </div>
 <centered-markdown>
-Build Status:
-
-Windows (Appveyor): [![Build status](https://ci.appveyor.com/api/projects/status/tyrr8kemli4vfll7?svg=true)](https://ci.appveyor.com/project/nklayman/vue-cli-plugin-electron-builder), Linux (Travis): [![Build Status](https://travis-ci.org/nklayman/vue-cli-plugin-electron-builder.svg?branch=master)](https://travis-ci.org/nklayman/vue-cli-plugin-electron-builder)
+Build status: [![Build status](https://github.com/nklayman/vue-cli-plugin-electron-builder/workflows/Node%20CI/badge.svg)](https://github.com/nklayman/vue-cli-plugin-electron-builder/actions)
 
 </centered-markdown>
