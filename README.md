@@ -10,7 +10,7 @@ Build status: [![Build status](https://github.com/nklayman/vue-cli-plugin-electr
 
 ## Quick Start:
 
-Open a terminal in the directory of your app created with Vue-CLI 3.
+Open a terminal in the directory of your app created with Vue-CLI 3 or 4 (4 is recommended).
 
 Then, install and invoke the generator of vue-cli-plugin-electron-builder by running:
 

@@ -6,12 +6,12 @@ sidebarDepth: 2
 # Quick Start
 
 ::: warning Important
-Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!
+Your app must be created with Vue-CLI 3 or 4 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!
 :::
 
 ## Installation
 
-Open a terminal in the directory of your app created with Vue-CLI 3.
+Open a terminal in the directory of your app created with Vue-CLI 3 or 4 (4 is recommended).
 
 Then, install and invoke the generator of vue-cli-plugin-electron-builder by running:
 
