@@ -34,7 +34,10 @@ vue-cli-plugin-electron-builder exports a `testWithSpectron` function. This func
 
 ```javascript
 // This example uses Jest, but any testing framework will work as well
-
+// Jest tests MUST run in the node environment, add this to the top of each electron test:
+/**
+ * @jest-environment node
+ */
 const spectron = require('spectron')
 const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
 jest.setTimeout(50000)
