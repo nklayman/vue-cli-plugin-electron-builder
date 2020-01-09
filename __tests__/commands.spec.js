@@ -10,6 +10,7 @@ const portfinder = require('portfinder')
 const Application = require('spectron').Application
 const { chainWebpack, getExternals } = require('../lib/webpackConfig')
 const chokidar = require('chokidar')
+const spectron = require('spectron')
 // #endregion
 
 // #region Mocks
@@ -826,7 +827,7 @@ describe('testWithSpectron', async () => {
         }
       }
     })
-    const testPromise = testWithSpectron(spectronOptions)
+    const testPromise = testWithSpectron(spectron, spectronOptions)
     // Mock console.log from electron:serve
     if (launchOptions.customLog) await sendData(launchOptions.customLog)
     await sendData(`$outputDir=${launchOptions.outputDir || 'dist_electron'}`)
