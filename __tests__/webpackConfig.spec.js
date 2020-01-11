@@ -144,7 +144,8 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     })
 
     // Run chainWebpack function
-    const config = await mockChain(pluginOptions)
+    // nodeIntegration must be true for externals to be fetched in renderer
+    const config = await mockChain({ ...pluginOptions, nodeIntegration: true })
     return config.toConfig()
   }
   const hasExternal = externals => {
