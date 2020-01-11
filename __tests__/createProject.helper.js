@@ -89,6 +89,8 @@ const createProject = (projectName, useTS, customPlugins = {}) =>
       fs.readFileSync(projectPath('package.json'), 'utf8')
     )
     appPkg.dependencies.mockExternal = 'mockExternal'
+    // Enable nodeIntegration
+    appPkg.vue.pluginOptions = { electronBuilder: { nodeIntegration: true } }
     fs.writeFileSync(projectPath('package.json'), JSON.stringify(appPkg))
 
     resolve({ project, projectName })
