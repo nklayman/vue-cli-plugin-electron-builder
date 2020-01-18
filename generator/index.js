@@ -72,12 +72,12 @@ module.exports = (api, options = {}) => {
         'let win: BrowserWindow | null'
       )
       fs.writeFileSync(api.resolve('./src/background.ts'), background)
-      if (api.hasPlugin('router')) {
-        console.log('\n')
-        require('@vue/cli-shared-utils/lib/logger').warn(
-          'It is detected that you are using Vue Router. If you are using history mode, you must push the default route when the root component is loaded. Learn more at https://goo.gl/GM1xZG .'
-        )
-      }
+    }
+    if (api.hasPlugin('router')) {
+      console.log('\n')
+      require('@vue/cli-shared-utils/lib/logger').warn(
+        'It is detected that you are using Vue Router. If you are using history mode, you must push the default route when the root component is loaded. Learn more at https://goo.gl/GM1xZG .'
+      )
     }
   })
 
@@ -112,7 +112,8 @@ module.exports = (api, options = {}) => {
   const dependencies = {}
   if (testFramework) {
     // Spectron version should be electron version + 2
-    devDependencies.spectron = '^' + (parseInt(electronVersion.match(/^\^(\d*)\./)[1]) + 2) + '.0.0'
+    devDependencies.spectron =
+      '^' + (parseInt(electronVersion.match(/^\^(\d*)\./)[1]) + 2) + '.0.0'
   }
   if (testFramework === 'mocha') {
     dependencies['chai-as-promised'] = '^7.1.1'
