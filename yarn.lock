@@ -9538,10 +9538,10 @@ javascript-stringify@^1.6.0:
   resolved "https://registry.yarnpkg.com/javascript-stringify/-/javascript-stringify-1.6.0.tgz#142d111f3a6e3dae8f4a9afd77d45855b5a9cce3"
   integrity sha1-FC0RHzpuPa6PSpr9d9RYVbWpzOM=
 
-javascript-stringify@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/javascript-stringify/-/javascript-stringify-2.0.0.tgz#ef750216ae66504ffd670b68c8b8aa07bdf7b588"
-  integrity sha512-zzK8+ByrzvOL6N92hRewwUKL0wN0TOaIuUjX0Jj8lraxWvr5wHYs2YTjaj2lstF+8qMv5cmPPef47va8NT8lDw==
+javascript-stringify@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/javascript-stringify/-/javascript-stringify-2.0.1.tgz#6ef358035310e35d667c675ed63d3eb7c1aa19e5"
+  integrity sha512-yV+gqbd5vaOYjqlbk16EG89xB5udgjqQF3C5FAORDg4f/IS1Yc5ERCv5e/57yBcfJYw05V5JyIXabhwb75Xxow==
 
 jest-changed-files@^23.4.2:
   version "23.4.2"
@@ -16741,13 +16741,13 @@ webpack-chain@^4.11.0, webpack-chain@^4.6.0:
     deepmerge "^1.5.2"
     javascript-stringify "^1.6.0"
 
-webpack-chain@^5.0.0:
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/webpack-chain/-/webpack-chain-5.2.4.tgz#cc3665a296a6edcda738324599103ac6e215dda3"
-  integrity sha512-3g0uIbzM/EWnmf52bYhB5IZeBZiw5g9vNqF4iTBEqabpxGxcv+Aj9oL4Cvr19ujOsv/HPvpRFRPLZ/aylv10Wg==
+webpack-chain@^6.3.1:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/webpack-chain/-/webpack-chain-6.3.1.tgz#111e58f37307d703a93c2ab7ef6b7f1df3a41e77"
+  integrity sha512-PLWPY92p5Vj0hOylUGjRoRY7Kgrns5vmPFAQ9BpSHnBbVbh2akRQVUlbRb2mmGYRSY1FklTULtyVChNmcQjIVg==
   dependencies:
     deepmerge "^1.5.2"
-    javascript-stringify "^2.0.0"
+    javascript-stringify "^2.0.1"
 
 webpack-dev-middleware@3.6.0, webpack-dev-middleware@^3.0.0, webpack-dev-middleware@^3.7.2:
   version "3.6.0"
