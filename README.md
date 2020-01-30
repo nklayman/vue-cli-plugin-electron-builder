@@ -42,6 +42,6 @@ To see more documentation, [visit our website](https://nklayman.github.io/vue-cl
 
 ## Supporters
 
-| [![Andrew LeTourneau](https://avatars2.githubusercontent.com/u/2807807?s=64&v=4)](https://github.com/centerorbit) |
-| ----------------------------------------------------------------------------------------------------------------- |
-| [Andrew LeTourneau](https://github.com/centerorbit)                                                               |
+| [![Andrew LeTourneau](https://avatars2.githubusercontent.com/u/2807807?s=64&v=4)](https://github.com/centerorbit) | [![Mary-Tyler-Moore](https://avatars2.githubusercontent.com/u/46167401?s=64&v=4)](https://github.com/Mary-Tyler-Moore) |
+| ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| [Andrew LeTourneau](https://github.com/centerorbit)                                                               | [Mary-Tyler-Moore](https://github.com/Mary-Tyler-Moore)                                                                |
