@@ -319,12 +319,15 @@ module.exports = (api, options) => {
       let child
       let firstBundleCompleted = false
       // Function to kill Electron process
-      const killElectron = () => {
-        if (!child) {
-          return
+      const killElectron = () => new Promise(resolve => {
+        if (!child || child.killed) {
+          return resolve()
         }
 
         const currentChild = child
+        currentChild.on('exit', () => {
+          resolve()
+        })
 
         // Attempt to kill gracefully
         if (process.platform === 'win32') {
@@ -340,7 +343,7 @@ module.exports = (api, options) => {
             currentChild.kill('SIGKILL')
           }
         }, 2000)
-      }
+      })
 
       // Initial start of Electron
       startElectron()
@@ -379,14 +382,19 @@ module.exports = (api, options) => {
           })
       }
 
-      function launchElectron () {
+      async function launchElectron () {
         firstBundleCompleted = true
         // Don't exit process when electron is killed
         if (child) {
           child.removeListener('exit', onChildExit)
         }
         // Kill existing instances
-        killElectron()
+        let waitTimeout = setTimeout(() => {
+          // If killing Electron takes over 500ms:
+          info('Waiting for Electron to exit...')
+        }, 500)
+        await killElectron()
+        clearTimeout(waitTimeout)
         // Don't launch if a new background file is being bundled
         queuedBuilds--
         if (queuedBuilds > 0) return
