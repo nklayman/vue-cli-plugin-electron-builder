@@ -502,8 +502,15 @@ describe('electron:serve', () => {
       'a-value'
     ])
 
+    let exitCb
+    mockExeca.on.mockImplementationOnce((eventName, cb) => {
+      expect(eventName).toBe('exit')
+      exitCb = cb
+    })
     // Mock change of background file
     watchCb()
+    // Call exit callback because app should have quit
+    await exitCb()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
 
     expect(execa).toHaveBeenCalledTimes(2)
@@ -574,8 +581,15 @@ describe('electron:serve', () => {
     expect(webpack).toHaveBeenCalledTimes(1)
     expect(execa).toHaveBeenCalledTimes(1)
 
+    let exitCb
+    mockExeca.on.mockImplementationOnce((eventName, cb) => {
+      expect(eventName).toBe('exit')
+      exitCb = cb
+    })
     // Mock change of background file
     watchCb()
+    // Call exit callback because app should have quit
+    await exitCb()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
@@ -627,8 +641,15 @@ describe('electron:serve', () => {
     expect(webpack).toHaveBeenCalledTimes(1)
     expect(execa).toHaveBeenCalledTimes(1)
 
+    let exitCb
+    mockExeca.on.mockImplementationOnce((eventName, cb) => {
+      expect(eventName).toBe('exit')
+      exitCb = cb
+    })
     // Mock change of listed file
     watchCb['projectPath/listFile']()
+    // Call exit callback because app should have quit
+    await exitCb()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
@@ -645,8 +666,14 @@ describe('electron:serve', () => {
     // Electron was re-launched
     expect(execa).toHaveBeenCalledTimes(2)
 
+    mockExeca.on.mockImplementationOnce((eventName, cb) => {
+      expect(eventName).toBe('exit')
+      exitCb = cb
+    })
     // Mock change of background file
     watchCb['projectPath/customBackground']()
+    // Call exit callback because app should have quit
+    await exitCb()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
