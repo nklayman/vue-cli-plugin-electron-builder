@@ -113,7 +113,12 @@ module.exports = (api, options = {}) => {
   if (testFramework) {
     // Spectron version should be electron version + 2
     devDependencies.spectron =
-      '^' + (parseInt(electronVersion.match(/^\^(\d*)\./)[1]) + 2) + '.0.0'
+      '^' +
+      (parseInt(
+        (electronVersion || pkg.devDependencies.electron).match(/^\^(\d*)\./)[1]
+      ) +
+        2) +
+      '.0.0'
   }
   if (testFramework === 'mocha') {
     dependencies['chai-as-promised'] = '^7.1.1'
