@@ -258,12 +258,14 @@ module.exports = (api, options) => {
       removeArg('--dashboard', 1, rawArgs)
       removeArg('--debug', 1, rawArgs)
       removeArg('--headless', 1, rawArgs)
+      removeArg('--https', 1, rawArgs)
 
       // Run the serve command
       const server = await api.service.run('serve', {
         _: [],
         // Use dashboard if called from ui
-        dashboard: args.dashboard
+        dashboard: args.dashboard,
+        https: args.https
       })
       const outputDir = pluginOptions.outputDir || 'dist_electron'
 
