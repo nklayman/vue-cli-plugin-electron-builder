@@ -159,14 +159,6 @@ module.exports = (api, options) => {
           )
           // Prevent electron-builder from installing app deps
           fs.ensureDirSync(`${outputDir}/bundled/node_modules`)
-          //   Copy fonts to css/fonts. Fixes some issues with static font imports
-          if (fs.existsSync(api.resolve(outputDir + '/bundled/fonts'))) {
-            fs.ensureDirSync(api.resolve(outputDir + '/bundled/css/fonts'))
-            fs.copySync(
-              api.resolve(outputDir + '/bundled/fonts'),
-              api.resolve(outputDir + '/bundled/css/fonts')
-            )
-          }
 
           if (bundleMainProcess) {
             //   Build the main process into the renderer process output dir
@@ -210,7 +202,7 @@ module.exports = (api, options) => {
             buildApp()
           }
         }
-        function buildApp () {
+        function buildApp() {
           info('Building app with electron-builder:')
           // Build the app using electron builder
           builder
@@ -319,31 +311,32 @@ module.exports = (api, options) => {
       let child
       let firstBundleCompleted = false
       // Function to kill Electron process
-      const killElectron = () => new Promise(resolve => {
-        if (!child || child.killed) {
-          return resolve()
-        }
-
-        const currentChild = child
-        currentChild.on('exit', () => {
-          resolve()
-        })
-
-        // Attempt to kill gracefully
-        if (process.platform === 'win32') {
-          currentChild.send('graceful-exit')
-        } else {
-          currentChild.kill('SIGTERM')
-        }
-
-        // Kill unconditionally after 2 seconds if unsuccessful
-        setTimeout(() => {
-          if (!currentChild.killed) {
-            warn(`Force killing Electron (process #${currentChild.pid})`)
-            currentChild.kill('SIGKILL')
+      const killElectron = () =>
+        new Promise(resolve => {
+          if (!child || child.killed) {
+            return resolve()
           }
-        }, 2000)
-      })
+
+          const currentChild = child
+          currentChild.on('exit', () => {
+            resolve()
+          })
+
+          // Attempt to kill gracefully
+          if (process.platform === 'win32') {
+            currentChild.send('graceful-exit')
+          } else {
+            currentChild.kill('SIGTERM')
+          }
+
+          // Kill unconditionally after 2 seconds if unsuccessful
+          setTimeout(() => {
+            if (!currentChild.killed) {
+              warn(`Force killing Electron (process #${currentChild.pid})`)
+              currentChild.kill('SIGKILL')
+            }
+          }, 2000)
+        })
 
       // Initial start of Electron
       startElectron()
@@ -382,7 +375,7 @@ module.exports = (api, options) => {
           })
       }
 
-      async function launchElectron () {
+      async function launchElectron() {
         firstBundleCompleted = true
         // Don't exit process when electron is killed
         if (child) {
@@ -472,7 +465,7 @@ module.exports = (api, options) => {
         }
       }
 
-      function onChildExit () {
+      function onChildExit() {
         process.exit(0)
       }
     }
@@ -518,7 +511,7 @@ module.exports = (api, options) => {
   )
 }
 
-function bundleMain ({
+function bundleMain({
   mode,
   api,
   args,
@@ -570,7 +563,8 @@ function bundleMain ({
     }
   })
   // Enable/disable nodeIntegration
-  envVars.ELECTRON_NODE_INTEGRATION = args.headless || pluginOptions.nodeIntegration || false
+  envVars.ELECTRON_NODE_INTEGRATION =
+    args.headless || pluginOptions.nodeIntegration || false
   config.plugin('env').use(webpack.EnvironmentPlugin, [envVars])
 
   if (args.debug) {

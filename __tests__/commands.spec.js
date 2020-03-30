@@ -215,21 +215,6 @@ describe('electron:build', () => {
     expect(builder.build.mock.calls[0][0].config.shouldBe).toBe('expected')
   })
 
-  test('Fonts folder is copied to css if it exists', async () => {
-    //   Mock existence of fonts folder
-    fs.existsSync.mockReturnValueOnce(true)
-    await runCommand('electron:build')
-    // css/fonts folder was created
-    expect(fs.ensureDirSync).toBeCalledWith(
-      'projectPath/dist_electron/bundled/css/fonts'
-    )
-    // fonts was copied to css/fonts
-    expect(fs.copySync).toBeCalledWith(
-      'projectPath/dist_electron/bundled/fonts',
-      'projectPath/dist_electron/bundled/css/fonts'
-    )
-  })
-
   test('.js and .ts are merged into file extensions', async () => {
     await runCommand('electron:build')
 
