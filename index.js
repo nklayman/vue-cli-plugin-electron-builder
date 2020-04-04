@@ -443,7 +443,8 @@ module.exports = (api, options) => {
                 // Disable electron security warnings
                 ELECTRON_DISABLE_SECURITY_WARNINGS: true
               },
-              stdio: stdioConfig
+              stdio: stdioConfig,
+              windowsHide: false
             }
           )
 
