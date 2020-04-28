@@ -39,6 +39,20 @@ module.exports = api => {
   api.describeTask({
     match: /vue-cli-service electron:serve/,
     description: 'Serve your app, launch electron',
-    link: 'https://nklayman.github.io/vue-cli-plugin-electron-builder/'
+    link: 'https://nklayman.github.io/vue-cli-plugin-electron-builder/',
+    prompts: [
+      {
+        name: 'noSandbox',
+        type: 'confirm',
+        default: false,
+        description: 'Disable sandbox (--no-sandbox)',
+        link: 'https://github.com/electron/electron/issues/18265'
+      }
+    ],
+    onBeforeRun: ({ answers, args }) => {
+      // Args
+      if (answers.noSandbox) args.push('--no-sandbox')
+    }
+
   })
 }
