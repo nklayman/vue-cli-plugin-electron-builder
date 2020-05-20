@@ -579,6 +579,15 @@ function bundleMain ({
   config
     .entry(isBuild ? 'background' : 'index')
     .add(api.resolve(mainProcessFile))
+  // OK - multiple "preload" file to package
+  if (pluginOptions.mainWebpacks) {
+    let webpks = pluginOptions.mainWebpacks;
+    for (let k in webpks) {
+      config
+        .entry(k)
+        .add(api.resolve(webpks[k]))
+    }
+  }
   const {
     transformer,
     formatter
