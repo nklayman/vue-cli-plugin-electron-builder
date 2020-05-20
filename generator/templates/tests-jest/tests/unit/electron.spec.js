@@ -1,8 +1,8 @@
 /**
  * @jest-environment node
  */
-const spectron = require('spectron')
-const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
+import spectron from 'spectron'
+import { testWithSpectron } from 'vue-cli-plugin-electron-builder'
 jest.setTimeout(50000)
 
 test('Window Loads Properly', async () => {
