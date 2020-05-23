@@ -391,6 +391,53 @@ describe('electron:build', () => {
       'customDist'
     )
   })
+
+  test('Preload file is bundled if set', async () => {
+    const mockRun = jest
+      .fn()
+      .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
+    webpack.mockReturnValue({run: mockRun})
+    await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          preload: 'preloadFile'
+        }
+      }
+    })
+    // Both main process and preload file should have been built
+    expect(webpack).toBeCalledTimes(2)
+    const preloadWebpackCall = webpack.mock.calls[1][0]
+    expect(preloadWebpackCall.target).toBe('electron-preload')
+    expect(preloadWebpackCall.entry).toEqual({preload: ['projectPath/preloadFile']})
+    // Make sure preload bundle has been run
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    webpack.mockClear()
+  })
+
+  test('Multiple preload files can be bundled', async () => {
+    const mockRun = jest
+      .fn()
+      .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
+    webpack.mockReturnValue({run: mockRun})
+    await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          preload: {firstPreload: 'preload1', secondPreload: 'preload2'}
+        }
+      }
+    })
+    // Both main process and preload file should have been built
+    expect(webpack).toBeCalledTimes(2)
+    const preloadWebpackCall = webpack.mock.calls[1][0]
+    expect(preloadWebpackCall.target).toBe('electron-preload')
+    expect(preloadWebpackCall.entry).toEqual({
+      firstPreload: ['projectPath/preload1'],
+      secondPreload: ['projectPath/preload2']
+    })
+    // Make sure preload bundle has been run
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    webpack.mockClear()
+  })
 })
 
 describe('electron:serve', () => {
@@ -557,7 +604,7 @@ describe('electron:serve', () => {
     })
 
     // Proper file is watched
-    expect(chokidar.watch.mock.calls[0][0]).toBe('projectPath/customBackground')
+    expect(chokidar.watch.mock.calls[0][0]).toEqual(['projectPath/customBackground'])
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.kill).not.toBeCalled()
@@ -596,11 +643,13 @@ describe('electron:serve', () => {
     // So we can make sure it wasn't called
     jest.spyOn(process, 'exit')
     let watchCb = {}
-    chokidar.watch.mockImplementation(file => {
+    chokidar.watch.mockImplementation(files => {
       return {
         on: (type, cb) => {
-          // Set callback to be called later
-          watchCb[file] = cb
+          files.forEach(file => {
+            // Set callback to be called later
+            watchCb[file] = cb
+          })
         }
       }
     })
@@ -616,8 +665,7 @@ describe('electron:serve', () => {
     })
 
     // Proper file is watched
-    expect(chokidar.watch.mock.calls[0][0]).toBe('projectPath/customBackground')
-    expect(chokidar.watch.mock.calls[1][0]).toBe('projectPath/listFile')
+    expect(chokidar.watch.mock.calls[0][0]).toEqual(['projectPath/customBackground', 'projectPath/listFile'])
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.kill).not.toBeCalled()
@@ -674,6 +722,20 @@ describe('electron:serve', () => {
     expect(webpack).toHaveBeenCalledTimes(3)
     // Electron was re-launched
     expect(execa).toHaveBeenCalledTimes(3)
+  })
+
+  test('Preload file is watched for changes', async () => {
+    await runCommand('electron:serve', {
+      pluginOptions: {
+        electronBuilder: {
+          // Set preload file
+          preload: 'preloadFile'
+        }
+      }
+    })
+
+    // Proper file is watched
+    expect(chokidar.watch.mock.calls[0][0]).toContain('projectPath/preloadFile')
   })
 
   test('Junk output is stripped from electron child process', async () => {
@@ -784,6 +846,53 @@ describe('electron:serve', () => {
     await runCommand('electron:serve', {}, {}, ['--expected'])
     const args = execa.mock.calls[0][1]
     expect(args).toContain('--expected')
+  })
+
+  test('Preload file is bundled if set', async () => {
+    const mockRun = jest
+      .fn()
+      .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
+    webpack.mockReturnValue({run: mockRun})
+    await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          preload: 'preloadFile'
+        }
+      }
+    })
+    // Both main process and preload file should have been built
+    expect(webpack).toBeCalledTimes(2)
+    const preloadWebpackCall = webpack.mock.calls[1][0]
+    expect(preloadWebpackCall.target).toBe('electron-preload')
+    expect(preloadWebpackCall.entry).toEqual({preload: ['projectPath/preloadFile']})
+    // Make sure preload bundle has been run
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    webpack.mockClear()
+  })
+
+  test('Multiple preload files can be bundled', async () => {
+    const mockRun = jest
+      .fn()
+      .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
+    webpack.mockReturnValue({run: mockRun})
+    await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          preload: {firstPreload: 'preload1', secondPreload: 'preload2'}
+        }
+      }
+    })
+    // Both main process and preload file should have been built
+    expect(webpack).toBeCalledTimes(2)
+    const preloadWebpackCall = webpack.mock.calls[1][0]
+    expect(preloadWebpackCall.target).toBe('electron-preload')
+    expect(preloadWebpackCall.entry).toEqual({
+      firstPreload: ['projectPath/preload1'],
+      secondPreload: ['projectPath/preload2']
+    })
+    // Make sure preload bundle has been run
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    webpack.mockClear()
   })
 })
 

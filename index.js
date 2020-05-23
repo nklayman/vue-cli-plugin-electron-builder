@@ -16,6 +16,7 @@ const {
 } = require('@vue/cli-shared-utils')
 const formatStats = require('@vue/cli-service/lib/commands/build/formatStats')
 const { chainWebpack, getExternals } = require('./lib/webpackConfig')
+const webpackMerge = require('webpack-merge')
 
 module.exports = (api, options) => {
   // If plugin options are provided in vue.config.js, those will be used. Otherwise it is empty object
@@ -162,7 +163,7 @@ module.exports = (api, options) => {
 
           if (bundleMainProcess) {
             //   Build the main process into the renderer process output dir
-            const bundle = bundleMain({
+            const { mainBundle, preloadBundle } = bundleMain({
               mode: 'build',
               api,
               args,
@@ -173,7 +174,7 @@ module.exports = (api, options) => {
               usesTypescript
             })
             logWithSpinner('Bundling main process...')
-            bundle.run((err, stats) => {
+            mainBundle.run((err, stats) => {
               stopSpinner(false)
               if (err) {
                 return reject(err)
@@ -188,7 +189,28 @@ module.exports = (api, options) => {
               )
               log(formatStats(stats, targetDirShort, api))
 
-              buildApp()
+              if (preloadBundle) {
+                logWithSpinner('Bundling preload files...')
+                preloadBundle.run((err, stats) => {
+                  stopSpinner(false)
+                  if (err) {
+                    return reject(err)
+                  }
+                  if (stats.hasErrors()) {
+                    // eslint-disable-next-line prefer-promise-reject-errors
+                    return reject(`Build failed with errors.`)
+                  }
+                  const targetDirShort = path.relative(
+                    api.service.context,
+                    `${outputDir}/bundled`
+                  )
+                  log(formatStats(stats, targetDirShort, api))
+
+                  buildApp()
+                })
+              } else {
+                buildApp()
+              }
             })
           } else {
             info(
@@ -240,9 +262,11 @@ module.exports = (api, options) => {
       // Use custom config for webpack
       process.env.IS_ELECTRON = true
       const execa = require('execa')
+      let preload = pluginOptions.preload || {}
       const mainProcessWatch = [
         mainProcessFile,
-        ...(pluginOptions.mainProcessWatch || [])
+        ...(pluginOptions.mainProcessWatch || []),
+        ...(typeof preload === 'string' ? [preload] : Object.values(preload))
       ]
       const mainProcessArgs = pluginOptions.mainProcessArgs || []
 
@@ -267,7 +291,7 @@ module.exports = (api, options) => {
         queuedBuilds++
         if (bundleMainProcess) {
           //   Build the main process
-          const bundle = bundleMain({
+          const { mainBundle, preloadBundle } = bundleMain({
             mode: 'serve',
             api,
             args,
@@ -279,7 +303,7 @@ module.exports = (api, options) => {
             server
           })
           logWithSpinner('Bundling main process...')
-          bundle.run((err, stats) => {
+          mainBundle.run((err, stats) => {
             stopSpinner(false)
             if (err) {
               throw err
@@ -290,7 +314,24 @@ module.exports = (api, options) => {
             }
             const targetDirShort = path.relative(api.service.context, outputDir)
             log(formatStats(stats, targetDirShort, api))
-            launchElectron()
+
+            if (preloadBundle) {
+              preloadBundle.run((err, stats) => {
+                stopSpinner(false)
+                if (err) {
+                  throw err
+                }
+                if (stats.hasErrors()) {
+                  error(`Build failed with errors.`)
+                  process.exit(1)
+                }
+                const targetDirShort = path.relative(api.service.context, outputDir)
+                log(formatStats(stats, targetDirShort, api))
+                launchElectron()
+              })
+            } else {
+              launchElectron()
+            }
           })
         } else {
           info(
@@ -342,13 +383,11 @@ module.exports = (api, options) => {
       startElectron()
       // Restart on main process file change
       const chokidar = require('chokidar')
-      mainProcessWatch.forEach(file => {
-        chokidar.watch(api.resolve(file)).on('all', () => {
-          // This function gets triggered on first launch
-          if (firstBundleCompleted) {
-            startElectron()
-          }
-        })
+      chokidar.watch(mainProcessWatch.map(file => api.resolve(file))).on('all', () => {
+        // This function gets triggered on first launch
+        if (firstBundleCompleted) {
+          startElectron()
+        }
       })
 
       // Attempt to kill gracefully on SIGINT and SIGTERM
@@ -529,7 +568,6 @@ function bundleMain({
   const config = new Config()
   config
     .mode(NODE_ENV)
-    .target('electron-main')
     .node.set('__dirname', false)
     .set('__filename', false)
   // Set externals
@@ -579,9 +617,7 @@ function bundleMain({
       }
     ])
   }
-  config
-    .entry(isBuild ? 'background' : 'index')
-    .add(api.resolve(mainProcessFile))
+
   const {
     transformer,
     formatter
@@ -606,7 +642,35 @@ function bundleMain({
       .options({ transpileOnly: !mainProcessTypeChecking })
   }
   mainProcessChain(config)
-  return webpack(config.toConfig())
+
+  // Create mainConfig and preloadConfig and set unique configuration
+  let mainConfig = new Config()
+  let preloadConfig = new Config()
+
+  mainConfig.target('electron-main')
+  mainConfig
+    .entry(isBuild ? 'background' : 'index')
+    .add(api.resolve(mainProcessFile))
+
+  preloadConfig.target('electron-preload')
+  let preload = pluginOptions.preload
+  if (preload) {
+    // Add preload files if they are set in pluginOptions
+    if (typeof preload === 'string') {
+      preload = { preload }
+    }
+    Object.keys(preload).forEach((k) => {
+      preloadConfig.entry(k).add(api.resolve(preload[k]))
+    })
+  }
+
+  mainConfig = webpackMerge(config.toConfig(), mainConfig.toConfig())
+  preloadConfig = webpackMerge(config.toConfig(), preloadConfig.toConfig())
+
+  return {
+    mainBundle: webpack(mainConfig),
+    preloadBundle: preload ? webpack(preloadConfig) : undefined
+  }
 }
 
 module.exports.defaultModes = {

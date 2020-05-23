@@ -74,6 +74,37 @@ console.log(fileContents)
 </script>
 ```
 
+## Preload Files
+
+Preload files allow you to execute JS with [Node integration](/guide/configuration.html#node-integration) in the context of your Vue App (shared `window` variable). Create a preload file and update your `vue.config.js` as so:
+
+```js
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      preload: 'src/preload.js',
+      // Or, for multiple preload files:
+      preload: { preload: 'src/preload.js', otherPreload: 'src/preload2.js' }
+    }
+  }
+}
+```
+
+Then, update the `new BrowserWindow` call in your main process file (`src/background.(js|ts)` by default) to include the preload option:
+
+```diff
+win = new BrowserWindow({
+  width: 800,
+  height: 600,
+  webPreferences: {
+    // Use pluginOptions.nodeIntegration, leave this alone
+    // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html#node-integration for more info
+    nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
++   preload: path.join(__dirname, 'preload.js')
+  }
+})
+```
+
 ## Folder Structure
 
 ```
