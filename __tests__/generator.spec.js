@@ -34,7 +34,7 @@ beforeEach(() => {
   jest.clearAllMocks()
 })
 const runGenerator = () =>
-  generator(mockApi, { electronBuilder: { electronVersion: '^8.0.0' } })
+  generator(mockApi, { electronBuilder: { electronVersion: '^9.0.0' } })
 
 describe('.gitignore', () => {
   test('extends gitignore if it exists', () => {

@@ -25,7 +25,7 @@ const createProject = (projectName, useTS, customPlugins = {}) =>
     preset.plugins['vue-cli-plugin-electron-builder'] = {
       // electron-builder requires that an exact version of electron is provided,
       // unless electron is already installed
-      electronBuilder: { electronVersion: '8.0.0' }
+      electronBuilder: { electronVersion: '9.0.0' }
     }
     preset.plugins = { ...preset.plugins, ...customPlugins }
     const projectPath = p =>
