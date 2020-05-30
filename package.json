@@ -9,7 +9,7 @@
     "test": "jest",
     "test:docker": "docker build -t vcpeb . && docker run -t --rm --name vcpeb vcpeb",
     "pretest": "rimraf __tests__/projects/*",
-    "lint": "eslint --ignore-pattern projects ./",
+    "lint": "eslint .",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "docs:deploy": "node ./deployDocs.js"
@@ -62,6 +62,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "electron": "^9.0.0",
+    "eslint": "^7.1.0",
     "eslint-config-standard": "^14.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^11.0.0",

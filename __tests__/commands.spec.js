@@ -82,7 +82,7 @@ chokidar.watch.mockImplementation(file => {
 const serviceRun = jest.fn().mockResolvedValue({ url: 'serveUrl' })
 const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
   if (!args._) args._ = []
-  let commands = {}
+  const commands = {}
   const api = {
     //   Make app think typescript plugin is installed
     hasPlugin: jest.fn().mockReturnValue(true),
@@ -372,7 +372,7 @@ describe('electron:build', () => {
     await runCommand('electron:build')
 
     expect(fs.writeFileSync).toBeCalledWith(
-      `dist_electron/bundled/package.json`,
+      'dist_electron/bundled/package.json',
       JSON.stringify({
         dependencies: {
           external: '^0.0.1'
@@ -396,7 +396,7 @@ describe('electron:build', () => {
     const mockRun = jest
       .fn()
       .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
-    webpack.mockReturnValue({run: mockRun})
+    webpack.mockReturnValue({ run: mockRun })
     await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
@@ -408,7 +408,7 @@ describe('electron:build', () => {
     expect(webpack).toBeCalledTimes(2)
     const preloadWebpackCall = webpack.mock.calls[1][0]
     expect(preloadWebpackCall.target).toBe('electron-preload')
-    expect(preloadWebpackCall.entry).toEqual({preload: ['projectPath/preloadFile']})
+    expect(preloadWebpackCall.entry).toEqual({ preload: ['projectPath/preloadFile'] })
     // Make sure preload bundle has been run
     expect(mockRun).toHaveBeenCalledTimes(2)
     webpack.mockClear()
@@ -418,11 +418,11 @@ describe('electron:build', () => {
     const mockRun = jest
       .fn()
       .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
-    webpack.mockReturnValue({run: mockRun})
+    webpack.mockReturnValue({ run: mockRun })
     await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
-          preload: {firstPreload: 'preload1', secondPreload: 'preload2'}
+          preload: { firstPreload: 'preload1', secondPreload: 'preload2' }
         }
       }
     })
@@ -642,7 +642,7 @@ describe('electron:serve', () => {
   test('Main process is recompiled and Electron is relaunched when file in list change', async () => {
     // So we can make sure it wasn't called
     jest.spyOn(process, 'exit')
-    let watchCb = {}
+    const watchCb = {}
     chokidar.watch.mockImplementation(files => {
       return {
         on: (type, cb) => {
@@ -768,7 +768,7 @@ describe('electron:serve', () => {
     })
 
     expect(fs.copySync).toBeCalledWith(
-      `projectPath/./package.json`,
+      'projectPath/./package.json',
       'outputDir/package.json'
     )
   })
@@ -852,7 +852,7 @@ describe('electron:serve', () => {
     const mockRun = jest
       .fn()
       .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
-    webpack.mockReturnValue({run: mockRun})
+    webpack.mockReturnValue({ run: mockRun })
     await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
@@ -864,7 +864,7 @@ describe('electron:serve', () => {
     expect(webpack).toBeCalledTimes(2)
     const preloadWebpackCall = webpack.mock.calls[1][0]
     expect(preloadWebpackCall.target).toBe('electron-preload')
-    expect(preloadWebpackCall.entry).toEqual({preload: ['projectPath/preloadFile']})
+    expect(preloadWebpackCall.entry).toEqual({ preload: ['projectPath/preloadFile'] })
     // Make sure preload bundle has been run
     expect(mockRun).toHaveBeenCalledTimes(2)
     webpack.mockClear()
@@ -874,11 +874,11 @@ describe('electron:serve', () => {
     const mockRun = jest
       .fn()
       .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
-    webpack.mockReturnValue({run: mockRun})
+    webpack.mockReturnValue({ run: mockRun })
     await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
-          preload: {firstPreload: 'preload1', secondPreload: 'preload2'}
+          preload: { firstPreload: 'preload1', secondPreload: 'preload2' }
         }
       }
     })

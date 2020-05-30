@@ -9,8 +9,8 @@ module.exports = (api, options = {}) => {
   pkg = JSON.parse(pkg)
   const usesTS = api.hasPlugin('typescript')
   const hasBackground =
-    fs.existsSync(api.resolve(`./src/background.ts`)) ||
-    fs.existsSync(api.resolve(`./src/background.js`))
+    fs.existsSync(api.resolve('./src/background.ts')) ||
+    fs.existsSync(api.resolve('./src/background.js'))
 
   const devtoolsExtensionsBroken = semver.gte(
     (electronVersion || pkg.devDependencies.electron).replace('^', ''),

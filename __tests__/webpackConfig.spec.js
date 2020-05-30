@@ -236,9 +236,9 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     await mockGetExternals({}, { nodeModulesPath: 'customNodeModulesPath' })
 
     // App's package.json is read from custom path
-    expect(fs.readFileSync).toBeCalledWith(`customExternalPath`)
+    expect(fs.readFileSync).toBeCalledWith('customExternalPath')
     // Not read from default path
-    expect(fs.readFileSync).not.toBeCalledWith(`mockExternalPath`)
+    expect(fs.readFileSync).not.toBeCalledWith('mockExternalPath')
   })
 
   test('Checks multiple locations for dep package.json', async () => {
