@@ -158,7 +158,7 @@ win = new BrowserWindow({
 If you get the linting error `'__static' is not defined`, add `/* global __static */` in your background file above your imports.
 :::
 
-## Multiple Pages <badge text="v1.1.1+" type="info" />
+## Multiple Pages
 
 > Create multiple Electron windows for each [page](https://cli.vuejs.org/config/#pages)
 

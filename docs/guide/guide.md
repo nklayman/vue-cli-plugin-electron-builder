@@ -125,7 +125,7 @@ win = new BrowserWindow({
 
 ## Env Variables
 
-Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes (Only available in main process since `1.0.0-rc.4`).
+Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes.
 
 ## How it works
 
