@@ -1,3 +1,6 @@
 {
-  "isMock": true
+  "isMock": true,
+  "devDependencies": {
+    "electron": "^9.0.0"
+  }
 }

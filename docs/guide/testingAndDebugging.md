@@ -34,11 +34,17 @@ vue-cli-plugin-electron-builder exports a `testWithSpectron` function. This func
 
 ```javascript
 // This example uses Jest, but any testing framework will work as well
-
+// Jest tests MUST run in the node environment, add this to the top of each electron test:
+/**
+ * @jest-environment node
+ */
+const spectron = require('spectron')
 const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
+jest.setTimeout(50000)
 
 test('a window is created', async () => {
-  const { stdout, url, stopServe, app } = await testWithSpectron()
+  // Only v2.0+ require you to pass spectron as an arg
+  const { stdout, url, stopServe, app } = await testWithSpectron(spectron)
   // stdout is the log of electron:serve
   console.log(`electron:serve returned: ${stdout}`)
   // url is the url for the dev server created with electron:serve
@@ -50,12 +56,18 @@ test('a window is created', async () => {
 })
 ```
 
+Complete examples are available for [jest](https://github.com/nklayman/vue-cli-plugin-electron-builder/blob/master/generator/templates/tests-jest/tests/unit/electron.spec.js) and [mocha](https://github.com/nklayman/vue-cli-plugin-electron-builder/blob/master/generator/templates/tests-mocha/tests/unit/electron.spec.js). They will be automatically added with this plugin if you have jest or mocha already installed in your project.
+
 `testWithSpectron` takes a config argument. That config argument has properties as defined:
 
 ```javascript
+const spectron = require('spectron')
 const { testWithSpectron } = require('vue-cli-plugin-electron-builder')
 
-testWithSpectron({
+testWithSpectron(
+  // Import of spectron, only required for v2.0+
+  spectron,
+  {
   noSpectron: false // Disables launching of Spectron. Enable this if you want to launch spectron yourself.
   noStart: false // Do not start Spectron app or wait for it to load. You will have to call app.start() and app.client.waitUntilWindowLoaded() before running any tests.
   forceDev: false // Run dev server in development mode. By default it is run in production (serve --mode production).
@@ -64,6 +76,6 @@ testWithSpectron({
 })
 ```
 
-:::tip Note
-DevTools are not opened as `IS_TEST` env variable is set to true. If devtools are opened, Spectron throws an error. See [this issue](https://github.com/electron/spectron/issues/174) for more details.
+:::warning
+Make sure to update spectron along with electron. See the [spectron version map](https://github.com/electron-userland/spectron#version-map) to determine what version of spectron you should be using.
 :::

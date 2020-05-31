@@ -9,8 +9,8 @@ module.exports = (api, options = {}) => {
   pkg = JSON.parse(pkg)
   const usesTS = api.hasPlugin('typescript')
   const hasBackground =
-    fs.existsSync(api.resolve(`./src/background.ts`)) ||
-    fs.existsSync(api.resolve(`./src/background.js`))
+    fs.existsSync(api.resolve('./src/background.ts')) ||
+    fs.existsSync(api.resolve('./src/background.js'))
 
   const devtoolsExtensionsBroken = semver.gte(
     (electronVersion || pkg.devDependencies.electron).replace('^', ''),
@@ -45,7 +45,7 @@ module.exports = (api, options = {}) => {
     if (fs.existsSync(api.resolve('./.gitignore'))) {
       let gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')
       if (!gitignore.match(/(#Electron-builder output|\/dist_electron)/)) {
-        //   Add /dist_electron to gitignore if it doesn't exist already
+        // Add /dist_electron to gitignore if it doesn't exist already
         gitignore = gitignore + '\n#Electron-builder output\n/dist_electron'
         fs.writeFileSync(api.resolve('./.gitignore'), gitignore)
       }
@@ -72,12 +72,12 @@ module.exports = (api, options = {}) => {
         'let win: BrowserWindow | null'
       )
       fs.writeFileSync(api.resolve('./src/background.ts'), background)
-      if (api.hasPlugin('router')) {
-        console.log('\n')
-        require('@vue/cli-shared-utils/lib/logger').warn(
-          'It is detected that you are using Vue Router. If you are using history mode, you must push the default route when the root component is loaded. Learn more at https://goo.gl/GM1xZG .'
-        )
-      }
+    }
+    if (api.hasPlugin('router')) {
+      console.log('\n')
+      require('@vue/cli-shared-utils/lib/logger').warn(
+        'It is detected that you are using Vue Router. If you are using history mode, you must push the default route when the root component is loaded. Learn more at https://goo.gl/GM1xZG .'
+      )
     }
   })
 
@@ -110,6 +110,16 @@ module.exports = (api, options = {}) => {
     devDependencies.electron = electronVersion
   }
   const dependencies = {}
+  if (testFramework) {
+    // Spectron version should be electron version + 2
+    devDependencies.spectron =
+      '^' +
+      (parseInt(
+        (electronVersion || pkg.devDependencies.electron).match(/^\^(\d*)\./)[1]
+      ) +
+        2) +
+      '.0.0'
+  }
   if (testFramework === 'mocha') {
     dependencies['chai-as-promised'] = '^7.1.1'
   }

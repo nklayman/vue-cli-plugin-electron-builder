@@ -8,9 +8,9 @@ sidebarDepth: 2
 
 [[toc]]
 
-## Native Modules <Badge text="1.0.0-rc.1+" type="info"/>
+## Native Modules
 
-Native modules are supported and should work without any configuration. If you get errors, first make sure VCP-Electron-Builder's version is set to `1.0.0-rc.1` or greater. If it still fails, re-invoke the generator with `vue invoke electron-builder`. The generator will automatically detect missing code (such as native module support) and add it, without interfering with the rest. If you have done both these things, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
+Native modules are supported and should work without any configuration, assuming [nodeIntegration is enabled](./configuration.md#node-integration). If you get errors, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
 
 ```javascript
 // vue.config.js
@@ -31,7 +31,7 @@ module.exports = {
 
 - You can prefix an item in the `externals` array with `!` to prevent it being automatically marked as an external. (`!not-external`)
 
-- If you do not use native dependencies in your code, you can remove the `postinstall` script from your `package.json`. Native modules may not work, but dependency install times will be faster.
+- If you do not use native dependencies in your code, you can remove the `postinstall` and `postuninstall` scripts from your `package.json`. Native modules may not work, but dependency install times will be faster.
 
 - Using a database such as MySQL or MongoDB requires extra configuration. See [Issue #76 (comment)](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/76#issuecomment-420060179) for more info.
 
@@ -74,6 +74,37 @@ console.log(fileContents)
 </script>
 ```
 
+## Preload Files
+
+Preload files allow you to execute JS with [Node integration](/guide/configuration.html#node-integration) in the context of your Vue App (shared `window` variable). Create a preload file and update your `vue.config.js` as so:
+
+```js
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      preload: 'src/preload.js',
+      // Or, for multiple preload files:
+      preload: { preload: 'src/preload.js', otherPreload: 'src/preload2.js' }
+    }
+  }
+}
+```
+
+Then, update the `new BrowserWindow` call in your main process file (`src/background.(js|ts)` by default) to include the preload option:
+
+```diff
+win = new BrowserWindow({
+  width: 800,
+  height: 600,
+  webPreferences: {
+    // Use pluginOptions.nodeIntegration, leave this alone
+    // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html#node-integration for more info
+    nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
++   preload: path.join(__dirname, 'preload.js')
+  }
+})
+```
+
 ## Folder Structure
 
 ```
@@ -94,7 +125,7 @@ console.log(fileContents)
 
 ## Env Variables
 
-Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes (Only available in main process since `1.0.0-rc.4`).
+Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes.
 
 ## How it works
 

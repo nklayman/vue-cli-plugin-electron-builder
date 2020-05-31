@@ -1,6 +1,8 @@
 import testWithSpectron from 'vue-cli-plugin-electron-builder/lib/testWithSpectron'
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
+// eslint-disable-next-line no-undef
+const spectron = __non_webpack_require__('spectron')
 
 chai.should()
 chai.use(chaiAsPromised)
@@ -9,7 +11,7 @@ describe('Application launch', function () {
   this.timeout(30000)
 
   beforeEach(function () {
-    return testWithSpectron().then(instance => {
+    return testWithSpectron(spectron).then(instance => {
       this.app = instance.app
       this.stopServe = instance.stopServe
     })

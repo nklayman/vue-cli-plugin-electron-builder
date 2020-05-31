@@ -3,19 +3,19 @@ title: Quick Start
 sidebarDepth: 2
 ---
 
+:::warning
+These are the docs for the v2.0-rc release line, which is recommended over the v1.x version. The old docs are available [here](https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/v1/docs). To upgrade, see the [release announcement](https://github.com/nklayman/vue-cli-plugin-electron-builder/releases/tag/v2.0.0-rc.1).
+:::
+
 # Quick Start
 
 ::: warning Important
-Your app must be created with Vue-CLI 3 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!
-:::
-
-::: tip Upgrade Notice
-These docs are for the v1.0.0 release of VCP Electron Builder. If you were previously using an older version of vue-cli-plugin-electron-builder (<1.0.0), please see the [upgrade guide](./upgrading.md) or [view the old docs](https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/legacy).
+Your app must be created with Vue-CLI 3 or 4 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!
 :::
 
 ## Installation
 
-Open a terminal in the directory of your app created with Vue-CLI 3.
+Open a terminal in the directory of your app created with Vue-CLI 3 or 4 (4 is recommended).
 
 Then, install and invoke the generator of vue-cli-plugin-electron-builder by running:
 
@@ -42,12 +42,3 @@ With Yarn:
 or with NPM:
 
 `npm run electron:build`
-
-::: warning
-The command names have changed in `v1.0.0-rc.4`. If you are using an older version, the command names are:
-`yarn serve:electron`
-and
-`yarn build:electron`.
-
-Replace `yarn` with `npm run` if you are using npm.
-:::

@@ -10,7 +10,7 @@ Build status: [![Build status](https://github.com/nklayman/vue-cli-plugin-electr
 
 ## Quick Start:
 
-Open a terminal in the directory of your app created with Vue-CLI 3.
+Open a terminal in the directory of your app created with Vue-CLI 3 or 4 (4 is recommended).
 
 Then, install and invoke the generator of vue-cli-plugin-electron-builder by running:
 
@@ -43,7 +43,7 @@ To see more documentation, [visit our website](https://nklayman.github.io/vue-cl
 ## Supporters
 
 | [![Yves Hoppe](https://avatars1.githubusercontent.com/u/897638?s=64&v=4)](https://github.com/yvesh) | [![Andrew LeTourneau](https://avatars2.githubusercontent.com/u/2807807?s=64&v=4)](https://github.com/centerorbit) | [![Mitch Dennet](https://avatars2.githubusercontent.com/u/16268619?s=64&v=4)](https://github.com/mitchdennett) | [![Kasen IO](https://avatars0.githubusercontent.com/u/52365539?s=64)](https://kasen.io) | [![Ivorzk](https://avatars2.githubusercontent.com/u/7390138?s=64)](https://github.com/Ivorzk) | [![Eric Schirtzinger](https://avatars2.githubusercontent.com/u/24927782?s=64)](https://github.com/eschirtz) | [![Alec Armbruster](https://avatars2.githubusercontent.com/u/35377827?s=64)](https://github.com/alectrocute) |
-| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | [Yves Hoppe](https://github.com/yvesh)                                                              | [Andrew LeTourneau](https://github.com/centerorbit)                                                               | [Mitch Dennet](https://github.com/mitchdennett)                                                                | [Kasen IO](https://kasen.io)                                                            | [Ivorzk](https://github.com/Ivorzk)                                                           | [Eric Schirtzinger](https://github.com/eschirtz)                                                            | [Alec Armbruster](https://github.com/alectrocute)                                                            |
 
 ## Past Supporters

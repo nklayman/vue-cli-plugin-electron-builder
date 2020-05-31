@@ -10,6 +10,7 @@ const portfinder = require('portfinder')
 const Application = require('spectron').Application
 const { chainWebpack, getExternals } = require('../lib/webpackConfig')
 const chokidar = require('chokidar')
+const spectron = require('spectron')
 // #endregion
 
 // #region Mocks
@@ -70,7 +71,7 @@ console.log = jest.fn()
 beforeEach(() => {
   jest.clearAllMocks()
 })
-chokidar.watch.mockImplementation(file => {
+chokidar.watch.mockImplementation((file) => {
   return {
     on: (type, cb) => {}
   }
@@ -81,16 +82,16 @@ chokidar.watch.mockImplementation(file => {
 const serviceRun = jest.fn().mockResolvedValue({ url: 'serveUrl' })
 const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
   if (!args._) args._ = []
-  let commands = {}
+  const commands = {}
   const api = {
-    //   Make app think typescript plugin is installed
+    // Make app think typescript plugin is installed
     hasPlugin: jest.fn().mockReturnValue(true),
     registerCommand: jest.fn().mockImplementation((name, options, command) => {
       // Save registered commands
       commands[name] = command
     }),
     // So we can ensure that files were resolved properly
-    resolve: jest.fn(path => 'projectPath/' + path),
+    resolve: jest.fn((path) => 'projectPath/' + path),
     chainWebpack: jest.fn(),
     service: {
       // Mock api.service.run('build/serve')
@@ -119,13 +120,13 @@ describe('electron:build', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Typescript rule is not added
+    // Typescript rule is not added
     expect(Object.keys(mainConfig)).not.toContain('module')
-    //   Ts files are not resolved
+    // Ts files are not resolved
     expect(
       mainConfig.resolve.extensions ? mainConfig.resolve.extensions : []
     ).not.toContain('ts')
-    //   Proper entry file is used
+    // Proper entry file is used
     expect(mainConfig.entry.background[0]).toBe('projectPath/src/background.js')
   })
 
@@ -139,7 +140,7 @@ describe('electron:build', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Proper entry file is used
+    // Proper entry file is used
     expect(mainConfig.entry.background[0]).toBe(
       'projectPath/customBackground.js'
     )
@@ -155,11 +156,11 @@ describe('electron:build', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Main config output is correct
+    // Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output/bundled')
     // cli-service build output is correct
     expect(serviceRun.mock.calls[0][1].dest).toBe(`output${path.sep}bundled`)
-    //   Electron-builder output is correct
+    // Electron-builder output is correct
     expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
       'output'
     )
@@ -169,11 +170,11 @@ describe('electron:build', () => {
     await runCommand('electron:build', {}, { dest: 'output' })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Main config output is correct
+    // Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output/bundled')
     // cli-service build output is correct
     expect(serviceRun.mock.calls[0][1].dest).toBe(`output${path.sep}bundled`)
-    //   Electron-builder output is correct
+    // Electron-builder output is correct
     expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
       'output'
     )
@@ -183,7 +184,7 @@ describe('electron:build', () => {
     await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
-          chainWebpackMainProcess: config => {
+          chainWebpackMainProcess: (config) => {
             config.node.set('shouldBe', 'expected')
             return config
           }
@@ -212,21 +213,6 @@ describe('electron:build', () => {
     })
     // Custom electron-builder config is used
     expect(builder.build.mock.calls[0][0].config.shouldBe).toBe('expected')
-  })
-
-  test('Fonts folder is copied to css if it exists', async () => {
-    //   Mock existence of fonts folder
-    fs.existsSync.mockReturnValueOnce(true)
-    await runCommand('electron:build')
-    // css/fonts folder was created
-    expect(fs.ensureDirSync).toBeCalledWith(
-      'projectPath/dist_electron/bundled/css/fonts'
-    )
-    // fonts was copied to css/fonts
-    expect(fs.copySync).toBeCalledWith(
-      'projectPath/dist_electron/bundled/fonts',
-      'projectPath/dist_electron/bundled/css/fonts'
-    )
   })
 
   test('.js and .ts are merged into file extensions', async () => {
@@ -283,7 +269,7 @@ describe('electron:build', () => {
 
   test.each(['report', 'report-json'])(
     '--%s arg is passed to renderer build',
-    async argName => {
+    async (argName) => {
       const args = {}
       args[argName] = true
       await runCommand('electron:build', {}, args)
@@ -353,7 +339,7 @@ describe('electron:build', () => {
 
   test.each(['string config', 'object config'])(
     'Adds mock legacy assets file for each page (%s)',
-    async configType => {
+    async (configType) => {
       const stringConfig = configType === 'string config'
       await runCommand('electron:build', {
         pages: {
@@ -386,7 +372,7 @@ describe('electron:build', () => {
     await runCommand('electron:build')
 
     expect(fs.writeFileSync).toBeCalledWith(
-      `dist_electron/bundled/package.json`,
+      'dist_electron/bundled/package.json',
       JSON.stringify({
         dependencies: {
           external: '^0.0.1'
@@ -405,6 +391,55 @@ describe('electron:build', () => {
       'customDist'
     )
   })
+
+  test('Preload file is bundled if set', async () => {
+    const mockRun = jest
+      .fn()
+      .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
+    webpack.mockReturnValue({ run: mockRun })
+    await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          preload: 'preloadFile'
+        }
+      }
+    })
+    // Both main process and preload file should have been built
+    expect(webpack).toBeCalledTimes(2)
+    const preloadWebpackCall = webpack.mock.calls[1][0]
+    expect(preloadWebpackCall.target).toBe('electron-preload')
+    expect(preloadWebpackCall.entry).toEqual({
+      preload: ['projectPath/preloadFile']
+    })
+    // Make sure preload bundle has been run
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    webpack.mockClear()
+  })
+
+  test('Multiple preload files can be bundled', async () => {
+    const mockRun = jest
+      .fn()
+      .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
+    webpack.mockReturnValue({ run: mockRun })
+    await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          preload: { firstPreload: 'preload1', secondPreload: 'preload2' }
+        }
+      }
+    })
+    // Both main process and preload file should have been built
+    expect(webpack).toBeCalledTimes(2)
+    const preloadWebpackCall = webpack.mock.calls[1][0]
+    expect(preloadWebpackCall.target).toBe('electron-preload')
+    expect(preloadWebpackCall.entry).toEqual({
+      firstPreload: ['projectPath/preload1'],
+      secondPreload: ['projectPath/preload2']
+    })
+    // Make sure preload bundle has been run
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    webpack.mockClear()
+  })
 })
 
 describe('electron:serve', () => {
@@ -421,13 +456,13 @@ describe('electron:serve', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Typescript rule is not added
+    // Typescript rule is not added
     expect(Object.keys(mainConfig)).not.toContain('module')
-    //   Ts files are not resolved
+    // Ts files are not resolved
     expect(
       mainConfig.resolve.extensions ? mainConfig.resolve.extensions : []
     ).not.toContain('ts')
-    //   Proper entry file is used
+    // Proper entry file is used
     expect(mainConfig.entry.index[0]).toBe('projectPath/src/background.js')
   })
 
@@ -441,7 +476,7 @@ describe('electron:serve', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Proper entry file is used
+    // Proper entry file is used
     expect(mainConfig.entry.index[0]).toBe('projectPath/customBackground.js')
   })
 
@@ -455,7 +490,7 @@ describe('electron:serve', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Main config output is correct
+    // Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output')
   })
 
@@ -463,7 +498,7 @@ describe('electron:serve', () => {
     await runCommand('electron:serve', {
       pluginOptions: {
         electronBuilder: {
-          chainWebpackMainProcess: config => {
+          chainWebpackMainProcess: (config) => {
             config.node.set('shouldBe', 'expected')
             return config
           }
@@ -501,8 +536,15 @@ describe('electron:serve', () => {
       'a-value'
     ])
 
+    let exitCb
+    mockExeca.on.mockImplementationOnce((eventName, cb) => {
+      expect(eventName).toBe('exit')
+      exitCb = cb
+    })
     // Mock change of background file
     watchCb()
+    // Call exit callback because app should have quit
+    await exitCb()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
 
     expect(execa).toHaveBeenCalledTimes(2)
@@ -525,7 +567,7 @@ describe('electron:serve', () => {
     // UglifyJS plugin does not exist
     expect(
       mainConfig.plugins.find(
-        p => p.__pluginConstructorName === 'UglifyJsPlugin'
+        (p) => p.__pluginConstructorName === 'UglifyJsPlugin'
       )
     ).toBeUndefined()
     // Source maps are enabled
@@ -564,7 +606,9 @@ describe('electron:serve', () => {
     })
 
     // Proper file is watched
-    expect(chokidar.watch.mock.calls[0][0]).toBe('projectPath/customBackground')
+    expect(chokidar.watch.mock.calls[0][0]).toEqual([
+      'projectPath/customBackground'
+    ])
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.kill).not.toBeCalled()
@@ -573,8 +617,15 @@ describe('electron:serve', () => {
     expect(webpack).toHaveBeenCalledTimes(1)
     expect(execa).toHaveBeenCalledTimes(1)
 
+    let exitCb
+    mockExeca.on.mockImplementationOnce((eventName, cb) => {
+      expect(eventName).toBe('exit')
+      exitCb = cb
+    })
     // Mock change of background file
     watchCb()
+    // Call exit callback because app should have quit
+    await exitCb()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
@@ -595,12 +646,14 @@ describe('electron:serve', () => {
   test('Main process is recompiled and Electron is relaunched when file in list change', async () => {
     // So we can make sure it wasn't called
     jest.spyOn(process, 'exit')
-    let watchCb = {}
-    chokidar.watch.mockImplementation(file => {
+    const watchCb = {}
+    chokidar.watch.mockImplementation((files) => {
       return {
         on: (type, cb) => {
-          // Set callback to be called later
-          watchCb[file] = cb
+          files.forEach((file) => {
+            // Set callback to be called later
+            watchCb[file] = cb
+          })
         }
       }
     })
@@ -616,8 +669,10 @@ describe('electron:serve', () => {
     })
 
     // Proper file is watched
-    expect(chokidar.watch.mock.calls[0][0]).toBe('projectPath/customBackground')
-    expect(chokidar.watch.mock.calls[1][0]).toBe('projectPath/listFile')
+    expect(chokidar.watch.mock.calls[0][0]).toEqual([
+      'projectPath/customBackground',
+      'projectPath/listFile'
+    ])
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.kill).not.toBeCalled()
@@ -626,8 +681,15 @@ describe('electron:serve', () => {
     expect(webpack).toHaveBeenCalledTimes(1)
     expect(execa).toHaveBeenCalledTimes(1)
 
+    let exitCb
+    mockExeca.on.mockImplementationOnce((eventName, cb) => {
+      expect(eventName).toBe('exit')
+      exitCb = cb
+    })
     // Mock change of listed file
     watchCb['projectPath/listFile']()
+    // Call exit callback because app should have quit
+    await exitCb()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
@@ -644,8 +706,14 @@ describe('electron:serve', () => {
     // Electron was re-launched
     expect(execa).toHaveBeenCalledTimes(2)
 
+    mockExeca.on.mockImplementationOnce((eventName, cb) => {
+      expect(eventName).toBe('exit')
+      exitCb = cb
+    })
     // Mock change of background file
     watchCb['projectPath/customBackground']()
+    // Call exit callback because app should have quit
+    await exitCb()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
@@ -661,6 +729,20 @@ describe('electron:serve', () => {
     expect(webpack).toHaveBeenCalledTimes(3)
     // Electron was re-launched
     expect(execa).toHaveBeenCalledTimes(3)
+  })
+
+  test('Preload file is watched for changes', async () => {
+    await runCommand('electron:serve', {
+      pluginOptions: {
+        electronBuilder: {
+          // Set preload file
+          preload: 'preloadFile'
+        }
+      }
+    })
+
+    // Proper file is watched
+    expect(chokidar.watch.mock.calls[0][0]).toContain('projectPath/preloadFile')
   })
 
   test('Junk output is stripped from electron child process', async () => {
@@ -693,7 +775,7 @@ describe('electron:serve', () => {
     })
 
     expect(fs.copySync).toBeCalledWith(
-      `projectPath/./package.json`,
+      'projectPath/./package.json',
       'outputDir/package.json'
     )
   })
@@ -772,6 +854,55 @@ describe('electron:serve', () => {
     const args = execa.mock.calls[0][1]
     expect(args).toContain('--expected')
   })
+
+  test('Preload file is bundled if set', async () => {
+    const mockRun = jest
+      .fn()
+      .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
+    webpack.mockReturnValue({ run: mockRun })
+    await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          preload: 'preloadFile'
+        }
+      }
+    })
+    // Both main process and preload file should have been built
+    expect(webpack).toBeCalledTimes(2)
+    const preloadWebpackCall = webpack.mock.calls[1][0]
+    expect(preloadWebpackCall.target).toBe('electron-preload')
+    expect(preloadWebpackCall.entry).toEqual({
+      preload: ['projectPath/preloadFile']
+    })
+    // Make sure preload bundle has been run
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    webpack.mockClear()
+  })
+
+  test('Multiple preload files can be bundled', async () => {
+    const mockRun = jest
+      .fn()
+      .mockImplementation((cb) => cb(undefined, { hasErrors: () => false }))
+    webpack.mockReturnValue({ run: mockRun })
+    await runCommand('electron:build', {
+      pluginOptions: {
+        electronBuilder: {
+          preload: { firstPreload: 'preload1', secondPreload: 'preload2' }
+        }
+      }
+    })
+    // Both main process and preload file should have been built
+    expect(webpack).toBeCalledTimes(2)
+    const preloadWebpackCall = webpack.mock.calls[1][0]
+    expect(preloadWebpackCall.target).toBe('electron-preload')
+    expect(preloadWebpackCall.entry).toEqual({
+      firstPreload: ['projectPath/preload1'],
+      secondPreload: ['projectPath/preload2']
+    })
+    // Make sure preload bundle has been run
+    expect(mockRun).toHaveBeenCalledTimes(2)
+    webpack.mockClear()
+  })
 })
 
 describe('Custom webpack chain', () => {
@@ -826,7 +957,7 @@ describe('testWithSpectron', async () => {
         }
       }
     })
-    const testPromise = testWithSpectron(spectronOptions)
+    const testPromise = testWithSpectron(spectron, spectronOptions)
     // Mock console.log from electron:serve
     if (launchOptions.customLog) await sendData(launchOptions.customLog)
     await sendData(`$outputDir=${launchOptions.outputDir || 'dist_electron'}`)

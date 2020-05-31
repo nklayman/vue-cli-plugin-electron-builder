@@ -158,7 +158,7 @@ win = new BrowserWindow({
 If you get the linting error `'__static' is not defined`, add `/* global __static */` in your background file above your imports.
 :::
 
-## Multiple Pages <badge text="v1.1.1+" type="info" />
+## Multiple Pages
 
 > Create multiple Electron windows for each [page](https://cli.vuejs.org/config/#pages)
 
@@ -170,14 +170,13 @@ Follow [Vue CLI's instructions](https://cli.vuejs.org/config/#pages) for adding 
 
 ### Create Variable for Second Page
 
-Add the `secondWin` and `createdAppProtocol` variables to your background file (`src/background.(js|ts)` by default):
+Add the `secondWin` variable to your background file (`src/background.(js|ts)` by default):
 
 ```js
 // Already in file
 let win
-// Add these below
+// Add this below
 let secondWin
-let createdAppProtocol = false
 ```
 
 ### Accept Page Arguments for `createWindow` Function
@@ -219,10 +218,6 @@ function createWindow(winVar, devPath, prodPath) {
     winVar.loadURL(process.env.WEBPACK_DEV_SERVER_URL + devPath)
     if (!process.env.IS_TEST) winVar.webContents.openDevTools()
   } else {
-    if (!createdAppProtocol) {
-      createProtocol('app')
-      createdAppProtocol = true
-    }
     // Load the index.html when not in development
     winVar.loadURL(`app://./${prodPath}`)
   }
@@ -250,6 +245,9 @@ app.on('ready', async () => {
   // Replace
   createWindow()
   // With
+  if (!process.env.WEBPACK_DEV_SERVER_URL) {
+    createProtocol('app')
+  }
   createWindow(win, '', 'index.html')
   createWindow(secondWin, 'subpage', 'subpage.html')
 })
