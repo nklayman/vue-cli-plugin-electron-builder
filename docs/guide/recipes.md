@@ -264,7 +264,7 @@ app.on('activate', () => {
 
 // Replace
 if (win === null) {
-  createWindw()
+  createWindow()
 }
 // With
 if (win === null) {

@@ -1,6 +1,6 @@
 # Vue CLI Plugin Electron Builder
 
-Instantly add Electron to your Vue.js app, with the help of [Electron Builder](https://www.electron.build/).
+A Vue Cli 3/4 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/).
 
 Build status: [![Build status](https://github.com/nklayman/vue-cli-plugin-electron-builder/workflows/Node%20CI/badge.svg)](https://github.com/nklayman/vue-cli-plugin-electron-builder/actions)
 
@@ -42,6 +42,12 @@ To see more documentation, [visit our website](https://nklayman.github.io/vue-cl
 
 ## Supporters
 
-| [![Andrew LeTourneau](https://avatars2.githubusercontent.com/u/2807807?s=64&v=4)](https://github.com/centerorbit) |
-| ----------------------------------------------------------------------------------------------------------------- |
-| [Andrew LeTourneau](https://github.com/centerorbit)                                                               |
+| [![Yves Hoppe](https://avatars1.githubusercontent.com/u/897638?s=64&v=4)](https://github.com/yvesh) | [![Andrew LeTourneau](https://avatars2.githubusercontent.com/u/2807807?s=64&v=4)](https://github.com/centerorbit) | [![Mitch Dennet](https://avatars2.githubusercontent.com/u/16268619?s=64&v=4)](https://github.com/mitchdennett) | [![Kasen IO](https://avatars0.githubusercontent.com/u/52365539?s=64)](https://kasen.io) | [![Ivorzk](https://avatars2.githubusercontent.com/u/7390138?s=64)](https://github.com/Ivorzk) | [![Eric Schirtzinger](https://avatars2.githubusercontent.com/u/24927782?s=64)](https://github.com/eschirtz) | [![Alec Armbruster](https://avatars2.githubusercontent.com/u/35377827?s=64)](https://github.com/alectrocute) |
+| --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [Yves Hoppe](https://github.com/yvesh)                                                              | [Andrew LeTourneau](https://github.com/centerorbit)                                                               | [Mitch Dennet](https://github.com/mitchdennett)                                                                | [Kasen IO](https://kasen.io)                                                            | [Ivorzk](https://github.com/Ivorzk)                                                           | [Eric Schirtzinger](https://github.com/eschirtz)                                                            | [Alec Armbruster](https://github.com/alectrocute)                                                            |
+
+## Past Supporters
+
+| [<img src="https://avatars2.githubusercontent.com/u/46167401?s=64&v=4" width="64">](https://github.com/Mary-Tyler-Moore) |
+| ------------------------------------------------------------------------------------------------------------------------ |
+| [Mary-Tyler-Moore](https://github.com/Mary-Tyler-Moore)                                                                  |

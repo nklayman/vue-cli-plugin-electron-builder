@@ -28,7 +28,6 @@ jobs:
       id: yarn-cache
       run: echo "::set-output name=dir::$(yarn cache dir)"
     - name: Yarn cache
-      if: runner.os != 'Windows'
       uses: actions/cache@v1
       with:
         path: ${{ steps.yarn-cache.outputs.dir }}
