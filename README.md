@@ -1,6 +1,6 @@
 # Vue CLI Plugin Electron Builder
 
-A Vue Cli 3 plugin for Electron with no required configuration that uses [Electron Builder](https://www.electron.build/).
+Instantly add Electron to your Vue.js app, with the help of [Electron Builder](https://www.electron.build/).
 
 Build status: [![Build status](https://github.com/nklayman/vue-cli-plugin-electron-builder/workflows/Node%20CI/badge.svg)](https://github.com/nklayman/vue-cli-plugin-electron-builder/actions)
 
