@@ -9,10 +9,6 @@ These are the docs for the v2.0-rc release line, which is recommended over the v
 
 # Quick Start
 
-::: warning Important
-Your app must be created with Vue-CLI 3 or 4 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!
-:::
-
 ## Installation
 
 Open a terminal in the directory of your app created with Vue-CLI 3 or 4 (4 is recommended).

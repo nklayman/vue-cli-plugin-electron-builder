@@ -6,8 +6,6 @@ Build status: [![Build status](https://github.com/nklayman/vue-cli-plugin-electr
 
 [![Sponsor](./docs/.vuepress/public/sponsorShield.svg)](https://github.com/sponsors/nklayman)
 
-**IMPORTANT: Your app must be created with Vue-CLI 3 or 4 (vue create my-app), will not work with Vue-CLI 2 (vue init webpack my-app)!**
-
 ## Quick Start:
 
 Open a terminal in the directory of your app created with Vue-CLI 3 or 4 (4 is recommended).
