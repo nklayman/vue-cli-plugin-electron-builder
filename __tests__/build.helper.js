@@ -5,17 +5,17 @@ const portfinder = require('portfinder')
 const checkLogs = require('./checkLogs.helper.js')
 
 portfinder.basePort = 9515
-const runTests = async useTS => {
+const runTests = async (useTS) => {
   const { project, projectName } = await create('build', useTS)
 
   const isWin = process.platform === 'win32'
-  const projectPath = p =>
+  const projectPath = (p) =>
     path.join(process.cwd(), '__tests__/projects/' + projectName, p)
 
   await project.run('vue-cli-service electron:build --x64 --dir')
-  //   Ensure /dist is not modified
+  // Ensure /dist is not modified
   expect(project.has('dist')).toBe(false)
-  //   Ensure build successfully outputted files
+  // Ensure build successfully outputted files
   expect(project.has('dist_electron/bundled/index.html')).toBe(true)
   expect(project.has('dist_electron/bundled/favicon.ico')).toBe(true)
   expect(project.has('dist_electron/bundled/js')).toBe(true)
@@ -30,7 +30,7 @@ const runTests = async useTS => {
       true
     )
   }
-  //   Ensure that setup files were not created
+  // Ensure that setup files were not created
   expect(project.has(`dist_electron/${projectName} Setup 0.1.0.exe`)).toBe(
     false
   )
@@ -41,9 +41,9 @@ const runTests = async useTS => {
   // Launch app with spectron
   const app = new Application({
     path: `./__tests__/projects/${projectName}/dist_electron/${
-        isWin ? 'win' : 'linux'
-      }-unpacked/${projectName}${isWin ? '.exe' : ''}`,
-    //   Make sure tests do not interfere with each other
+      isWin ? 'win' : 'linux'
+    }-unpacked/${projectName}${isWin ? '.exe' : ''}`,
+    // Make sure tests do not interfere with each other
     port: await portfinder.getPortPromise(),
     // Increase wait timeout for parallel testing
     waitTimeout: 10000
@@ -56,24 +56,24 @@ const runTests = async useTS => {
   // Check that proper info was logged
   await checkLogs({ client, projectName, projectPath, mode: 'build' })
 
-  //   Window was created
+  // Window was created
   expect(await client.getWindowCount()).toBe(1)
-  //   It is not minimized
+  // It is not minimized
   expect(await win.isMinimized()).toBe(false)
-  //   Dev tools is not open
+  // Dev tools is not open
   expect(await win.isDevToolsOpened()).toBe(false)
-  //   Window is visible
+  // Window is visible
   expect(await win.isVisible()).toBe(true)
-  //   Size is correct
+  // Size is correct
   const { width, height } = await win.getBounds()
   expect(width).toBeGreaterThan(0)
   expect(height).toBeGreaterThan(0)
   // Load was successful
   expect(await app.webContents.isLoading()).toBe(false)
-  //   App is loaded properly
+  // App is loaded properly
   expect(
     (await client.getHTML('#app')).indexOf(
-        `Welcome to Your Vue.js ${useTS ? '+ TypeScript ' : ''}App`
+      `Welcome to Your Vue.js ${useTS ? '+ TypeScript ' : ''}App`
     )
   ).not.toBe(-1)
 

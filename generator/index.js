@@ -45,7 +45,7 @@ module.exports = (api, options = {}) => {
     if (fs.existsSync(api.resolve('./.gitignore'))) {
       let gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')
       if (!gitignore.match(/(#Electron-builder output|\/dist_electron)/)) {
-        //   Add /dist_electron to gitignore if it doesn't exist already
+        // Add /dist_electron to gitignore if it doesn't exist already
         gitignore = gitignore + '\n#Electron-builder output\n/dist_electron'
         fs.writeFileSync(api.resolve('./.gitignore'), gitignore)
       }

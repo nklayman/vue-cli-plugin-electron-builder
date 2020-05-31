@@ -71,7 +71,7 @@ console.log = jest.fn()
 beforeEach(() => {
   jest.clearAllMocks()
 })
-chokidar.watch.mockImplementation(file => {
+chokidar.watch.mockImplementation((file) => {
   return {
     on: (type, cb) => {}
   }
@@ -84,14 +84,14 @@ const runCommand = async (command, options = {}, args = {}, rawArgs = []) => {
   if (!args._) args._ = []
   const commands = {}
   const api = {
-    //   Make app think typescript plugin is installed
+    // Make app think typescript plugin is installed
     hasPlugin: jest.fn().mockReturnValue(true),
     registerCommand: jest.fn().mockImplementation((name, options, command) => {
       // Save registered commands
       commands[name] = command
     }),
     // So we can ensure that files were resolved properly
-    resolve: jest.fn(path => 'projectPath/' + path),
+    resolve: jest.fn((path) => 'projectPath/' + path),
     chainWebpack: jest.fn(),
     service: {
       // Mock api.service.run('build/serve')
@@ -120,13 +120,13 @@ describe('electron:build', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Typescript rule is not added
+    // Typescript rule is not added
     expect(Object.keys(mainConfig)).not.toContain('module')
-    //   Ts files are not resolved
+    // Ts files are not resolved
     expect(
       mainConfig.resolve.extensions ? mainConfig.resolve.extensions : []
     ).not.toContain('ts')
-    //   Proper entry file is used
+    // Proper entry file is used
     expect(mainConfig.entry.background[0]).toBe('projectPath/src/background.js')
   })
 
@@ -140,7 +140,7 @@ describe('electron:build', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Proper entry file is used
+    // Proper entry file is used
     expect(mainConfig.entry.background[0]).toBe(
       'projectPath/customBackground.js'
     )
@@ -156,11 +156,11 @@ describe('electron:build', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Main config output is correct
+    // Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output/bundled')
     // cli-service build output is correct
     expect(serviceRun.mock.calls[0][1].dest).toBe(`output${path.sep}bundled`)
-    //   Electron-builder output is correct
+    // Electron-builder output is correct
     expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
       'output'
     )
@@ -170,11 +170,11 @@ describe('electron:build', () => {
     await runCommand('electron:build', {}, { dest: 'output' })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Main config output is correct
+    // Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output/bundled')
     // cli-service build output is correct
     expect(serviceRun.mock.calls[0][1].dest).toBe(`output${path.sep}bundled`)
-    //   Electron-builder output is correct
+    // Electron-builder output is correct
     expect(builder.build.mock.calls[0][0].config.directories.output).toBe(
       'output'
     )
@@ -184,7 +184,7 @@ describe('electron:build', () => {
     await runCommand('electron:build', {
       pluginOptions: {
         electronBuilder: {
-          chainWebpackMainProcess: config => {
+          chainWebpackMainProcess: (config) => {
             config.node.set('shouldBe', 'expected')
             return config
           }
@@ -269,7 +269,7 @@ describe('electron:build', () => {
 
   test.each(['report', 'report-json'])(
     '--%s arg is passed to renderer build',
-    async argName => {
+    async (argName) => {
       const args = {}
       args[argName] = true
       await runCommand('electron:build', {}, args)
@@ -339,7 +339,7 @@ describe('electron:build', () => {
 
   test.each(['string config', 'object config'])(
     'Adds mock legacy assets file for each page (%s)',
-    async configType => {
+    async (configType) => {
       const stringConfig = configType === 'string config'
       await runCommand('electron:build', {
         pages: {
@@ -408,7 +408,9 @@ describe('electron:build', () => {
     expect(webpack).toBeCalledTimes(2)
     const preloadWebpackCall = webpack.mock.calls[1][0]
     expect(preloadWebpackCall.target).toBe('electron-preload')
-    expect(preloadWebpackCall.entry).toEqual({ preload: ['projectPath/preloadFile'] })
+    expect(preloadWebpackCall.entry).toEqual({
+      preload: ['projectPath/preloadFile']
+    })
     // Make sure preload bundle has been run
     expect(mockRun).toHaveBeenCalledTimes(2)
     webpack.mockClear()
@@ -454,13 +456,13 @@ describe('electron:serve', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Typescript rule is not added
+    // Typescript rule is not added
     expect(Object.keys(mainConfig)).not.toContain('module')
-    //   Ts files are not resolved
+    // Ts files are not resolved
     expect(
       mainConfig.resolve.extensions ? mainConfig.resolve.extensions : []
     ).not.toContain('ts')
-    //   Proper entry file is used
+    // Proper entry file is used
     expect(mainConfig.entry.index[0]).toBe('projectPath/src/background.js')
   })
 
@@ -474,7 +476,7 @@ describe('electron:serve', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Proper entry file is used
+    // Proper entry file is used
     expect(mainConfig.entry.index[0]).toBe('projectPath/customBackground.js')
   })
 
@@ -488,7 +490,7 @@ describe('electron:serve', () => {
     })
 
     const mainConfig = webpack.mock.calls[0][0]
-    //   Main config output is correct
+    // Main config output is correct
     expect(mainConfig.output.path).toBe('projectPath/output')
   })
 
@@ -496,7 +498,7 @@ describe('electron:serve', () => {
     await runCommand('electron:serve', {
       pluginOptions: {
         electronBuilder: {
-          chainWebpackMainProcess: config => {
+          chainWebpackMainProcess: (config) => {
             config.node.set('shouldBe', 'expected')
             return config
           }
@@ -565,7 +567,7 @@ describe('electron:serve', () => {
     // UglifyJS plugin does not exist
     expect(
       mainConfig.plugins.find(
-        p => p.__pluginConstructorName === 'UglifyJsPlugin'
+        (p) => p.__pluginConstructorName === 'UglifyJsPlugin'
       )
     ).toBeUndefined()
     // Source maps are enabled
@@ -604,7 +606,9 @@ describe('electron:serve', () => {
     })
 
     // Proper file is watched
-    expect(chokidar.watch.mock.calls[0][0]).toEqual(['projectPath/customBackground'])
+    expect(chokidar.watch.mock.calls[0][0]).toEqual([
+      'projectPath/customBackground'
+    ])
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.kill).not.toBeCalled()
@@ -643,10 +647,10 @@ describe('electron:serve', () => {
     // So we can make sure it wasn't called
     jest.spyOn(process, 'exit')
     const watchCb = {}
-    chokidar.watch.mockImplementation(files => {
+    chokidar.watch.mockImplementation((files) => {
       return {
         on: (type, cb) => {
-          files.forEach(file => {
+          files.forEach((file) => {
             // Set callback to be called later
             watchCb[file] = cb
           })
@@ -665,7 +669,10 @@ describe('electron:serve', () => {
     })
 
     // Proper file is watched
-    expect(chokidar.watch.mock.calls[0][0]).toEqual(['projectPath/customBackground', 'projectPath/listFile'])
+    expect(chokidar.watch.mock.calls[0][0]).toEqual([
+      'projectPath/customBackground',
+      'projectPath/listFile'
+    ])
     // Child has not yet been killed or unwatched
     expect(mockExeca.send).not.toBeCalled()
     expect(mockExeca.kill).not.toBeCalled()
@@ -864,7 +871,9 @@ describe('electron:serve', () => {
     expect(webpack).toBeCalledTimes(2)
     const preloadWebpackCall = webpack.mock.calls[1][0]
     expect(preloadWebpackCall.target).toBe('electron-preload')
-    expect(preloadWebpackCall.entry).toEqual({ preload: ['projectPath/preloadFile'] })
+    expect(preloadWebpackCall.entry).toEqual({
+      preload: ['projectPath/preloadFile']
+    })
     // Make sure preload bundle has been run
     expect(mockRun).toHaveBeenCalledTimes(2)
     webpack.mockClear()

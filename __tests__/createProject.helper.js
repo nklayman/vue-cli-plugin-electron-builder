@@ -7,7 +7,7 @@ const fs = require('fs-extra')
 jest.mock('electron-builder/out/cli/install-app-deps.js')
 
 const createProject = async (projectName, useTS, customPlugins = {}) => {
-  //   Prevent modification of import
+  // Prevent modification of import
   const preset = {
     ...defaultPreset,
     configs: {
@@ -17,7 +17,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
   if (useTS) {
     // Install typescript plugin
     preset.plugins['@vue/cli-plugin-typescript'] = {}
-    //   Use different project name
+    // Use different project name
     projectName += '-ts'
   }
   // Install vcp-electron-builder
@@ -27,7 +27,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
     electronBuilder: { electronVersion: '9.0.0' }
   }
   preset.plugins = { ...preset.plugins, ...customPlugins }
-  const projectPath = p =>
+  const projectPath = (p) =>
     path.join(process.cwd(), '__tests__/projects/' + projectName, p)
   const project = await create(
     projectName,
@@ -44,8 +44,8 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
   )
   // Have main process log __static to console to make sure it is correct
   backgroundFile = backgroundFile.replace(
-      `let mainWindow${useTS ? ': any' : ''}`,
-      `let mainWindow${useTS ? ': any' : ''}
+    `let mainWindow${useTS ? ': any' : ''}`,
+    `let mainWindow${useTS ? ': any' : ''}
       ${useTS ? 'declare var __static: string' : ''}
         console.log('__static=' + __static)
         console.log('mockExternalPath=' + require.resolve('mockExternal'))`
@@ -53,7 +53,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
   // Have render process log __static and BASE_URL to console to make sure they are correct
   mainFile = mainFile.replace(
     "import App from './App.vue'",
-      `import App from './App.vue'
+    `import App from './App.vue'
       ${useTS ? 'declare var __static: string' : ''}
       console.log('process.env.BASE_URL=' + process.env.BASE_URL)
       console.log('__static=' + __static )

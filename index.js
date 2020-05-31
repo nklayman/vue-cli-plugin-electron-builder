@@ -32,7 +32,7 @@ module.exports = (api, options) => {
     pluginOptions.mainProcessFile ||
     (usesTypescript ? 'src/background.ts' : 'src/background.js')
   const mainProcessChain =
-    pluginOptions.chainWebpackMainProcess || (config => config)
+    pluginOptions.chainWebpackMainProcess || ((config) => config)
   const bundleMainProcess =
     pluginOptions.bundleMainProcess == null
       ? true
@@ -44,7 +44,7 @@ module.exports = (api, options) => {
   }
 
   // Apply custom webpack config
-  api.chainWebpack(async config => {
+  api.chainWebpack(async (config) => {
     chainWebpack(api, pluginOptions, config)
   })
 
@@ -63,10 +63,10 @@ module.exports = (api, options) => {
       process.env.IS_ELECTRON = true
       const builder = require('electron-builder')
       const yargs = require('yargs')
-      //   Import the yargs options from electron-builder
+      // Import the yargs options from electron-builder
       const configureBuildCommand = require('electron-builder/out/builder')
         .configureBuildCommand
-        // Prevent custom args from interfering with electron-builder
+      // Prevent custom args from interfering with electron-builder
       removeArg('--mode', 2, rawArgs)
       removeArg('--dest', 2, rawArgs)
       removeArg('--legacy', 1, rawArgs)
@@ -78,9 +78,8 @@ module.exports = (api, options) => {
       const builderArgs = yargs
         .command(['build', '*'], 'Build', configureBuildCommand)
         .parse(rawArgs)
-        //   Base config used in electron-builder build
-      const outputDir =
-          args.dest || pluginOptions.outputDir || 'dist_electron'
+      // Base config used in electron-builder build
+      const outputDir = args.dest || pluginOptions.outputDir || 'dist_electron'
       const defaultBuildConfig = {
         directories: {
           output: outputDir,
@@ -89,7 +88,7 @@ module.exports = (api, options) => {
         files: ['**'],
         extends: null
       }
-      //   User-defined electron-builder config, overwrites/adds to default config
+      // User-defined electron-builder config, overwrites/adds to default config
       const userBuildConfig = pluginOptions.builderOptions || {}
       if (args.skipBundle) {
         console.log('Not bundling app as --skipBundle was passed')
@@ -97,7 +96,7 @@ module.exports = (api, options) => {
         buildApp()
       } else {
         const bundleOutputDir = path.join(outputDir, 'bundled')
-        //   Arguments to be passed to renderer build
+        // Arguments to be passed to renderer build
         const vueArgs = {
           _: [],
           // For the cli-ui webpack dashboard
@@ -117,7 +116,7 @@ module.exports = (api, options) => {
         fs.ensureDirSync(bundleOutputDir)
         // Mock data from legacy build
         const pages = options.pages || { index: '' }
-        Object.keys(pages).forEach(page => {
+        Object.keys(pages).forEach((page) => {
           if (pages[page].filename) {
             // If page is configured as an object, use the filename (without .html)
             page = pages[page].filename.replace(/\.html$/, '')
@@ -127,12 +126,12 @@ module.exports = (api, options) => {
             '[]'
           )
         })
-        //   Set the base url so that the app protocol is used
+        // Set the base url so that the app protocol is used
         options.baseUrl = pluginOptions.customFileProtocol || 'app://./'
         // Set publicPath as well (replaced baseUrl since @vue/cli 3.3.0)
         options.publicPath = pluginOptions.customFileProtocol || 'app://./'
         info('Bundling render process:')
-        //   Build the render process with the custom args
+        // Build the render process with the custom args
         try {
           await api.service.run('build', vueArgs)
         } catch (e) {
@@ -148,20 +147,20 @@ module.exports = (api, options) => {
         const externals = getExternals(api, pluginOptions)
         // https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/223
         // Strip non-externals from dependencies so they won't be copied into app.asar
-        Object.keys(pkg.dependencies).forEach(dependency => {
+        Object.keys(pkg.dependencies).forEach((dependency) => {
           if (!Object.keys(externals).includes(dependency)) {
             delete pkg.dependencies[dependency]
           }
         })
         fs.writeFileSync(
-            `${outputDir}/bundled/package.json`,
-            JSON.stringify(pkg, 2)
+          `${outputDir}/bundled/package.json`,
+          JSON.stringify(pkg, 2)
         )
         // Prevent electron-builder from installing app deps
         fs.ensureDirSync(`${outputDir}/bundled/node_modules`)
 
         if (bundleMainProcess) {
-          //   Build the main process into the renderer process output dir
+          // Build the main process into the renderer process output dir
           const { mainBundle, preloadBundle } = bundleMain({
             mode: 'build',
             api,
@@ -184,7 +183,7 @@ module.exports = (api, options) => {
             }
             const targetDirShort = path.relative(
               api.service.context,
-                `${outputDir}/bundled`
+              `${outputDir}/bundled`
             )
             log(formatStats(stats, targetDirShort, api))
 
@@ -201,7 +200,7 @@ module.exports = (api, options) => {
                 }
                 const targetDirShort = path.relative(
                   api.service.context,
-                    `${outputDir}/bundled`
+                  `${outputDir}/bundled`
                 )
                 log(formatStats(stats, targetDirShort, api))
 
@@ -231,10 +230,10 @@ module.exports = (api, options) => {
             merge({
               config: merge(
                 defaultBuildConfig,
-                //   User-defined config overwrites defaults
+                // User-defined config overwrites defaults
                 userBuildConfig
               ),
-              //   Args parsed with yargs
+              // Args parsed with yargs
               ...builderArgs
             })
           )
@@ -250,7 +249,8 @@ module.exports = (api, options) => {
     {
       description: 'serve app and launch electron',
       usage: 'vue-cli-service serve:electron',
-      details: 'See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.'
+      details:
+        'See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.'
     },
     async (args, rawArgs) => {
       // Use custom config for webpack
@@ -286,7 +286,7 @@ module.exports = (api, options) => {
       const startElectron = () => {
         queuedBuilds++
         if (bundleMainProcess) {
-          //   Build the main process
+          // Build the main process
           const { mainBundle, preloadBundle } = bundleMain({
             mode: 'serve',
             api,
@@ -321,7 +321,10 @@ module.exports = (api, options) => {
                   error('Build failed with errors.')
                   process.exit(1)
                 }
-                const targetDirShort = path.relative(api.service.context, outputDir)
+                const targetDirShort = path.relative(
+                  api.service.context,
+                  outputDir
+                )
                 log(formatStats(stats, targetDirShort, api))
                 launchElectron()
               })
@@ -349,7 +352,7 @@ module.exports = (api, options) => {
       let firstBundleCompleted = false
       // Function to kill Electron process
       const killElectron = () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           if (!child || child.killed) {
             return resolve()
           }
@@ -379,12 +382,14 @@ module.exports = (api, options) => {
       startElectron()
       // Restart on main process file change
       const chokidar = require('chokidar')
-      chokidar.watch(mainProcessWatch.map(file => api.resolve(file))).on('all', () => {
-        // This function gets triggered on first launch
-        if (firstBundleCompleted) {
-          startElectron()
-        }
-      })
+      chokidar
+        .watch(mainProcessWatch.map((file) => api.resolve(file)))
+        .on('all', () => {
+          // This function gets triggered on first launch
+          if (firstBundleCompleted) {
+            startElectron()
+          }
+        })
 
       // Attempt to kill gracefully on SIGINT and SIGTERM
       const signalHandler = () => {
@@ -428,7 +433,7 @@ module.exports = (api, options) => {
         if (queuedBuilds > 0) return
 
         if (args.debug) {
-          //   Do not launch electron and provide instructions on launching through debugger
+          // Do not launch electron and provide instructions on launching through debugger
           info(
             'Not launching electron as debug argument was passed. You must launch electron through your debugger.'
           )
@@ -534,7 +539,8 @@ module.exports = (api, options) => {
       description:
         '[deprecated, use electron:serve instead] serve app and launch electron',
       usage: 'vue-cli-service serve:electron',
-      details: 'See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.'
+      details:
+        'See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.'
     },
     (args, rawArgs) => {
       warn('This command is deprecated. Please use electron:serve instead.')
@@ -575,7 +581,7 @@ function bundleMain ({
     .filename('[name].js')
   const envVars = {}
   if (isBuild) {
-    //   Set __static to __dirname (files in public get copied here)
+    // Set __static to __dirname (files in public get copied here)
     config
       .plugin('define')
       .use(webpack.DefinePlugin, [{ __static: '__dirname' }])
@@ -592,7 +598,7 @@ function bundleMain ({
     envVars.NODE_MODULES_PATH = api.resolve('./node_modules')
   }
   // Add all env vars prefixed with VUE_APP_
-  Object.keys(process.env).forEach(k => {
+  Object.keys(process.env).forEach((k) => {
     if (/^VUE_APP_/.test(k)) {
       envVars[k] = process.env[k]
     }
