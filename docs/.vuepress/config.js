@@ -20,6 +20,11 @@ module.exports = {
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/' },
       {
+        text: 'v1.x',
+        link:
+          'https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/v1'
+      },
+      {
         text: 'Changelog',
         link:
           'https://github.com/nklayman/vue-cli-plugin-electron-builder/releases'
