@@ -510,7 +510,7 @@ describe('electron:serve', () => {
     expect(mainConfig.node.shouldBe).toBe('expected')
   })
 
-  test('Custom launch arguments is used if provided', async () => {
+  test('Custom launch arguments are used if provided', async () => {
     let watchCb
     chokidar.watch.mockImplementation(() => {
       return {
@@ -545,6 +545,8 @@ describe('electron:serve', () => {
     watchCb()
     // Call exit callback because app should have quit
     await exitCb()
+    // Flush promises, only required on node v10 for some reason
+    await (() => new Promise(resolve => setImmediate(resolve)))()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
 
     expect(execa).toHaveBeenCalledTimes(2)
@@ -626,6 +628,8 @@ describe('electron:serve', () => {
     watchCb()
     // Call exit callback because app should have quit
     await exitCb()
+    // Flush promises, only required on node v10 for some reason
+    await (() => new Promise(resolve => setImmediate(resolve)))()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
@@ -690,6 +694,8 @@ describe('electron:serve', () => {
     watchCb['projectPath/listFile']()
     // Call exit callback because app should have quit
     await exitCb()
+    // Flush promises, only required on node v10 for some reason
+    await (() => new Promise(resolve => setImmediate(resolve)))()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
@@ -714,6 +720,8 @@ describe('electron:serve', () => {
     watchCb['projectPath/customBackground']()
     // Call exit callback because app should have quit
     await exitCb()
+    // Flush promises, only required on node v10 for some reason
+    await (() => new Promise(resolve => setImmediate(resolve)))()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
