@@ -344,7 +344,7 @@ describe('electron:build', () => {
       await runCommand('electron:build', {
         pages: {
           index: stringConfig ? '' : { filename: 'index.html' },
-          subpage: stringConfig ? '' : { filename: 'subpage.html' }
+          subpage: stringConfig ? '' : { filename: 'subdir/subpage.html' }
         }
       })
       expect(fs.writeFileSync).toBeCalledWith(
@@ -352,7 +352,9 @@ describe('electron:build', () => {
         '[]'
       )
       expect(fs.writeFileSync).toBeCalledWith(
-        `dist_electron${path.sep}bundled${path.sep}legacy-assets-subpage.html.json`,
+        `dist_electron${path.sep}bundled${path.sep}${
+          stringConfig ? '' : 'subdir' + path.sep
+        }legacy-assets-subpage.html.json`,
         '[]'
       )
     }
@@ -546,7 +548,7 @@ describe('electron:serve', () => {
     // Call exit callback because app should have quit
     await exitCb()
     // Flush promises, only required on node v10 for some reason
-    await (() => new Promise(resolve => setImmediate(resolve)))()
+    await (() => new Promise((resolve) => setImmediate(resolve)))()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
 
     expect(execa).toHaveBeenCalledTimes(2)
@@ -629,7 +631,7 @@ describe('electron:serve', () => {
     // Call exit callback because app should have quit
     await exitCb()
     // Flush promises, only required on node v10 for some reason
-    await (() => new Promise(resolve => setImmediate(resolve)))()
+    await (() => new Promise((resolve) => setImmediate(resolve)))()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
@@ -695,7 +697,7 @@ describe('electron:serve', () => {
     // Call exit callback because app should have quit
     await exitCb()
     // Flush promises, only required on node v10 for some reason
-    await (() => new Promise(resolve => setImmediate(resolve)))()
+    await (() => new Promise((resolve) => setImmediate(resolve)))()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {
@@ -721,7 +723,7 @@ describe('electron:serve', () => {
     // Call exit callback because app should have quit
     await exitCb()
     // Flush promises, only required on node v10 for some reason
-    await (() => new Promise(resolve => setImmediate(resolve)))()
+    await (() => new Promise((resolve) => setImmediate(resolve)))()
     expect(mockExeca.removeListener.mock.calls[0][0]).toBe('exit')
     // Electron was killed and listeners removed
     if (isWin) {

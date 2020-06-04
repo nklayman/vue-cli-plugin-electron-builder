@@ -117,12 +117,18 @@ module.exports = (api, options) => {
         // Mock data from legacy build
         const pages = options.pages || { index: '' }
         Object.keys(pages).forEach((page) => {
-          if (pages[page].filename) {
-            // If page is configured as an object, use the filename (without .html)
-            page = pages[page].filename.replace(/\.html$/, '')
-          }
+          let pagePath
+          // Use the filename option and fallback to the key
+          pagePath = path.parse(pages[page].filename || page)
+          pagePath.name = `legacy-assets-${pagePath.name || page}`
+          pagePath.ext = '.html.json'
+          // Delete the base so that name/ext is used when formatting
+          delete pagePath.base
+          // Make sure parent dir exists
+          if (pagePath.dir)
+            fs.ensureDirSync(path.join(bundleOutputDir, pagePath.dir))
           fs.writeFileSync(
-            path.join(bundleOutputDir, `legacy-assets-${page}.html.json`),
+            path.join(bundleOutputDir, path.format(pagePath)),
             '[]'
           )
         })
@@ -222,7 +228,7 @@ module.exports = (api, options) => {
           buildApp()
         }
       }
-      function buildApp () {
+      function buildApp() {
         info('Building app with electron-builder:')
         // Build the app using electron builder
         builder
@@ -415,7 +421,7 @@ module.exports = (api, options) => {
           })
       }
 
-      async function launchElectron () {
+      async function launchElectron() {
         firstBundleCompleted = true
         // Don't exit process when electron is killed
         if (child) {
@@ -506,7 +512,7 @@ module.exports = (api, options) => {
         }
       }
 
-      function onChildExit () {
+      function onChildExit() {
         process.exit(0)
       }
     }
@@ -553,7 +559,7 @@ module.exports = (api, options) => {
   )
 }
 
-function bundleMain ({
+function bundleMain({
   mode,
   api,
   args,
