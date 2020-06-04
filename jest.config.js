@@ -6,5 +6,11 @@ module.exports = {
     '/__tests__/projects/',
     '/generator/templates',
     '.*.helper.js'
+  ],
+  collectCoverageFrom: [
+    'index.js',
+    'generator/index.js',
+    'lib/testWithSpectron.js',
+    'lib/webpackConfig.js'
   ]
 }
