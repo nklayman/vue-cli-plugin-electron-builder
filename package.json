@@ -72,7 +72,7 @@
     "rimraf": "^3.0.0",
     "spectron": "^11.0.0",
     "terminal-tasks": "^0.0.5",
-    "typescript": "^3.0.1",
+    "typescript": "^3.9.5",
     "vue": "^2.5.20",
     "vue-template-compiler": "^2.5.20",
     "vuepress": "^1.0.0"
