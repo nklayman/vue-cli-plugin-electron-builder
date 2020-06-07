@@ -296,17 +296,22 @@ Run the `Electron: All` launch configuration. Execution should stop upon reachin
 Breakpoints will not be detected in your Vue app during the initial launch of Electron. Reload the window to stop on these breakpoints.
 :::
 
-## Multi Platform Build 
-> To build your app for many/other platforms 
+## Multi Platform Build
 
-By default electron-builder builds for current platform and current arch. However you can use the electron-builder CLI to define other platforms you might want to build (more info [here](https://www.electron.build/multi-platform-build)). 
+> To build your app for platforms other than your dev system
 
-All arguments passed to the `electron:build` command will be forwarded to the electron-builder. Available arguments are [here](https://www.electron.build/cli) 
+By default, electron-builder builds for current platform and architecture. However, you can use the electron-builder CLI to create builds for other platforms ([more info here](https://www.electron.build/multi-platform-build)).
 
-#### Example using npm 
-`npm electron:build -- --mac --win` <sub><sup>(Do NOT remove the double dashes)</sup></sub> 
+All arguments passed to the `electron:build` command will be forwarded to the electron-builder. Available arguments are [here](https://www.electron.build/cli). To set the platforms to build for, add them as a CLI arg to the `electron:build` command, optionally followed by the installers you want to build for that platform.
 
-#### Example using yarn 
-`yarn electron:build --mac --win`
+#### Example
 
+To build a .deb installer for Linux and a NSIS installer for Windows:
 
+Using npm:
+
+`npm electron:build -- --linux deb --win nsis` (Do not remove the extra double dashes)
+
+Using yarn:
+
+`yarn electron:build --linux deb --win nsis`
