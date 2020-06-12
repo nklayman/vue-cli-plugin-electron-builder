@@ -2204,10 +2204,10 @@
     semver "^6.1.0"
     strip-ansi "^6.0.0"
 
-"@vue/cli-test-utils@^4.0.0":
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/@vue/cli-test-utils/-/cli-test-utils-4.4.1.tgz#dd9537146b4b584f969db8cd83b697e6b3410536"
-  integrity sha512-xzSxVs42TGIjwUfuPEUaYT/Fas1jWmczHSe1tNuczE6Qt80t8RNtRlZDNyXg7BP/VBbtNYqhvgOnVPq7y9/80w==
+"@vue/cli-test-utils@^4.4.4":
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/@vue/cli-test-utils/-/cli-test-utils-4.4.4.tgz#3a1afe5f56bee306aea0ac8042e764565e08e79b"
+  integrity sha512-SI7OfwouUl2rpSTDDqjsglc0PnifX1k8+wsiQ38wv+sJAPB/aCL6QHaGwSXtyxTdFA3QmwcFPe6JhCz8AkXz0w==
   dependencies:
     execa "^1.0.0"
     fs-extra "^7.0.1"
