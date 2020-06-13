@@ -29,7 +29,7 @@ Now, you can access `ipcRenderer` with `window.ipcRenderer` in your Vue app.
 
 ## Loading Local Images/Resources
 
-If WebSecurity is enabled, you won't be able to load resources from the file system, ie `<img src="file://image.png"/>`. [Disabling WebSecurity is strongly discouraged](https://www.electronjs.org/docs/tutorial/security#5-do-not-disable-websecurity), so you should instead use the following technique to load local resources and keep WebSecurity enabled.
+If WebSecurity is enabled, you won't be able to load resources from the file system, ie `<img src="file:///path/to/some/image.png"/>`. However, you will still be able to load images and other resources from the `public` folder, see [handling static assets](./guide.html#handling-static-assets). If you need to load resources from outside of the public folder you will have to disable WebSecurity or use a custom protocol. [Disabling WebSecurity is strongly discouraged](https://www.electronjs.org/docs/tutorial/security#5-do-not-disable-websecurity), so you should instead use the following technique to load local resources and keep WebSecurity enabled.
 
 Add the following to your main process file (`background.(js|ts)` by default):
 

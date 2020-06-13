@@ -37,36 +37,33 @@ module.exports = {
 
 ## Handling Static Assets
 
-### Renderer Process (Vue App)
+Static assets work the same as a regular web app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html#static-assets-handling) for more information.
 
-In the renderer process, static assets work similarly to a regular app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html) before continuing. However, there are a few changes made:
+<!-- prettier-ignore -->
+:::tip __static
+Available only in Electron, the global variable `__static` is added to the main and renderer process. It is set to the path of your public folder on disk. This is useful if you need to use Node APIs on the file, such as`fs.readFileSync`or`child_process.spawn`. Note that files in the public folder are read-only in production as they are packaged into a `.asar` archive. If you need files to be writeable, use [electron-builder's extraResources config](https://www.electron.build/configuration/contents#extraresources).
+:::
 
-- The `__static` global variable is added. It provides a path to your public directory in both development and production. Use this to read/write files in your app's public directory.
-- In production, the `process.env.BASE_URL` is replaced with the path to your app's files.
-
-**Note: `__static` is not available in regular build/serve. It should only be used in electron to read/write files on disk. To import a file (img, script, etc...) and not have it be transpiled by webpack, use the `process.env.BASE_URL` instead.**
-
-### Main Process (`background.js`)
-
-The main process won't have access to `process.env.BASE_URL` or `src/assets`. However, you can still use `__static` to get a path to your public directory in development and production.
+:::warning
+Sourcing images from the `public` folder will fail on v2.0 beta and rc.1. Please upgrade to v2.0.0-rc.2 for a fix.
+:::
 
 ### Examples:
 
 ```vue
-<!-- Renderer process only -->
-<!-- This image will be processed by webpack and placed under img/ -->
+<!-- To load an image that will be processed by webpack -->
 <img src="./assets/logo.png">
-<!-- Renderer process only -->
-<!-- This image will no be processed by webpack, just copied-->
+<!-- To load an image from the `public` folder which webpack will not process, just copy -->
 <!-- imgPath should equal `path.join(process.env.BASE_URL, 'logo.png')` -->
 <img :src="imgPath">
-<!-- Both renderer and main process -->
-<!-- This will read the contents of public/myText.txt -->
 <script>
+// Only works in electron serve/build
+// Will not work in renderer process unless you enable nodeIntegration
+// Expects myText.txt to be placed in public folder
+
 const fs = require('fs')
 const path = require('path')
 
-// Expects myText.txt to be placed in public folder
 const fileLocation = path.join(__static, 'myText.txt')
 const fileContents = fs.readFileSync(fileLocation, 'utf8')
 
