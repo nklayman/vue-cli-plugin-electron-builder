@@ -71,6 +71,10 @@ module.exports = (api, options = {}) => {
         /let win\s*?$/m,
         'let win: BrowserWindow | null'
       )
+      background = background.replace(
+        'process.env.ELECTRON_NODE_INTEGRATION',
+        '(process.env\n          .ELECTRON_NODE_INTEGRATION as unknown) as boolean'
+      )
       fs.writeFileSync(api.resolve('./src/background.ts'), background)
     }
     if (api.hasPlugin('router')) {
