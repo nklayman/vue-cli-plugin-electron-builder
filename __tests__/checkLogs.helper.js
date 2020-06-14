@@ -21,7 +21,7 @@ module.exports = async ({ client, projectPath, projectName, mode }) => {
     appBaseUrl = appBaseUrl.replace('"', '')
     // Base url should be root of server or packaged asar
     expect(appBaseUrl).toBe(
-      isBuild ? 'app://./' : path.sep /* Server root */
+      isBuild ? 'app://./' : '/' /* Server root */
     )
 
     let appStatic = logs
