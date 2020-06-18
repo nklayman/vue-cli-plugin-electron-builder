@@ -157,13 +157,11 @@ module.exports = (api, options) => {
         const externals = getExternals(api, pluginOptions)
         // https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/223
         // Strip non-externals from dependencies so they won't be copied into app.asar
-        if (pkg.dependencies) {
-          Object.keys(pkg.dependencies).forEach((dependency) => {
-            if (!Object.keys(externals).includes(dependency)) {
-              delete pkg.dependencies[dependency]
-            }
-          })
-        }
+        Object.keys(pkg.dependencies || {}).forEach((dependency) => {
+          if (!Object.keys(externals).includes(dependency)) {
+            delete pkg.dependencies[dependency]
+          }
+        })
         fs.writeFileSync(
           `${outputDir}/bundled/package.json`,
           JSON.stringify(pkg, 2)
