@@ -398,7 +398,7 @@ To build a .deb installer for Linux and a NSIS installer for Windows:
 
 Using npm:
 
-`npm electron:build -- --linux deb --win nsis` (Do not remove the extra double dashes)
+`npm run electron:build -- --linux deb --win nsis` (Do not remove the extra double dashes)
 
 Using yarn:
 
