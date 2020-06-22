@@ -2162,10 +2162,10 @@
     webpack-dev-server "^3.11.0"
     webpack-merge "^4.2.2"
 
-"@vue/cli-shared-utils@^4.4.4":
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-4.4.4.tgz#b9685b73a604c8a7ee82d6fc3319fe7bb2cdb274"
-  integrity sha512-ccMZtTMSutR35V5nrU/eyj+zRMomTRGBTLwJPmaJ2sRiW/93MTggQGXDWC8JRAA8yiU1N8xza8mjBxS0O2wIAA==
+"@vue/cli-shared-utils@^4.4.4", "@vue/cli-shared-utils@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-4.4.5.tgz#fe5025a28043fec9d6a301107325433a63eafccc"
+  integrity sha512-DChYSjidHZmHtxROIp1WHlvhp06AkUzNBdkw0+uJ6FWHSQmkeRpsCU9XYTdsyRbatHzO0wnJ6GO+20yl3ZzLPw==
   dependencies:
     "@hapi/joi" "^15.0.1"
     chalk "^2.4.2"
@@ -2177,7 +2177,6 @@
     ora "^3.4.0"
     read-pkg "^5.1.1"
     request "^2.88.2"
-    request-promise-native "^1.0.8"
     semver "^6.1.0"
     strip-ansi "^6.0.0"
 
@@ -2193,23 +2192,23 @@
     serve-handler "^6.1.2"
     strip-ansi "^6.0.0"
 
-"@vue/cli-ui-addon-webpack@^4.4.4":
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-webpack/-/cli-ui-addon-webpack-4.4.4.tgz#293e3e334b8054789c5c01dae3607ee2ff4daf4c"
-  integrity sha512-qx3MnLxk4JeKpkGK2h5ZihuA8Asgu7sbLDagOOaEbF6GpnHSfkrYioE7es8AHm4QHBgn/MWqnkBts5XDN5r4LA==
+"@vue/cli-ui-addon-webpack@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-webpack/-/cli-ui-addon-webpack-4.4.5.tgz#6f69c43e9dd9b08162816f8bdd62953936d7e237"
+  integrity sha512-9n/r7MZCGwcokG5Lib7BpzzPGlf7PIOALKmct1JbLMHm6j7yNgXNjXfpkI5qh+fR7p5/sWVlKbt0AhrFpg/bVA==
 
-"@vue/cli-ui-addon-widgets@^4.4.4":
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-widgets/-/cli-ui-addon-widgets-4.4.4.tgz#abe966e562274b26a0a81267ae16ad67564220cf"
-  integrity sha512-nOe6LOwZsKCiaH+jrAO2/G90qAkzB1RYivcWGnXirQAH7nec1ZysDNQv1HMDIfWbhCkJMWhGICuWcrn+rtb/8Q==
+"@vue/cli-ui-addon-widgets@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-widgets/-/cli-ui-addon-widgets-4.4.5.tgz#426f0320b57ad05771100c3a0441d56c5d5477af"
+  integrity sha512-pfASRdffxv1lBsd0AjoxC/nxZVCugg41/UUQA13ka4RVY4p+tumlezeBR+X3pxKRQ6ErK8jfeHLq9IoAzL7l9A==
 
-"@vue/cli-ui@^4.4.4":
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/@vue/cli-ui/-/cli-ui-4.4.4.tgz#23b01ef2281a2f5ccb79171e1a3ba61fe306ae87"
-  integrity sha512-BKzDvUgy6fsZolrMLBvMLlue7s3dFeIJdxWWJtc8/CjD5VvLG+XawAePx8W+24QZwCZpvoZIz4zU38D341IT9A==
+"@vue/cli-ui@^4.4.5":
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@vue/cli-ui/-/cli-ui-4.4.5.tgz#e161c18ef0429fbf5e0d8d61e18639744c18e3a1"
+  integrity sha512-pyze4xFUMtAQh+J6O5qUVSCB2i6tphgqDG1xb1wMNW19t/6Fm9DOjqj7evN1nlnvvAmdZQv9LMM5J2AmY3/w4g==
   dependencies:
     "@akryum/winattr" "^3.0.0"
-    "@vue/cli-shared-utils" "^4.4.4"
+    "@vue/cli-shared-utils" "^4.4.5"
     apollo-server-express "^2.13.1"
     clone "^2.1.1"
     deepmerge "^4.2.2"
@@ -2239,14 +2238,14 @@
     watch "^1.0.2"
 
 "@vue/cli@^4.0.0":
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/@vue/cli/-/cli-4.4.4.tgz#92a667028e3fe02703cd8940c3eb6593e642ade0"
-  integrity sha512-52pXlikVdBiPlZqEBx+vFQCrTmPrP3aLLxE0Wue00yJacPXt8ph6cb1PhCwYQAY1N9ROQstVJlsrm3GOXpCfyw==
+  version "4.4.5"
+  resolved "https://registry.yarnpkg.com/@vue/cli/-/cli-4.4.5.tgz#19fa0aab207b3c648c0c81a0e7f795b643b95c1e"
+  integrity sha512-+v43WAfTKfxKbIDuufXcZm3BDdPw/JRH5+5goGaGrJ5NZM6Wr9y+By7WitzJldjkPUfE7I4aBnofNGaBhpBrdA==
   dependencies:
-    "@vue/cli-shared-utils" "^4.4.4"
-    "@vue/cli-ui" "^4.4.4"
-    "@vue/cli-ui-addon-webpack" "^4.4.4"
-    "@vue/cli-ui-addon-widgets" "^4.4.4"
+    "@vue/cli-shared-utils" "^4.4.5"
+    "@vue/cli-ui" "^4.4.5"
+    "@vue/cli-ui-addon-webpack" "^4.4.5"
+    "@vue/cli-ui-addon-widgets" "^4.4.5"
     boxen "^4.1.0"
     cmd-shim "^3.0.3"
     commander "^2.20.0"
@@ -2258,6 +2257,7 @@
     fs-extra "^7.0.1"
     globby "^9.2.0"
     import-global "^0.1.0"
+    ini "^1.3.5"
     inquirer "^7.1.0"
     isbinaryfile "^4.0.6"
     javascript-stringify "^1.6.0"
@@ -5718,12 +5718,12 @@ de-indent@^1.0.2:
   resolved "https://registry.yarnpkg.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
   integrity sha1-sgOOhG3DO6pXlhKNCAS0VbjB4h0=
 
-debug@*, debug@^4.0.0, debug@^4.1.0, debug@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.1.1.tgz#3b72260255109c6b589cee050f1d516139664791"
-  integrity sha512-pYAIzeRo8J6KPEaJ0VWOh5Pzkbw/RetuzehGM7QRRX5he4fPHx2rdKMB256ehJCkX+XRQm16eZLqLNS8RSZXZw==
+debug@*, debug@^4.0.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-4.2.0.tgz#7f150f93920e94c58f5574c2fd01a3110effe7f1"
+  integrity sha512-IX2ncY78vDTjZMFUdmsvIRFY2Cf4FnD0wRs+nQwJU8Lu99/tPFdb0VybiiMTPe3I6rQmwsqQqRBvxU+bZ/I8sg==
   dependencies:
-    ms "^2.1.1"
+    ms "2.1.2"
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8, debug@^2.6.9:
   version "2.6.9"
@@ -5745,13 +5745,6 @@ debug@3.2.6, debug@^3.0.0, debug@^3.1.0, debug@^3.1.1, debug@^3.2.5, debug@^3.2.
   integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
   dependencies:
     ms "^2.1.1"
-
-debug@^4.0.1, debug@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-4.2.0.tgz#7f150f93920e94c58f5574c2fd01a3110effe7f1"
-  integrity sha512-IX2ncY78vDTjZMFUdmsvIRFY2Cf4FnD0wRs+nQwJU8Lu99/tPFdb0VybiiMTPe3I6rQmwsqQqRBvxU+bZ/I8sg==
-  dependencies:
-    ms "2.1.2"
 
 decamelize@^1.2.0:
   version "1.2.0"
@@ -13213,7 +13206,7 @@ request-promise-core@1.1.3:
   dependencies:
     lodash "^4.17.15"
 
-request-promise-native@^1.0.5, request-promise-native@^1.0.7, request-promise-native@^1.0.8:
+request-promise-native@^1.0.5, request-promise-native@^1.0.7:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/request-promise-native/-/request-promise-native-1.0.8.tgz#a455b960b826e44e2bf8999af64dff2bfe58cb36"
   integrity sha512-dapwLGqkHtwL5AEbfenuzjTYg35Jd6KPytsC2/TLkVMz8rm+tNt72MGUWT1RP/aYawMpN6HqbNGBQaRcBtjQMQ==
