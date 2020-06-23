@@ -37,6 +37,9 @@ module.exports = (api, options) => {
     pluginOptions.bundleMainProcess == null
       ? true
       : pluginOptions.bundleMainProcess
+  if (pluginOptions.experimentalNativeDepCheck) {
+    process.env.VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK = true
+  }
 
   const removeArg = (arg, count, rawArgs) => {
     const index = rawArgs.indexOf(arg)
@@ -61,9 +64,6 @@ module.exports = (api, options) => {
     async (args, rawArgs) => {
       // Use custom config for webpack
       process.env.IS_ELECTRON = true
-      if (args.experimentalNativeDepCheck) {
-        process.env.VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK = true
-      }
       const builder = require('electron-builder')
       const yargs = require('yargs')
       // Import the yargs options from electron-builder
@@ -77,7 +77,6 @@ module.exports = (api, options) => {
       removeArg('--skipBundle', 1, rawArgs)
       removeArg('--report', 1, rawArgs)
       removeArg('--report-json', 1, rawArgs)
-      removeArg('--experimentalNativeDepCheck', 1, rawArgs)
       // Parse the raw arguments using electron-builder yargs config
       const builderArgs = yargs
         .command(['build', '*'], 'Build', configureBuildCommand)
@@ -265,9 +264,6 @@ module.exports = (api, options) => {
     async (args, rawArgs) => {
       // Use custom config for webpack
       process.env.IS_ELECTRON = true
-      if (args.experimentalNativeDepCheck) {
-        process.env.VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK = true
-      }
       const execa = require('execa')
       const preload = pluginOptions.preload || {}
       const mainProcessWatch = [
@@ -282,7 +278,6 @@ module.exports = (api, options) => {
       removeArg('--debug', 1, rawArgs)
       removeArg('--headless', 1, rawArgs)
       removeArg('--https', 1, rawArgs)
-      removeArg('--experimentalNativeDepCheck', 1, rawArgs)
 
       // Run the serve command
       const server = await api.service.run('serve', {
