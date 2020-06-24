@@ -61,22 +61,22 @@ app.on('activate', () => {
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
-    <% if (devtoolsExtensionsBroken) { %>// Devtools extensions are broken in Electron 6.0.0 and greater
+    <% if (devtoolsExtensionsBroken) { %>// Devtools extensions are broken in Electron  6/7/<8.25 on Windows
     // See https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/378 for more info
     // Electron will not launch with Devtools extensions installed on Windows 10 with dark mode
-    // If you are not using Windows 10 dark mode, you may uncomment these lines
-    // In addition, if the linked issue is closed, you can upgrade electron and uncomment these lines
+    // If you are not using Windows 10 dark mode, you may uncomment the following lines (and the import at the top of the file)
+    // In addition, if you upgrade to Electron ^8.2.5 or ^9.0.0 then devtools should work fine
+
     // try {
     //   await installVueDevtools()
     // } catch (e) {
     //   console.error('Vue Devtools failed to install:', e.toString())
     // }
 <% } else { %>try {
-  await installVueDevtools()
-} catch (e) {
-  console.error('Vue Devtools failed to install:', e.toString())
-}
-<% } %>
+      await installVueDevtools()
+    } catch (e) {
+      console.error('Vue Devtools failed to install:', e.toString())
+    }<% } %>
   }
   createWindow()
 })

@@ -12,12 +12,14 @@ module.exports = (api, options = {}) => {
     fs.existsSync(api.resolve('./src/background.ts')) ||
     fs.existsSync(api.resolve('./src/background.js'))
 
-  const devtoolsExtensionsBroken = semver.gte(
+  const devtoolsExtensionsBroken = semver.satisfies(
     (electronVersion || pkg.devDependencies.electron).replace('^', ''),
-    '6.0.0'
+    '^6.0.0||^7.0.0'
   )
   if (devtoolsExtensionsBroken) {
-    warn('Devtools extensions are broken in Electron 6.0.0 and greater')
+    warn(
+      'Devtools extensions are broken in Electron versions 6/7/<8.2.5 on Windows'
+    )
     warn(
       'Vue Devtools have been disabled, see the comments in your background file for more info'
     )
