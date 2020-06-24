@@ -27,11 +27,6 @@ module.exports = (api, options = {}) => {
   if (!hasBackground) {
     // If user does not have a background file it should be created
     api.render('./templates/base', {
-      // Scheme registration changed in Electron 5.0.0
-      newSchemeRegistrationFunction: semver.gte(
-        (electronVersion || pkg.devDependencies.electron).replace('^', ''),
-        '5.0.0'
-      ),
       devtoolsExtensionsBroken
     })
   }
