@@ -1,10 +1,8 @@
 'use strict'
 
 import { app, protocol, BrowserWindow } from 'electron'
-import {
-  createProtocol,
-  <% if (devtoolsExtensionsBroken) { %>/* installVueDevtools */<% } else { %>installVueDevtools<% } %>
-} from 'vue-cli-plugin-electron-builder/lib'
+import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+<% if (devtoolsExtensionsBroken) { %>// <% } %>import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -73,12 +71,12 @@ app.on('ready', async () => {
     // In addition, if you upgrade to Electron ^8.2.5 or ^9.0.0 then devtools should work fine
 
     // try {
-    //   await installVueDevtools()
+    //   await installExtension(VUEJS_DEVTOOLS)
     // } catch (e) {
     //   console.error('Vue Devtools failed to install:', e.toString())
     // }
 <% } else { %>try {
-      await installVueDevtools()
+      await installExtension(VUEJS_DEVTOOLS)
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
     }<% } %>

@@ -28,7 +28,7 @@ Often this issue is caused when Vue Devtools fails to install. This may happen i
 ```javascript
 if (isDevelopment && !process.env.IS_TEST) {
   // Install Vue Devtools
-  await installVueDevtools()
+  await installExtension(VUEJS_DEVTOOLS)
 }
 ```
 

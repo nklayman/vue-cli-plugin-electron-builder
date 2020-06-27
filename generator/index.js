@@ -105,7 +105,9 @@ module.exports = (api, options = {}) => {
   }
   addScript('postinstall', 'electron-builder install-app-deps')
   addScript('postuninstall', 'electron-builder install-app-deps')
-  const devDependencies = {}
+  const devDependencies = {
+    'electron-devtools-installer': '^3.1.0'
+  }
   if (electronVersion) {
     // Use provided electron version
     devDependencies.electron = electronVersion
