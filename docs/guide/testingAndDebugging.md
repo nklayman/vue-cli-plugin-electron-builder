@@ -68,9 +68,9 @@ testWithSpectron(
   // Import of spectron, only required for v2.0+
   spectron,
   {
-  noSpectron: false // Disables launching of Spectron. Enable this if you want to launch spectron yourself.
-  noStart: false // Do not start Spectron app or wait for it to load. You will have to call app.start() and app.client.waitUntilWindowLoaded() before running any tests.
-  forceDev: false // Run dev server in development mode. By default it is run in production (serve --mode production).
+  noSpectron: false, // Disables launching of Spectron. Enable this if you want to launch spectron yourself.
+  noStart: false, // Do not start Spectron app or wait for it to load. You will have to call app.start() and app.client.waitUntilWindowLoaded() before running any tests.
+  forceDev: false, // Run dev server in development mode. By default it is run in production (serve --mode production).
   mode: 'test', // Set custom Vue env mode.
   spectronOptions: {} // Custom options to be passed to Spectron. Defaults are already set, only use this if you need something customized.
 })
