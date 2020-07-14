@@ -124,6 +124,26 @@ win = new BrowserWindow({
 
 Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes.
 
+## Web Workers
+
+[Worker-plugin](https://github.com/GoogleChromeLabs/worker-plugin) will work out of the box for Electron and web. Install it, then add the following to your `vue.config.js`:
+
+```js
+const WorkerPlugin = require('worker-plugin')
+
+module.exports = {
+  configureWebpack: {
+    plugins: [new WorkerPlugin()]
+  }
+}
+```
+
+Now, create a worker like so:
+
+```js
+new Worker('./worker.js', { type: 'module' })
+```
+
 ## How it works
 
 ### Build Command
