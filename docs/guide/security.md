@@ -16,8 +16,8 @@ module.exports = {
 }
 ```
 
-:::tip IPC With Node Integration
-You can still use [IPC](https://www.electronjs.org/docs/api/ipc-renderer) with `nodeIntegration`. Just create a [preload script](./guide.html#preload-files) with the following code:
+:::tip IPC Without Node Integration
+You can still use [IPC](https://www.electronjs.org/docs/api/ipc-renderer) without `nodeIntegration`. Just create a [preload script](./guide.html#preload-files) with the following code:
 
 ```js
 import { ipcRenderer } from 'electron'
