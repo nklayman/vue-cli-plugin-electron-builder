@@ -211,21 +211,21 @@ With:
 ```js
 function createWindow(devPath, prodPath) {
   // Create the browser window.
-  let winVar = new BrowserWindow({ width: 800, height: 600 })
+  const window = new BrowserWindow({ width: 800, height: 600 })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
-    winVar.loadURL(process.env.WEBPACK_DEV_SERVER_URL + devPath)
-    if (!process.env.IS_TEST) winVar.webContents.openDevTools()
+    window.loadURL(process.env.WEBPACK_DEV_SERVER_URL + devPath)
+    if (!process.env.IS_TEST) window.webContents.openDevTools()
   } else {
     // Load the index.html when not in development
-    winVar.loadURL(`app://./${prodPath}`)
+    window.loadURL(`app://./${prodPath}`)
   }
 
-  winVar.on('closed', () => {
-    winVar = null
+  window.on('closed', () => {
+    window = null
   })
-  return winVar
+  return window
 }
 ```
 
