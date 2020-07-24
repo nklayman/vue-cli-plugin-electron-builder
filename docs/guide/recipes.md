@@ -188,7 +188,15 @@ Replace:
 ```js
 function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({ width: 800, height: 600 })
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      // Use pluginOptions.nodeIntegration, leave this alone
+      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+    }
+  })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -218,9 +226,6 @@ function createWindow(devPath, prodPath) {
     window.loadURL(`app://./${prodPath}`)
   }
 
-  window.on('closed', () => {
-    window = null
-  })
   return window
 }
 ```
