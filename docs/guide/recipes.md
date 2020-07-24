@@ -170,14 +170,12 @@ If you get the linting error `'__static' is not defined`, add `/* global __stati
 
 Follow [Vue CLI's instructions](https://cli.vuejs.org/config/#pages) for adding pages to your app.
 
-### Create Variable for Second Page
+### Create Variables for Windows
 
-Add the `secondWin` variable to your background file (`src/background.(js|ts)` by default):
+Add the `win` and `secondWin` variables to your background (`src/background.(js|ts)` by default) file, above the `createWindow` function:
 
 ```js
-// Already in file
 let win
-// Add this below
 let secondWin
 ```
 
@@ -190,7 +188,7 @@ Replace:
 ```js
 function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800, height: 600 })
+  const win = new BrowserWindow({ width: 800, height: 600 })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -201,10 +199,6 @@ function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
-
-  win.on('closed', () => {
-    win = null
-  })
 }
 ```
 
@@ -266,9 +260,7 @@ app.on('activate', () => {
 // dock icon is clicked and there are no other windows open.
 
 // Replace
-if (win === null) {
-  createWindow()
-}
+if (BrowserWindow.getAllWindows().length === 0) createWindow()
 // With
 if (win === null) {
   win = createWindow('', 'index.html')

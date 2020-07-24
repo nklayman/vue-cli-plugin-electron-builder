@@ -65,10 +65,6 @@ module.exports = (api, options = {}) => {
         'process.env.WEBPACK_DEV_SERVER_URL as string)'
       )
       background = background.replace(
-        /let win\s*?$/m,
-        'let win: BrowserWindow | null'
-      )
-      background = background.replace(
         'process.env.ELECTRON_NODE_INTEGRATION',
         '(process.env\n          .ELECTRON_NODE_INTEGRATION as unknown) as boolean'
       )

@@ -90,7 +90,7 @@ module.exports = {
 Then, update the `new BrowserWindow` call in your main process file (`src/background.(js|ts)` by default) to include the preload option:
 
 ```diff
-win = new BrowserWindow({
+const win = new BrowserWindow({
   width: 800,
   height: 600,
   webPreferences: {
