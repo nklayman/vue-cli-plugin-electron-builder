@@ -209,9 +209,9 @@ function createWindow() {
 With:
 
 ```js
-function createWindow(winVar, devPath, prodPath) {
+function createWindow(devPath, prodPath) {
   // Create the browser window.
-  winVar = new BrowserWindow({ width: 800, height: 600 })
+  let winVar = new BrowserWindow({ width: 800, height: 600 })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -225,6 +225,7 @@ function createWindow(winVar, devPath, prodPath) {
   winVar.on('closed', () => {
     winVar = null
   })
+  return winVar
 }
 ```
 
@@ -248,8 +249,8 @@ app.on('ready', async () => {
   if (!process.env.WEBPACK_DEV_SERVER_URL) {
     createProtocol('app')
   }
-  createWindow(win, '', 'index.html')
-  createWindow(secondWin, 'subpage', 'subpage.html')
+  win = createWindow('', 'index.html')
+  secondWin = createWindow('subpage', 'subpage.html')
 })
 ```
 
@@ -268,10 +269,10 @@ if (win === null) {
 }
 // With
 if (win === null) {
-  createWindow(win, '', 'index.html')
+  win = createWindow('', 'index.html')
 }
 if (secondWin === null) {
-  createWindow(secondWin, 'subpage', 'subpage.html')
+  secondWin = createWindow('subpage', 'subpage.html')
 }
 ```
 
