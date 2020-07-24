@@ -140,17 +140,19 @@ or with NPM:
 
 Edit your background file (`src/background.(js|ts)` by default):
 
-```js
+```diff
 // Import path module (at the top of your file, below 'use-strict')
-import path from 'path'
++import path from 'path'
 
-// Replace
-win = new BrowserWindow({ width: 800, height: 600 })
-// With
-win = new BrowserWindow({
+const win = new BrowserWindow({
   width: 800,
   height: 600,
-  icon: path.join(__static, 'icon.png')
+  webPreferences: {
+    // Use pluginOptions.nodeIntegration, leave this alone
+    // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+    nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+  },
++ icon: path.join(__static, 'icon.png')
 })
 ```
 
