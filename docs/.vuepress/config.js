@@ -5,6 +5,7 @@ module.exports = {
   ga: 'UA-134189455-2',
   head: [
     ['link', { rel: 'shortcut icon', href: '/favicon.ico' }],
+    ['script', { src: '/scripts/scrollToHash.js' }],
     // Google search property verification
     [
       'meta',
