@@ -101,6 +101,7 @@ const win = new BrowserWindow({
   }
 })
 ```
+Then restart project, i.e. `Ctrl+C` and `yarn run electron:serve`
 
 ## Folder Structure
 
