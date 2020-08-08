@@ -102,6 +102,8 @@ const win = new BrowserWindow({
 })
 ```
 
+You will need to rerun `electron:serve` for the changes to take effect.
+
 ## Folder Structure
 
 ```
