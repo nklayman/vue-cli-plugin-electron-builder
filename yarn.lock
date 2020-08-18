@@ -2589,11 +2589,11 @@
     vue-jest "^3.0.5"
 
 "@vue/cli-plugin-unit-mocha@^4.0.0":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-mocha/-/cli-plugin-unit-mocha-4.5.3.tgz#1f86545dfdf53d9b1aa66eacb741bb8ee5cc75c1"
-  integrity sha512-1AWl7jLOBkcTIjo7bqp9wLIgDpjAifIFw3fKINiDnm5Na2CKIBiGUCLo1CHwNz/Adz6zgBtuAxuZyCnTpQArog==
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-mocha/-/cli-plugin-unit-mocha-4.5.4.tgz#11acc3c7d496fd8e374f608049ec11caaff443f3"
+  integrity sha512-22OdBw2Ie1DDVpHcQlGr+wSQrm32xeNVDCy9wV6Ghndp6EguiWno37+PN3TxfejdTp+nqoCYhzP+A2a24JkvrQ==
   dependencies:
-    "@vue/cli-shared-utils" "^4.5.3"
+    "@vue/cli-shared-utils" "^4.5.4"
     jsdom "^15.2.1"
     jsdom-global "^3.0.2"
     mocha "^6.2.2"
@@ -2667,10 +2667,10 @@
   optionalDependencies:
     vue-loader-v16 "npm:vue-loader@^16.0.0-beta.3"
 
-"@vue/cli-shared-utils@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-4.5.3.tgz#23bcca7ffc3a09b2c50d8b8d9d031a9ff775b512"
-  integrity sha512-AjXSll67gpYWyjGOyHrwofLuxa7vL8KM6aUQCII+cHlFQey6oLS5bAWq9qcIM0P2ZyD+6i0fooNCihIuNrX4yg==
+"@vue/cli-shared-utils@^4.5.3", "@vue/cli-shared-utils@^4.5.4":
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-4.5.4.tgz#ed36b2971dc02653f7f2ad4e66bbe9510e1bd414"
+  integrity sha512-7ZwAvGxl5szGuaJCc4jdPy/2Lb7oJvG847MDF+7pZ7FVl6bURwbUJjiUwL6DTxvpC4vch6B4tXfVvZFjzVP/bw==
   dependencies:
     "@hapi/joi" "^15.0.1"
     chalk "^2.4.2"
