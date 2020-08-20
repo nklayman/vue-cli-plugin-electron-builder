@@ -68,7 +68,7 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.0.0",
     "eslint-plugin-standard": "^4.0.0",
-    "jest": "^24.8.0",
+    "jest": "^26.4.1",
     "lnk": "^1.1.0",
     "rimraf": "^3.0.0",
     "spectron": "^11.0.0",
