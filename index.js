@@ -33,6 +33,9 @@ module.exports = (api, options) => {
     (usesTypescript ? 'src/background.ts' : 'src/background.js')
   const mainProcessChain =
     pluginOptions.chainWebpackMainProcess || ((config) => config)
+  const bundleApp = pluginOptions.bundleApp == null
+      ? true
+      : pluginOptions.bundleApp;
   const bundleMainProcess =
     pluginOptions.bundleMainProcess == null
       ? true
@@ -232,6 +235,11 @@ module.exports = (api, options) => {
         }
       }
       function buildApp () {
+        if (!bundleApp) {
+          done('Build complete!')
+          return
+        }
+
         info('Building app with electron-builder:')
         // Build the app using electron builder
         builder
