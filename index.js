@@ -33,6 +33,9 @@ module.exports = (api, options) => {
     (usesTypescript ? 'src/background.ts' : 'src/background.js')
   const mainProcessChain =
     pluginOptions.chainWebpackMainProcess || ((config) => config)
+  const bundleApp = pluginOptions.bundleApp == null
+      ? true
+      : pluginOptions.bundleApp;
   const bundleMainProcess =
     pluginOptions.bundleMainProcess == null
       ? true
@@ -168,7 +171,10 @@ module.exports = (api, options) => {
         // Prevent electron-builder from installing app deps
         fs.ensureDirSync(`${outputDir}/bundled/node_modules`)
 
-        if (bundleMainProcess) {
+        if (!bundleApp) {
+          done('Build complete!')
+        }
+        else if (bundleMainProcess) {
           // Build the main process into the renderer process output dir
           const { mainBundle, preloadBundle } = bundleMain({
             mode: 'build',
