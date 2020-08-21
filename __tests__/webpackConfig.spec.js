@@ -12,7 +12,7 @@ const mockApi = {
     // Mock api.resolve paths for tests
     if (path.match(/\.\/node_modules$/)) {
       return 'nodeModulesPath'
-    } else if (path.match(/^.\/package.json/)) {
+    } else if (path.match(/^(\.\/)?package.json/)) {
       return '../__tests__/mock_package.json'
     } else if (path.match('./node_modules/mockExternal/package.json')) {
       return 'mockExternalPath'
@@ -144,7 +144,8 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     })
 
     // Run chainWebpack function
-    const config = await mockChain(pluginOptions)
+    // nodeIntegration must be true for externals to be fetched in renderer
+    const config = await mockChain({ ...pluginOptions, nodeIntegration: true })
     return config.toConfig()
   }
   const hasExternal = externals => {
@@ -235,9 +236,9 @@ describe.each(['production', 'development'])('getExternals in %s', env => {
     await mockGetExternals({}, { nodeModulesPath: 'customNodeModulesPath' })
 
     // App's package.json is read from custom path
-    expect(fs.readFileSync).toBeCalledWith(`customExternalPath`)
+    expect(fs.readFileSync).toBeCalledWith('customExternalPath')
     // Not read from default path
-    expect(fs.readFileSync).not.toBeCalledWith(`mockExternalPath`)
+    expect(fs.readFileSync).not.toBeCalledWith('mockExternalPath')
   })
 
   test('Checks multiple locations for dep package.json', async () => {

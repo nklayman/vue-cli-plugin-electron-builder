@@ -1,11 +1,11 @@
 module.exports = {
   title: 'Vue CLI Plugin Electron Builder',
-  description:
-  'A Vue CLI 3/4 plugin for Electron with no required configuration.',
+  description: 'Easily Build Your Vue.js App For Desktop With Electron',
   base: '/vue-cli-plugin-electron-builder/',
   ga: 'UA-134189455-2',
   head: [
     ['link', { rel: 'shortcut icon', href: '/favicon.ico' }],
+    ['script', { src: '/scripts/scrollToHash.js' }],
     // Google search property verification
     [
       'meta',
@@ -19,6 +19,11 @@ module.exports = {
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/' },
+      {
+        text: 'v1.x',
+        link:
+          'https://github.com/nklayman/vue-cli-plugin-electron-builder/tree/v1'
+      },
       {
         text: 'Changelog',
         link:
@@ -35,9 +40,9 @@ module.exports = {
         'guide',
         'configuration',
         'recipes',
+        'security',
         'testingAndDebugging',
-        'commonIssues',
-        'upgrading'
+        'commonIssues'
       ]
     },
     repo: 'nklayman/vue-cli-plugin-electron-builder',

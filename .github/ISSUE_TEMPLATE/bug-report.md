@@ -18,15 +18,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Environment (please complete the following information):**
- - OS and version:
- - node version: 
- - npm version:
- - yarn version (if used): 
- - vue-cli-plugin-electron-builder version : 
- - electron version: 
- - other vue plugins used: 
  - custom config for vcp-electron-builder: 
  - (if possible) link to your repo: 
+ - terminal output from running `vue info`:
 
 **Additional context**
 Add any other context about the problem here.

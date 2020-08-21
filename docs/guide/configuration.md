@@ -47,13 +47,13 @@ module.exports = {
   },
   pluginOptions: {
     electronBuilder: {
-      chainWebpackMainProcess: config => {
+      chainWebpackMainProcess: (config) => {
         // Chain webpack config for electron main process only
       },
-      chainWebpackRendererProcess: config => {
+      chainWebpackRendererProcess: (config) => {
         // Chain webpack config for electron renderer process only
         // The following example will set IS_ELECTRON to true in your app
-        config.plugin('define').tap(args => {
+        config.plugin('define').tap((args) => {
           args[0]['IS_ELECTRON'] = true
           return args
         })
@@ -63,7 +63,7 @@ module.exports = {
       // Provide an array of files that, when changed, will recompile the main process and restart Electron
       // Your main process file will be added by default
       mainProcessWatch: ['src/myFile1', 'src/myFile2'],
-      // [1.0.0-rc.4+] Provide a list of arguments that Electron will be launched with during "electron:serve",
+      // Provide a list of arguments that Electron will be launched with during "electron:serve",
       // which can be accessed from the main process (src/background.js).
       // Note that it is ignored when --debug flag is used with "electron:serve", as you must launch Electron yourself
       // Command line args (excluding --debug, --dashboard, and --headless) are passed to Electron as well
@@ -75,9 +75,9 @@ module.exports = {
 
 ## Changing the Output Directory
 
-If you don't want your files outputted into dist_electron, you can choose a custom folder in vue-cli-plugin-electron-builder's plugin options. If you are using `v1.0.0-rc.4` or later, you can use the `--dest` argument to change the output dir as well.
+If you don't want your files outputted into dist_electron, you can choose a custom folder in VCPEB's plugin options. You can use the `--dest` argument to change the output dir as well.
 
-**Note: If you are using version 1.0.0-rc.3 or lower, after changing this, you MUST update the main field of your `package.json` to `[new dir]/bundled/background.js`. It is also recommended to add the new directory to your .gitignore file.**
+**Note: It is recommended to add the new directory to your .gitignore file.**
 
 ```javascript
 // vue.config.js
@@ -109,11 +109,11 @@ module.exports = {
 }
 ```
 
-:::tip Tip <Badge text="1.0.0-rc.1+" type="info"/>
+:::tip Tip
 If you decide to add the `@vue/typescript` plugin to your app later on, make sure to re-invoke the generator of VCP-Electron-Builder with `vue invoke electron-builder`. This will automatically insert missing type definitions to your `background.ts` file.
 :::
 
-## Changing the File Loading Protocol <Badge text="1.0.0+" type="info"/>
+## Changing the File Loading Protocol
 
 By default, the `app` protocol is used to load files. This allows you to use ES6 `type="module"` scripts, created by Vue CLI's [modern mode](https://cli.vuejs.org/guide/browser-compatibility.html#modern-mode). If, for some reason, you would like to use a different protocol, set it with the `customFileProtocol` option, and change it in your `background.js` file.
 
@@ -136,11 +136,11 @@ win.loadURL('myCustomProtocol://./index.html') // Change it here as well
 // ...
 ```
 
-## Bundling Options <Badge text="1.0.0-rc.3+" type="info"/>
+## Bundling Options
 
 By default, the app is built in [modern mode](https://cli.vuejs.org/guide/browser-compatibility.html#modern-mode). To disable this, use the `--legacy` argument in the `electron:build` command. If your app is already bundled and just needs to be built with electron-builder, pass the `--skipBundle` arg.
 
-## Electron's Junk Terminal Output <Badge text="1.0.0-rc.3+" type="info"/>
+## Electron's Junk Terminal Output
 
 Electron will sometimes produce a bunch of junk output like so:
 
@@ -167,7 +167,7 @@ VCP Electron Builder will automatically remove this for you (powered by [run-ele
 module.exports = {
   pluginOptions: {
     electronBuilder: {
-      removeElectronJunk: false // True by default
+      removeElectronJunk: false
     }
   }
 }

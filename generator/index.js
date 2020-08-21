@@ -9,15 +9,17 @@ module.exports = (api, options = {}) => {
   pkg = JSON.parse(pkg)
   const usesTS = api.hasPlugin('typescript')
   const hasBackground =
-    fs.existsSync(api.resolve(`./src/background.ts`)) ||
-    fs.existsSync(api.resolve(`./src/background.js`))
+    fs.existsSync(api.resolve('./src/background.ts')) ||
+    fs.existsSync(api.resolve('./src/background.js'))
 
-  const devtoolsExtensionsBroken = semver.gte(
+  const devtoolsExtensionsBroken = semver.satisfies(
     (electronVersion || pkg.devDependencies.electron).replace('^', ''),
-    '6.0.0'
+    '^6.0.0||^7.0.0'
   )
   if (devtoolsExtensionsBroken) {
-    warn('Devtools extensions are broken in Electron 6.0.0 and greater')
+    warn(
+      'Devtools extensions are broken in Electron versions 6/7/<8.2.5 on Windows'
+    )
     warn(
       'Vue Devtools have been disabled, see the comments in your background file for more info'
     )
@@ -25,11 +27,6 @@ module.exports = (api, options = {}) => {
   if (!hasBackground) {
     // If user does not have a background file it should be created
     api.render('./templates/base', {
-      // Scheme registration changed in Electron 5.0.0
-      newSchemeRegistrationFunction: semver.gte(
-        (electronVersion || pkg.devDependencies.electron).replace('^', ''),
-        '5.0.0'
-      ),
       devtoolsExtensionsBroken
     })
   }
@@ -45,7 +42,7 @@ module.exports = (api, options = {}) => {
     if (fs.existsSync(api.resolve('./.gitignore'))) {
       let gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')
       if (!gitignore.match(/(#Electron-builder output|\/dist_electron)/)) {
-        //   Add /dist_electron to gitignore if it doesn't exist already
+        // Add /dist_electron to gitignore if it doesn't exist already
         gitignore = gitignore + '\n#Electron-builder output\n/dist_electron'
         fs.writeFileSync(api.resolve('./.gitignore'), gitignore)
       }
@@ -68,16 +65,16 @@ module.exports = (api, options = {}) => {
         'process.env.WEBPACK_DEV_SERVER_URL as string)'
       )
       background = background.replace(
-        /let win\s*?$/m,
-        'let win: BrowserWindow | null'
+        'process.env.ELECTRON_NODE_INTEGRATION',
+        '(process.env\n          .ELECTRON_NODE_INTEGRATION as unknown) as boolean'
       )
       fs.writeFileSync(api.resolve('./src/background.ts'), background)
-      if (api.hasPlugin('router')) {
-        console.log('\n')
-        require('@vue/cli-shared-utils/lib/logger').warn(
-          'It is detected that you are using Vue Router. If you are using history mode, you must push the default route when the root component is loaded. Learn more at https://goo.gl/GM1xZG .'
-        )
-      }
+    }
+    if (api.hasPlugin('router')) {
+      console.log('\n')
+      require('@vue/cli-shared-utils/lib/logger').warn(
+        'It is detected that you are using Vue Router. If you are using history mode, you must push the default route when the root component is loaded. Learn more at https://goo.gl/GM1xZG .'
+      )
     }
   })
 
@@ -104,12 +101,26 @@ module.exports = (api, options = {}) => {
   }
   addScript('postinstall', 'electron-builder install-app-deps')
   addScript('postuninstall', 'electron-builder install-app-deps')
-  const devDependencies = {}
+  const devDependencies = {
+    'electron-devtools-installer': '^3.1.0'
+  }
   if (electronVersion) {
     // Use provided electron version
     devDependencies.electron = electronVersion
   }
+  if (usesTS) {
+    devDependencies['@types/electron-devtools-installer'] = '^2.2.0'
+  }
   const dependencies = {}
+  if (testFramework) {
+    // Spectron version should be electron version + 2
+    devDependencies.spectron =
+      parseInt(
+        (electronVersion || pkg.devDependencies.electron).match(/^\^(\d*)\./)[1]
+      ) +
+      2 +
+      '.0.0'
+  }
   if (testFramework === 'mocha') {
     dependencies['chai-as-promised'] = '^7.1.1'
   }

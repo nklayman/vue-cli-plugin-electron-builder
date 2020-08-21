@@ -1,6 +1,7 @@
 const createProject = require('./createProject.helper.js')
-const { readFile, writeFile } = require('fs-extra')
+const { copyFile, writeFile } = require('fs-extra')
 const { join } = require('path')
+const execa = require('execa')
 
 module.exports = async testRunner => {
   const plugins = {}
@@ -14,13 +15,21 @@ module.exports = async testRunner => {
   await project.rm('tests/unit/example.spec.js')
 
   // Copy electron test
-  const testFile = (await readFile(
-    `./generator/templates/tests-${testRunner}/tests/unit/electron.spec.js`,
-    'utf8'
-  ))
-    // Fix some unknown error
-    .replace('testWithSpectron()', 'testWithSpectron({ mode: "production" })')
-  await writeFile(join(project.dir, 'tests/unit/electron.spec.js'), testFile)
+  await copyFile(`./generator/templates/tests-${testRunner}/tests/unit/electron.spec.js`, join(project.dir, 'tests/unit/electron.spec.js'))
 
-  await project.run('vue-cli-service test:unit')
+  // If there is not a second test file, the `serve:electron --headless` process cannot be killed on Windows
+  // One of the weirdest bugs I've ever seen
+  // Without this, tests will fail on Windows
+  if (testRunner === 'jest') {
+    await writeFile(join(project.dir, 'tests/unit/second.spec.js'), 'test("extra", () => {})')
+  }
+
+  await execa(
+    require.resolve('@vue/cli-service/bin/vue-cli-service'),
+    ['test:unit'],
+    {
+      cwd: project.dir,
+      extendEnv: false
+    }
+  )
 }

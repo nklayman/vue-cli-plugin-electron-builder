@@ -140,17 +140,19 @@ or with NPM:
 
 Edit your background file (`src/background.(js|ts)` by default):
 
-```js
+```diff
 // Import path module (at the top of your file, below 'use-strict')
-import path from 'path'
++import path from 'path'
 
-// Replace
-win = new BrowserWindow({ width: 800, height: 600 })
-// With
-win = new BrowserWindow({
+const win = new BrowserWindow({
   width: 800,
   height: 600,
-  icon: path.join(__static, 'icon.png')
+  webPreferences: {
+    // Use pluginOptions.nodeIntegration, leave this alone
+    // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+    nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+  },
++ icon: path.join(__static, 'icon.png')
 })
 ```
 
@@ -158,7 +160,7 @@ win = new BrowserWindow({
 If you get the linting error `'__static' is not defined`, add `/* global __static */` in your background file above your imports.
 :::
 
-## Multiple Pages <badge text="v1.1.1+" type="info" />
+## Multiple Pages
 
 > Create multiple Electron windows for each [page](https://cli.vuejs.org/config/#pages)
 
@@ -168,16 +170,13 @@ If you get the linting error `'__static' is not defined`, add `/* global __stati
 
 Follow [Vue CLI's instructions](https://cli.vuejs.org/config/#pages) for adding pages to your app.
 
-### Create Variable for Second Page
+### Create Variables for Windows
 
-Add the `secondWin` and `createdAppProtocol` variables to your background file (`src/background.(js|ts)` by default):
+Add the `win` and `secondWin` variables to your background (`src/background.(js|ts)` by default) file, above the `createWindow` function:
 
 ```js
-// Already in file
 let win
-// Add these below
 let secondWin
-let createdAppProtocol = false
 ```
 
 ### Accept Page Arguments for `createWindow` Function
@@ -189,7 +188,15 @@ Replace:
 ```js
 function createWindow() {
   // Create the browser window.
-  win = new BrowserWindow({ width: 800, height: 600 })
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      // Use pluginOptions.nodeIntegration, leave this alone
+      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+    }
+  })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -200,36 +207,26 @@ function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
-
-  win.on('closed', () => {
-    win = null
-  })
 }
 ```
 
 With:
 
 ```js
-function createWindow(winVar, devPath, prodPath) {
+function createWindow(devPath, prodPath) {
   // Create the browser window.
-  winVar = new BrowserWindow({ width: 800, height: 600 })
+  const window = new BrowserWindow({ width: 800, height: 600 })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
-    winVar.loadURL(process.env.WEBPACK_DEV_SERVER_URL + devPath)
-    if (!process.env.IS_TEST) winVar.webContents.openDevTools()
+    window.loadURL(process.env.WEBPACK_DEV_SERVER_URL + devPath)
+    if (!process.env.IS_TEST) window.webContents.openDevTools()
   } else {
-    if (!createdAppProtocol) {
-      createProtocol('app')
-      createdAppProtocol = true
-    }
     // Load the index.html when not in development
-    winVar.loadURL(`app://./${prodPath}`)
+    window.loadURL(`app://./${prodPath}`)
   }
 
-  winVar.on('closed', () => {
-    winVar = null
-  })
+  return window
 }
 ```
 
@@ -242,7 +239,7 @@ app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
-      await installVueDevtools()
+      await installExtensions(VUEJS_DEVTOOLS)
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
     }
@@ -250,8 +247,11 @@ app.on('ready', async () => {
   // Replace
   createWindow()
   // With
-  createWindow(win, '', 'index.html')
-  createWindow(secondWin, 'subpage', 'subpage.html')
+  if (!process.env.WEBPACK_DEV_SERVER_URL) {
+    createProtocol('app')
+  }
+  win = createWindow('', 'index.html')
+  secondWin = createWindow('subpage', 'subpage.html')
 })
 ```
 
@@ -265,15 +265,13 @@ app.on('activate', () => {
 // dock icon is clicked and there are no other windows open.
 
 // Replace
-if (win === null) {
-  createWindow()
-}
+if (BrowserWindow.getAllWindows().length === 0) createWindow()
 // With
 if (win === null) {
-  createWindow(win, '', 'index.html')
+  win = createWindow('', 'index.html')
 }
 if (secondWin === null) {
-  createWindow(secondWin, 'subpage', 'subpage.html')
+  secondWin = createWindow('subpage', 'subpage.html')
 }
 ```
 
@@ -385,3 +383,23 @@ Run the `Electron: All` launch configuration. Execution should stop upon reachin
 :::warning
 Breakpoints will not be detected in your Vue app during the initial launch of Electron. Reload the window to stop on these breakpoints.
 :::
+
+## Multi Platform Build
+
+> To build your app for platforms other than your dev system
+
+By default, electron-builder builds for current platform and architecture. However, you can use the electron-builder CLI to create builds for other platforms ([more info here](https://www.electron.build/multi-platform-build)).
+
+All arguments passed to the `electron:build` command will be forwarded to the electron-builder. Available arguments are [here](https://www.electron.build/cli). To set the platforms to build for, add them as a CLI arg to the `electron:build` command, optionally followed by the installers you want to build for that platform.
+
+#### Example
+
+To build a .deb installer for Linux and a NSIS installer for Windows:
+
+Using npm:
+
+`npm run electron:build -- --linux deb --win nsis` (Do not remove the extra double dashes)
+
+Using yarn:
+
+`yarn electron:build --linux deb --win nsis`

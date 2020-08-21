@@ -28,20 +28,8 @@ Often this issue is caused when Vue Devtools fails to install. This may happen i
 ```javascript
 if (isDevelopment && !process.env.IS_TEST) {
   // Install Vue Devtools
-  await installVueDevtools()
+  await installExtension(VUEJS_DEVTOOLS)
 }
-```
-
-## Strict mime-type error when running a built app
-
-:::tip Notice
-As of v1.0.0-rc.5, this tag is no longer necessary. You can remove it if you wish.
-:::
-
-This is likely caused because you are missing code in your `public/index.html` file. To add it, simply run `vue invoke electron-builder`. This will re-invoke the generator of VCP Electron Builder. Any missing code will be detected and added automatically. If you would not like to re-invoke the generator, you can paste this code into the top of the `<head>` of your `public/index.html`:
-
-```html
-<% if (BASE_URL === './') { %><base href="app://./" /><% } %>
 ```
 
 ## Exceptions in `async` functions not getting logged to console
@@ -49,16 +37,12 @@ This is likely caused because you are missing code in your `public/index.html` f
 This bug can be fixed by adding the following code to the entrypoint of your Vue App `src/main.js`:
 
 ```javascript
-process.on('unhandledRejection', error => {
+process.on('unhandledRejection', (error) => {
   console.error(error)
 })
 ```
 
 See [#118](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/118) for more details. Thanks to [dspangenberg](https://github.com/dspangenberg) for the fix.
-
-## Electron not opening on Node v11
-
-Make sure you are using Electron v2.0.14+ or v3.0.10+. Also, make sure Node is v11.2.0+. See [#107 (comment)](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/107#issuecomment-441168465) for more details.
 
 ## Other issues
 

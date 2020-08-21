@@ -24,7 +24,9 @@ footer: MIT Licensed | Copyright © 2018-present Noah Klayman
     <p>VCP Electron Builder provides tools for easy debugging and testing, powered by <a href="https://github.com/electron/spectron" target="_blank">Spectron</a>.</p>
   </div>
 </div>
-<centered-markdown>
-Build status: [![Build status](https://github.com/nklayman/vue-cli-plugin-electron-builder/workflows/Node%20CI/badge.svg)](https://github.com/nklayman/vue-cli-plugin-electron-builder/actions)
-
-</centered-markdown>
+<div style="text-align:center">
+Build status:
+  <a href="https://github.com/nklayman/vue-cli-plugin-electron-builder/actions" target="_blank">
+    <img src="https://github.com/nklayman/vue-cli-plugin-electron-builder/workflows/Node%20CI/badge.svg" />
+  </a>
+</div>

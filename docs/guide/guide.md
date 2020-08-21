@@ -8,9 +8,9 @@ sidebarDepth: 2
 
 [[toc]]
 
-## Native Modules <Badge text="1.0.0-rc.1+" type="info"/>
+## Native Modules
 
-Native modules are supported and should work without any configuration. If you get errors, first make sure VCP-Electron-Builder's version is set to `1.0.0-rc.1` or greater. If it still fails, re-invoke the generator with `vue invoke electron-builder`. The generator will automatically detect missing code (such as native module support) and add it, without interfering with the rest. If you have done both these things, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
+Native modules are supported and should work without any configuration, assuming [nodeIntegration is enabled](./configuration.md#node-integration). If you get errors, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
 
 ```javascript
 // vue.config.js
@@ -31,48 +31,78 @@ module.exports = {
 
 - You can prefix an item in the `externals` array with `!` to prevent it being automatically marked as an external. (`!not-external`)
 
-- If you do not use native dependencies in your code, you can remove the `postinstall` script from your `package.json`. Native modules may not work, but dependency install times will be faster.
+- If you do not use native dependencies in your code, you can remove the `postinstall` and `postuninstall` scripts from your `package.json`. Native modules may not work, but dependency install times will be faster.
 
 - Using a database such as MySQL or MongoDB requires extra configuration. See [Issue #76 (comment)](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/76#issuecomment-420060179) for more info.
 
 ## Handling Static Assets
 
-### Renderer Process (Vue App)
+Static assets work the same as a regular web app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html#static-assets-handling) for more information.
 
-In the renderer process, static assets work similarly to a regular app. Read Vue CLI's documentation [here](https://cli.vuejs.org/guide/html-and-static-assets.html) before continuing. However, there are a few changes made:
+<!-- prettier-ignore -->
+:::tip __static
+Available only in Electron, the global variable `__static` is added to the main and renderer process. It is set to the path of your public folder on disk. This is useful if you need to use Node APIs on the file, such as`fs.readFileSync`or`child_process.spawn`. Note that files in the public folder are read-only in production as they are packaged into a `.asar` archive. If you need files to be writeable, use [electron-builder's extraResources config](https://www.electron.build/configuration/contents#extraresources).
+:::
 
-- The `__static` global variable is added. It provides a path to your public directory in both development and production. Use this to read/write files in your app's public directory.
-- In production, the `process.env.BASE_URL` is replaced with the path to your app's files.
-
-**Note: `__static` is not available in regular build/serve. It should only be used in electron to read/write files on disk. To import a file (img, script, etc...) and not have it be transpiled by webpack, use the `process.env.BASE_URL` instead.**
-
-### Main Process (`background.js`)
-
-The main process won't have access to `process.env.BASE_URL` or `src/assets`. However, you can still use `__static` to get a path to your public directory in development and production.
+:::warning
+Sourcing images from the `public` folder will fail on v2.0 beta and rc.1. Please upgrade to v2.0.0-rc.2 for a fix.
+:::
 
 ### Examples:
 
 ```vue
-<!-- Renderer process only -->
-<!-- This image will be processed by webpack and placed under img/ -->
+<!-- To load an image that will be processed by webpack -->
 <img src="./assets/logo.png">
-<!-- Renderer process only -->
-<!-- This image will no be processed by webpack, just copied-->
+<!-- To load an image from the `public` folder which webpack will not process, just copy -->
 <!-- imgPath should equal `path.join(process.env.BASE_URL, 'logo.png')` -->
 <img :src="imgPath">
-<!-- Both renderer and main process -->
-<!-- This will read the contents of public/myText.txt -->
 <script>
+// Only works in electron serve/build
+// Will not work in renderer process unless you enable nodeIntegration
+// Expects myText.txt to be placed in public folder
+
 const fs = require('fs')
 const path = require('path')
 
-// Expects myText.txt to be placed in public folder
 const fileLocation = path.join(__static, 'myText.txt')
 const fileContents = fs.readFileSync(fileLocation, 'utf8')
 
 console.log(fileContents)
 </script>
 ```
+
+## Preload Files
+
+Preload files allow you to execute JS with [Node integration](/guide/configuration.html#node-integration) in the context of your Vue App (shared `window` variable). Create a preload file and update your `vue.config.js` as so:
+
+```js
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      preload: 'src/preload.js',
+      // Or, for multiple preload files:
+      preload: { preload: 'src/preload.js', otherPreload: 'src/preload2.js' }
+    }
+  }
+}
+```
+
+Then, update the `new BrowserWindow` call in your main process file (`src/background.(js|ts)` by default) to include the preload option:
+
+```diff
+const win = new BrowserWindow({
+  width: 800,
+  height: 600,
+  webPreferences: {
+    // Use pluginOptions.nodeIntegration, leave this alone
+    // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html#node-integration for more info
+    nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
++   preload: path.join(__dirname, 'preload.js')
+  }
+})
+```
+
+You will need to rerun `electron:serve` for the changes to take effect.
 
 ## Folder Structure
 
@@ -94,7 +124,27 @@ console.log(fileContents)
 
 ## Env Variables
 
-Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes (Only available in main process since `1.0.0-rc.4`).
+Read [Vue ClI's documentation](https://cli.vuejs.org/guide/mode-and-env.html) to learn about using environment variables in your app. All env variables prefixed with `VUE_APP_` will be available in both the main and renderer processes.
+
+## Web Workers
+
+[Worker-plugin](https://github.com/GoogleChromeLabs/worker-plugin) will work out of the box for Electron and web. Install it, then add the following to your `vue.config.js`:
+
+```js
+const WorkerPlugin = require('worker-plugin')
+
+module.exports = {
+  configureWebpack: {
+    plugins: [new WorkerPlugin()]
+  }
+}
+```
+
+Now, create a worker like so:
+
+```js
+new Worker('./worker.js', { type: 'module' })
+```
 
 ## How it works
 

@@ -3,15 +3,6 @@ __tests__/
 .github/
 .vscode/
 docs/
-.dockerignore
 .eslintrc.js
-.travis.yml
-appveyor.yml
 deployDocs.js
-docker-entrypoint.sh
-Dockerfile
 jest.config.js
-testSetup.js
-vue-cli-service-custom-1.tgz
-vue-cli-service-custom-2.tgz
-vue-cli-service-v3.0.0-rc.2.tgz
