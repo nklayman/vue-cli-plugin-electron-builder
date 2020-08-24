@@ -122,7 +122,7 @@ module.exports = (api, options = {}) => {
       '.0.0'
   }
   if (testFramework === 'mocha') {
-    dependencies['chai-as-promised'] = '^7.1.1'
+    devDependencies['chai-as-promised'] = '^7.1.1'
   }
   api.extendPackage({
     scripts,
