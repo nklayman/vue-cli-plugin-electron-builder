@@ -250,6 +250,10 @@ module.exports = (api, options) => {
             // handle result
             done('Build complete!')
           })
+          .catch((err) => {
+            console.error(err)
+            process.exit(1)
+          })
       }
     }
   )
