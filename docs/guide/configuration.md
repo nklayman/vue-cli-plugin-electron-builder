@@ -43,7 +43,7 @@ Your regular config is extended and used for bundling the renderer process (your
 
 module.exports = {
   configureWebpack: {
-    // Configuration applied to all builds
+    // Webpack configuration applied to web builds and the electron renderer process
   },
   pluginOptions: {
     electronBuilder: {
@@ -51,12 +51,7 @@ module.exports = {
         // Chain webpack config for electron main process only
       },
       chainWebpackRendererProcess: (config) => {
-        // Chain webpack config for electron renderer process only
-        // The following example will set IS_ELECTRON to true in your app
-        config.plugin('define').tap((args) => {
-          args[0]['IS_ELECTRON'] = true
-          return args
-        })
+        // Chain webpack config for electron renderer process only (won't be applied to web builds)
       },
       // Use this to change the entrypoint of your app's main process
       mainProcessFile: 'src/myBackgroundFile.js',
