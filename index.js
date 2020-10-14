@@ -39,9 +39,7 @@ module.exports = (api, options) => {
       : pluginOptions.bundleMainProcess
   const renderProcessFileEntry =
     pluginOptions.renderProcessFile !== undefined
-      // this argument represents argv where argv[0] is the
-      // command itself and will be shifted out
-      ? [Symbol("argv[0]"), pluginOptions.renderProcessFile]
+      ? ['First arg is removed', pluginOptions.renderProcessFile]
       : []
   if (pluginOptions.experimentalNativeDepCheck) {
     process.env.VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK = true
