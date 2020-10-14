@@ -37,6 +37,12 @@ module.exports = (api, options) => {
     pluginOptions.bundleMainProcess == null
       ? true
       : pluginOptions.bundleMainProcess
+  const renderProcessFileEntry =
+    pluginOptions.renderProcessFile !== undefined
+      // this argument represents argv where argv[0] is the
+      // command itself and will be shifted out
+      ? [Symbol("argv[0]"), pluginOptions.renderProcessFile]
+      : []
   if (pluginOptions.experimentalNativeDepCheck) {
     process.env.VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK = true
   }
@@ -101,7 +107,7 @@ module.exports = (api, options) => {
         const bundleOutputDir = path.join(outputDir, 'bundled')
         // Arguments to be passed to renderer build
         const vueArgs = {
-          _: [],
+          _: renderProcessFileEntry,
           // For the cli-ui webpack dashboard
           dashboard: args.dashboard,
           // Make sure files are outputted to proper directory
@@ -285,7 +291,7 @@ module.exports = (api, options) => {
 
       // Run the serve command
       const server = await api.service.run('serve', {
-        _: [],
+        _: renderProcessFileEntry,
         // Use dashboard if called from ui
         dashboard: args.dashboard,
         https: args.https

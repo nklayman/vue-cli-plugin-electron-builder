@@ -68,6 +68,22 @@ module.exports = {
 }
 ```
 
+## Change the entrypoints
+
+If you need to change the render or background scripts, you can specify them as relative paths.
+
+```javascript
+// vue.config.js
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      mainProcessFile: 'otherpath/background.js',
+      renderProcessFile: 'otherpath/main.js',
+    }
+  }
+}
+```
+
 ## Changing the Output Directory
 
 If you don't want your files outputted into dist_electron, you can choose a custom folder in VCPEB's plugin options. You can use the `--dest` argument to change the output dir as well.
