@@ -188,7 +188,7 @@ Replace:
 ```js
 function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  let win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -207,6 +207,8 @@ function createWindow() {
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
   }
+  
+  win.on('closed', () => { win = null })
 }
 ```
 
@@ -215,7 +217,7 @@ With:
 ```js
 function createWindow(devPath, prodPath) {
   // Create the browser window.
-  const window = new BrowserWindow({ width: 800, height: 600 })
+  let window = new BrowserWindow({ width: 800, height: 600 })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -226,6 +228,7 @@ function createWindow(devPath, prodPath) {
     window.loadURL(`app://./${prodPath}`)
   }
 
+  window.on('closed', () => { window = null })
   return window
 }
 ```
@@ -239,7 +242,7 @@ app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
-      await installExtensions(VUEJS_DEVTOOLS)
+      await installExtension(VUEJS_DEVTOOLS)
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
     }
