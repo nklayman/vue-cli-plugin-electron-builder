@@ -37,9 +37,9 @@ module.exports = (api, options) => {
     pluginOptions.bundleMainProcess == null
       ? true
       : pluginOptions.bundleMainProcess
-  const renderProcessFileEntry =
-    pluginOptions.renderProcessFile !== undefined
-      ? ['First arg is removed', pluginOptions.renderProcessFile]
+  const rendererProcessFile =
+    pluginOptions.rendererProcessFile !== undefined
+      ? ['First arg is removed', pluginOptions.rendererProcessFile]
       : []
   if (pluginOptions.experimentalNativeDepCheck) {
     process.env.VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK = true
@@ -105,7 +105,7 @@ module.exports = (api, options) => {
         const bundleOutputDir = path.join(outputDir, 'bundled')
         // Arguments to be passed to renderer build
         const vueArgs = {
-          _: renderProcessFileEntry,
+          _: rendererProcessFile,
           // For the cli-ui webpack dashboard
           dashboard: args.dashboard,
           // Make sure files are outputted to proper directory
@@ -235,7 +235,7 @@ module.exports = (api, options) => {
           buildApp()
         }
       }
-      function buildApp () {
+      function buildApp() {
         info('Building app with electron-builder:')
         // Build the app using electron builder
         builder
@@ -289,7 +289,7 @@ module.exports = (api, options) => {
 
       // Run the serve command
       const server = await api.service.run('serve', {
-        _: renderProcessFileEntry,
+        _: rendererProcessFile,
         // Use dashboard if called from ui
         dashboard: args.dashboard,
         https: args.https
@@ -432,7 +432,7 @@ module.exports = (api, options) => {
           })
       }
 
-      async function launchElectron () {
+      async function launchElectron() {
         firstBundleCompleted = true
         // Don't exit process when electron is killed
         if (child) {
@@ -523,7 +523,7 @@ module.exports = (api, options) => {
         }
       }
 
-      function onChildExit () {
+      function onChildExit() {
         process.exit(0)
       }
     }
@@ -570,7 +570,7 @@ module.exports = (api, options) => {
   )
 }
 
-function bundleMain ({
+function bundleMain({
   mode,
   api,
   args,
