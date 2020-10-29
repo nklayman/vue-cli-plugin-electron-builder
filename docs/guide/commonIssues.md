@@ -8,15 +8,23 @@ sidebarDepth: 2
 
 This issue is likely caused when Vue Router is operating in `history` mode. In Electron, it only works in `hash` mode. To fix this, edit your `src/router.(js|ts)`:
 
+If using Vue 2:
+
 ```diff
-// src/router.(js|ts)
-...
 export default new Router({
--  mode: 'history',
-+  mode: process.env.IS_ELECTRON ? 'hash' : 'history',
-  ...
+- mode: 'history',
++ mode: process.env.IS_ELECTRON ? 'hash' : 'history',
 })
-...
+```
+
+If using Vue 3:
+
+```diff
+const router = createRouter({
+- history: createWebHistory(),
+  // (you will need to import these functions from 'vue-router')
++ history: process.env.IS_ELECTRON ? createWebHashHistory() : createWebHistory(),
+})
 ```
 
 This will have the router operate in hash mode in Electron builds, but won't affect web builds.
