@@ -72,8 +72,8 @@ module.exports = (api, options = {}) => {
     }
     if (api.hasPlugin('router')) {
       console.log('\n')
-      require('@vue/cli-shared-utils/lib/logger').warn(
-        'It is detected that you are using Vue Router. If you are using history mode, you must push the default route when the root component is loaded. Learn more at https://goo.gl/GM1xZG .'
+      warn(
+        'It is detected that you are using Vue Router. It must function in hash mode to work in Electron. Learn more at https://goo.gl/GM1xZG .'
       )
     }
   })
