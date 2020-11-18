@@ -3083,10 +3083,10 @@
   optionalDependencies:
     vue-loader-v16 "npm:vue-loader@^16.0.0-beta.7"
 
-"@vue/cli-shared-utils@^4.5.6", "@vue/cli-shared-utils@^4.5.8":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-4.5.8.tgz#d454306aaa510e666a34b144afc81830fc23acc9"
-  integrity sha512-pa6oenhBO/5HeDLRSokiwVN01gROACEDy3ESXWuPmragOREGNmmFKtkPHlqeYavGEX6LFp7f0VK3uMX6UYS5mQ==
+"@vue/cli-shared-utils@^4.5.6", "@vue/cli-shared-utils@^4.5.8", "@vue/cli-shared-utils@^4.5.9":
+  version "4.5.9"
+  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-4.5.9.tgz#487cea4b4282f4dff907ee7d8abba8dd0dd03ccd"
+  integrity sha512-anvsrv+rkQC+hgxaT2nQQxnSWSsIzyysZ36LO7qPjXvDRBvcvKLAAviFlUkYbZ+ntbV8puzJ3zw+gUhQw4SEVA==
   dependencies:
     "@hapi/joi" "^15.0.1"
     chalk "^2.4.2"
@@ -3117,23 +3117,23 @@
     serve-handler "^6.1.2"
     strip-ansi "^6.0.0"
 
-"@vue/cli-ui-addon-webpack@^4.5.8":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-webpack/-/cli-ui-addon-webpack-4.5.8.tgz#0728105fc5ff1a3309006a77f1ba6d4095e090d9"
-  integrity sha512-kptiU6IWvilevgX7BJUvvQWzzG4xTHKnXySmdpYjltFaAZLLxmCSUzkbvJFzOAOlpSCRQiUrNQnYCwd2f3upCw==
+"@vue/cli-ui-addon-webpack@^4.5.9":
+  version "4.5.9"
+  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-webpack/-/cli-ui-addon-webpack-4.5.9.tgz#f7f8c93c2745df11587a08876b1f14cedf3c3bd7"
+  integrity sha512-fh79OvbqvZ2YQ7JI7DnDKeS3W72HoEMVS8m969g/kjrqkFM+Rt2cL81LBx3IgX5l/rZP999kof569vYsOyjVnA==
 
-"@vue/cli-ui-addon-widgets@^4.5.8":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-widgets/-/cli-ui-addon-widgets-4.5.8.tgz#39e8969911a4094b487f05a2f1affe10c665f939"
-  integrity sha512-y3vnCLQxUgZ/entdvv6vut7uQwmIp+ichxBay4yy8TjtpBxdVH0EXAByi+6rJlO2sotlvmRdnZU7AV7tz1yLsw==
+"@vue/cli-ui-addon-widgets@^4.5.9":
+  version "4.5.9"
+  resolved "https://registry.yarnpkg.com/@vue/cli-ui-addon-widgets/-/cli-ui-addon-widgets-4.5.9.tgz#3d57198500406ed10968ed877557e2118dca6d6d"
+  integrity sha512-mFdUlfDGxoyreCQWO/SX4DvM/6epn37AimVGzLJLpSPJdWUerCnvxwzB6zL83SiYC6O6++cWEdzgz7EtKViFlA==
 
-"@vue/cli-ui@^4.5.8":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@vue/cli-ui/-/cli-ui-4.5.8.tgz#3de4fcdb795dd376448bdb7f905b12aa406f317b"
-  integrity sha512-m2is3vx+ccdsH7kenZgCOnYaTH3jm541ZuUPo2pYY+W0mX1bujrtpQgAmpkpPVKfcAdWnzoLi7+zkYBH7nXl2Q==
+"@vue/cli-ui@^4.5.9":
+  version "4.5.9"
+  resolved "https://registry.yarnpkg.com/@vue/cli-ui/-/cli-ui-4.5.9.tgz#2a8c79d379e53d84df5f57703978cf520a51f81d"
+  integrity sha512-JXQk29CLp7eBdO6uCr2s60xBoKjXPzr9ckpCicFMIWFLQOR0+DqWQpS1DIqETbgOmTYQj1LX+v1rkLeA74Lo2A==
   dependencies:
     "@akryum/winattr" "^3.0.0"
-    "@vue/cli-shared-utils" "^4.5.8"
+    "@vue/cli-shared-utils" "^4.5.9"
     apollo-server-express "^2.13.1"
     clone "^2.1.1"
     deepmerge "^4.2.2"
@@ -3163,16 +3163,16 @@
     watch "^1.0.2"
 
 "@vue/cli@^4.0.0":
-  version "4.5.8"
-  resolved "https://registry.yarnpkg.com/@vue/cli/-/cli-4.5.8.tgz#495d5fb1e4e0ec7c6f7d89cbc334fead67134d5e"
-  integrity sha512-/hKE03mkpt+CHAL2UIdQC3B1rbNKzvBpU0280Pz9Vt1QlB9ruqBL+1MLJnm70+9d2+VX5Vk/mlaXBOuQz0ID4w==
+  version "4.5.9"
+  resolved "https://registry.yarnpkg.com/@vue/cli/-/cli-4.5.9.tgz#d481d1ef1bb2b92d132958a8920c9db27c24998d"
+  integrity sha512-R6fRau8+fqKI+94LrruKtJDaMQGVsJCNzrdefTJ+bn+ljtCS6j9H+XuU8zLa9+X0HBkX4VoBT7XjfwUAo1IIPA==
   dependencies:
     "@types/ejs" "^2.7.0"
     "@types/inquirer" "^6.5.0"
-    "@vue/cli-shared-utils" "^4.5.8"
-    "@vue/cli-ui" "^4.5.8"
-    "@vue/cli-ui-addon-webpack" "^4.5.8"
-    "@vue/cli-ui-addon-widgets" "^4.5.8"
+    "@vue/cli-shared-utils" "^4.5.9"
+    "@vue/cli-ui" "^4.5.9"
+    "@vue/cli-ui-addon-webpack" "^4.5.9"
+    "@vue/cli-ui-addon-widgets" "^4.5.9"
     boxen "^4.1.0"
     cmd-shim "^3.0.3"
     commander "^2.20.0"
@@ -14392,19 +14392,12 @@ resolve@1.1.7:
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
   integrity sha1-IDEU2CrSxe2ejgQRs5ModeiJ6Xs=
 
-resolve@1.x, resolve@^1.1.6, resolve@^1.10.0, resolve@^1.17.0, resolve@^1.3.2, resolve@^1.8.1:
+resolve@1.x, resolve@^1.1.6, resolve@^1.10.0, resolve@^1.10.1, resolve@^1.13.1, resolve@^1.17.0, resolve@^1.2.0, resolve@^1.3.2, resolve@^1.8.1:
   version "1.18.1"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.18.1.tgz#018fcb2c5b207d2a6424aee361c5a266da8f4130"
   integrity sha512-lDfCPaMKfOJXjy0dPayzPdF1phampNWr3qFCjAu+rw/qbQmr5jWH5xN2hwh9QKfw9E5v4hwV7A+jrCmL8yjjqA==
   dependencies:
     is-core-module "^2.0.0"
-    path-parse "^1.0.6"
-
-resolve@^1.10.1, resolve@^1.13.1, resolve@^1.2.0:
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.17.0.tgz#b25941b54968231cc2d1bb76a79cb7f2c0bf8444"
-  integrity sha512-ic+7JYiV8Vi2yzQGFWOkiZD5Z9z7O2Zhm9XMaTxdJExKasieFCr+yXZ/WmXsckHiKl12ar0y6XiXDx3m4RHn1w==
-  dependencies:
     path-parse "^1.0.6"
 
 responselike@1.0.2, responselike@^1.0.2:
