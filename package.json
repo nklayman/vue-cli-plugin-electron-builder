@@ -31,7 +31,7 @@
     "@vue/cli-shared-utils": "^4.5.6",
     "chokidar": "^3.0.2",
     "electron-builder": "^22.2.0",
-    "execa": "^4.0.0",
+    "execa": "^5.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
     "fs-extra": "^9.0.1",
     "lodash.merge": "^4.6.1",
