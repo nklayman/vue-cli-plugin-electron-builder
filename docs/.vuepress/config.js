@@ -2,7 +2,14 @@ module.exports = {
   title: 'Vue CLI Plugin Electron Builder',
   description: 'Easily Build Your Vue.js App For Desktop With Electron',
   base: '/vue-cli-plugin-electron-builder/',
-  ga: 'UA-134189455-2',
+  plugins: [
+    [
+      '@vuepress/google-analytics',
+      {
+        'ga': 'UA-134189455-2'
+      }
+    ]
+  ],
   head: [
     ['link', { rel: 'shortcut icon', href: '/favicon.ico' }],
     ['script', { src: '/scripts/scrollToHash.js' }],
