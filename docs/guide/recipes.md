@@ -158,6 +158,8 @@ const win = new BrowserWindow({
 
 :::tip
 If you get the linting error `'__static' is not defined`, add `/* global __static */` in your background file above your imports.
+
+If you are using Typescript, add `declare const __static: string` in a `*.d.ts` file, e.g. `shims-vue.d.ts`.
 :::
 
 ## Multiple Pages
