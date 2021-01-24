@@ -44,8 +44,8 @@ Static assets work the same as a regular web app. Read Vue CLI's documentation [
 Available only in Electron, the global variable `__static` is added to the main and renderer process. It is set to the path of your public folder on disk. This is useful if you need to use Node APIs on the file, such as`fs.readFileSync`or`child_process.spawn`. Note that files in the public folder are read-only in production as they are packaged into a `.asar` archive. If you need files to be writeable, use [electron-builder's extraResources config](https://www.electron.build/configuration/contents#extraresources).
 :::
 
-:::warning
-Sourcing images from the `public` folder will fail on v2.0 beta and rc.1. Please upgrade to v2.0.0-rc.2 for a fix.
+:::tip Videos
+By default, videos will fail to load from the public folder. There are two solutions to this problem. If you are using Electron 11, simply add `stream: true` to the privileges config on line 10 of your main process file (`background.(js|ts)` by default): `{ scheme: 'app', privileges: { secure: true, standard: true, stream: true } }`. If you do not want to use Electron 11, you will have to configure and use the `local-resource` protocol, see [these docs](./security.html#loading-local-images-resources) for instructions, and [this GitHub issue](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/872) for more details.
 :::
 
 ### Examples:
