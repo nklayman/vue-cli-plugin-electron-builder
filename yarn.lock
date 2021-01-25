@@ -2369,9 +2369,9 @@
     strip-ansi "^6.0.0"
 
 "@vue/cli-test-utils@^4.0.0":
-  version "4.5.10"
-  resolved "https://registry.yarnpkg.com/@vue/cli-test-utils/-/cli-test-utils-4.5.10.tgz#c98f6e0d82506b6ea8d87e7fd8f132801f15075c"
-  integrity sha512-qEIT2HxNIZhglobCYI6SsXiU3Lk9wX/2oerZj87MIhRuRtfORbwSnnAkoD632FyyvwBlxSOXySaNZJ26dulk2A==
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@vue/cli-test-utils/-/cli-test-utils-4.5.11.tgz#20e37a3422acbda5ce1a6ca4bbeb9d18e8e62410"
+  integrity sha512-8lxOzjDuzwIDbYdkuGj0pe1O++dyXueM4f/k1Yjns5TQnv0DOvZlmoxpSqNO/a15FGBClybGwnDuawbWdwU4jQ==
   dependencies:
     "@types/execa" "^0.9.0"
     "@types/express" "4.17.7"
