@@ -98,69 +98,7 @@ Install your app, then run it. You won't get an update notification yet, because
 
 > Customize your app's launcher and tray icon
 
-[Example Repo](https://github.com/nklayman/electron-icon-example)
-
-### Install Required Deps
-
-First, add [electron-icon-builder](https://www.npmjs.com/package/electron-icon-builder) as a `devDependency`:
-
-With Yarn:
-
-`yarn add --dev electron-icon-builder`
-
-or with NPM:
-
-`npm install --save-dev electron-icon-builder`
-
-### Add Icon to App
-
-Place your square icon in `public/icon.png`.
-
-### Add Generation Script
-
-Add the following script to your `package.json`:
-
-```json
-"electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten"
-```
-
-### Generate Icons
-
-Run the new script:
-
-With Yarn:
-
-`yarn electron:generate-icons`
-
-or with NPM:
-
-`npm run electron:generate-icons`
-
-### Set Tray Icon
-
-Edit your background file (`src/background.(js|ts)` by default):
-
-```diff
-// Import path module (at the top of your file, below 'use-strict')
-+import path from 'path'
-
-const win = new BrowserWindow({
-  width: 800,
-  height: 600,
-  webPreferences: {
-    // Use pluginOptions.nodeIntegration, leave this alone
-    // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-    nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
-  },
-+ icon: path.join(__static, 'icon.png')
-})
-```
-
-:::tip
-If you get the linting error `'__static' is not defined`, add `/* global __static */` in your background file above your imports.
-
-If you are using Typescript, add `declare const __static: string` in a `*.d.ts` file, e.g. `shims-vue.d.ts`.
-:::
+Simply add an `icons/icon.png` file to the [build resources directory](https://www.electron.build/configuration/configuration#configuration) and electron-builder will use it on all platforms. Unless you have manually configured the build resources directory, the icon should go in `build/icons/icon.png`, relative to your app's root.
 
 ## Multiple Pages
 
