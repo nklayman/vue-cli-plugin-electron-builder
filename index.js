@@ -235,7 +235,7 @@ module.exports = (api, options) => {
           buildApp()
         }
       }
-      function buildApp() {
+      function buildApp () {
         info('Building app with electron-builder:')
         // Build the app using electron builder
         builder
@@ -432,7 +432,7 @@ module.exports = (api, options) => {
           })
       }
 
-      async function launchElectron() {
+      async function launchElectron () {
         firstBundleCompleted = true
         // Don't exit process when electron is killed
         if (child) {
@@ -523,7 +523,7 @@ module.exports = (api, options) => {
         }
       }
 
-      function onChildExit() {
+      function onChildExit () {
         process.exit(0)
       }
     }
@@ -570,7 +570,7 @@ module.exports = (api, options) => {
   )
 }
 
-function bundleMain({
+function bundleMain ({
   mode,
   api,
   args,
