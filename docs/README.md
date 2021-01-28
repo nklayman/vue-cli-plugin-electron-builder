@@ -30,3 +30,12 @@ Build status:
     <img src="https://github.com/nklayman/vue-cli-plugin-electron-builder/workflows/Node%20CI/badge.svg" />
   </a>
 </div>
+
+<div style="text-align: center">
+<h2>Top Supporters</h2>
+
+| [![Glenn Frank](https://avatars.githubusercontent.com/u/6701567?s=64&v=4)](https://github.com/Glenn-Frank) |
+| ---------------------------------------------------------------------------------------------------------- |
+| [Glenn Frank](https://github.com/Glenn-Frank)                                                              |
+
+</div>

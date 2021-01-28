@@ -6,6 +6,12 @@ Build status: [![Build status](https://github.com/nklayman/vue-cli-plugin-electr
 
 [![Sponsor](./docs/.vuepress/public/sponsorShield.svg)](https://github.com/sponsors/nklayman)
 
+## Top Supporters
+
+| [![Glenn Frank](https://avatars.githubusercontent.com/u/6701567?s=64&v=4)](https://github.com/Glenn-Frank) |
+| ---------------------------------------------------------------------------------------------------------- |
+| [Glenn Frank](https://github.com/Glenn-Frank)                                                              |
+
 ## Quick Start:
 
 Open a terminal in the directory of your app created with Vue-CLI 3 or 4 (4 is recommended).
