@@ -1,6 +1,6 @@
 {
   "name": "vue-cli-plugin-electron-builder",
-  "version": "2.0.0-rc.5",
+  "version": "2.0.0-rc.6",
   "description": "Easily Build Your Vue.js App For Desktop With Electron",
   "main": "index.js",
   "homepage": "https://nklayman.github.io/vue-cli-plugin-electron-builder/",
