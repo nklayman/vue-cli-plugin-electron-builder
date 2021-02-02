@@ -2,7 +2,7 @@
 
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
-<% if (devtoolsExtensionsBroken) { %>// <% } %>import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -16,6 +16,10 @@ async function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
+      <% if (spectronSupport) { %>
+      // Required for Spectron testing
+      enableRemoteModule: true,
+      <% } %>
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
@@ -54,22 +58,11 @@ app.on('activate', () => {
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
-    <% if (devtoolsExtensionsBroken) { %>// Devtools extensions are broken in Electron  6/7/<8.25 on Windows
-    // See https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/378 for more info
-    // Electron will not launch with Devtools extensions installed on Windows 10 with dark mode
-    // If you are not using Windows 10 dark mode, you may uncomment the following lines (and the import at the top of the file)
-    // In addition, if you upgrade to Electron ^8.2.5 or ^9.0.0 then devtools should work fine
-
-    // try {
-    //   await installExtension(VUEJS_DEVTOOLS)
-    // } catch (e) {
-    //   console.error('Vue Devtools failed to install:', e.toString())
-    // }
-<% } else { %>try {
+    try {
       await installExtension(VUEJS_DEVTOOLS)
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
-    }<% } %>
+    }
   }
   createWindow()
 })

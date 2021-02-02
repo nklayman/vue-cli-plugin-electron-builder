@@ -1,5 +1,4 @@
 const fs = require('fs')
-const semver = require('semver')
 const { warn } = require('@vue/cli-shared-utils')
 
 module.exports = (api, options = {}) => {
@@ -12,22 +11,10 @@ module.exports = (api, options = {}) => {
     fs.existsSync(api.resolve('./src/background.ts')) ||
     fs.existsSync(api.resolve('./src/background.js'))
 
-  const devtoolsExtensionsBroken = semver.satisfies(
-    (electronVersion || pkg.devDependencies.electron).replace('^', ''),
-    '^6.0.0||^7.0.0'
-  )
-  if (devtoolsExtensionsBroken) {
-    warn(
-      'Devtools extensions are broken in Electron versions 6/7/<8.2.5 on Windows'
-    )
-    warn(
-      'Vue Devtools have been disabled, see the comments in your background file for more info'
-    )
-  }
   if (!hasBackground) {
     // If user does not have a background file it should be created
     api.render('./templates/base', {
-      devtoolsExtensionsBroken
+      spectronSupport: options.electronBuilder.addTests
     })
   }
   // Add tests

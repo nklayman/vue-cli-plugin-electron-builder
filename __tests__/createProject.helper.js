@@ -24,7 +24,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
   preset.plugins['vue-cli-plugin-electron-builder'] = {
     // electron-builder requires that an exact version of electron is provided,
     // unless electron is already installed
-    electronBuilder: { electronVersion: '9.0.0' }
+    electronBuilder: { electronVersion: '11.0.0' }
   }
   preset.plugins = { ...preset.plugins, ...customPlugins }
   const projectPath = (p) =>
@@ -43,22 +43,30 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
     'utf8'
   )
   // Have main process log __static to console to make sure it is correct
-  backgroundFile = backgroundFile.replace(
-    `let mainWindow${useTS ? ': any' : ''}`,
-    `let mainWindow${useTS ? ': any' : ''}
-      ${useTS ? 'declare var __static: string' : ''}
+  backgroundFile = backgroundFile
+    .replace(
+      `let mainWindow${useTS ? ': any' : ''}`,
+      `let mainWindow${useTS ? ': any' : ''}
+      ${useTS ? 'declare var __static: string' : ''}`
+    )
+    .replace(
+      'if (process.env.WEBPACK_DEV_SERVER_URL) {',
+      `
         console.log('__static=' + __static)
-        console.log('mockExternalPath=' + require.resolve('mockExternal'))`
-  )
+        console.log('mockExternalPath=' + require.resolve('mockExternal'))
+        if (process.env.WEBPACK_DEV_SERVER_URL) {`
+    )
+    // Spectron requires the remote module to be enabled
+    .replace('webPreferences: {', 'webPreferences: {enableRemoteModule:true,')
   // Have render process log __static and BASE_URL to console to make sure they are correct
   mainFile = mainFile.replace(
     "import App from './App.vue'",
     `import App from './App.vue'
       ${useTS ? 'declare var __static: string' : ''}
-      console.log('process.env.BASE_URL=' + process.env.BASE_URL)
-      console.log('__static=' + __static )
-      console.log('vuePath=' + require.resolve('vue'))
-      console.log('mockExternalPath=' + require.resolve('mockExternal'))`
+      window.BASE_URL = process.env.BASE_URL
+      window.__static = __static 
+      window.vuePath = require.resolve('vue')
+      window.mockExternalPath = require.resolve('mockExternal')`
   )
   fs.writeFileSync(
     projectPath(`src/background.${useTS ? 'ts' : 'js'}`),

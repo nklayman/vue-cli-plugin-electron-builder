@@ -79,11 +79,9 @@ const runTests = async (useTS) => {
   expect(width).toBeGreaterThan(0)
   expect(height).toBeGreaterThan(0)
   // App is loaded properly
-  expect(
-    (await client.getHTML('#app')).indexOf(
-      `Welcome to Your Vue.js ${useTS ? '+ TypeScript ' : ''}App`
-    )
-  ).not.toBe(-1)
+  expect(await (await app.client.$('#app')).getHTML()).toContain(
+    `Welcome to Your Vue.js ${useTS ? '+ TypeScript ' : ''}App`
+  )
 
   stopServe()
   await app.stop()
