@@ -79,6 +79,7 @@ module.exports = (api, options) => {
       removeArg('--legacy', 1, rawArgs)
       removeArg('--dashboard', 1, rawArgs)
       removeArg('--skipBundle', 1, rawArgs)
+      removeArg('--skipElectronBuild', 1, rawArgs)
       removeArg('--report', 1, rawArgs)
       removeArg('--report-json', 1, rawArgs)
       // Parse the raw arguments using electron-builder yargs config
@@ -100,7 +101,7 @@ module.exports = (api, options) => {
       if (args.skipBundle) {
         console.log('Not bundling app as --skipBundle was passed')
         // Build with electron-builder
-        buildApp()
+        buildApp(args.skipElectronBuild)
       } else {
         const bundleOutputDir = path.join(outputDir, 'bundled')
         // Arguments to be passed to renderer build
@@ -217,10 +218,10 @@ module.exports = (api, options) => {
                 )
                 log(formatStats(stats, targetDirShort, api))
 
-                buildApp()
+                buildApp(skipElectronBuild)
               })
             } else {
-              buildApp()
+              buildApp(skipElectronBuild)
             }
           })
         } else {
@@ -232,10 +233,11 @@ module.exports = (api, options) => {
             api.resolve(mainProcessFile),
             api.resolve(`${outputDir}/bundled/background.js`)
           )
-          buildApp()
+          buildApp(skipElectronBuild)
         }
       }
-      function buildApp () {
+      function buildApp (skip) {
+        if (skip) return
         info('Building app with electron-builder:')
         // Build the app using electron builder
         builder
