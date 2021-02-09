@@ -237,7 +237,10 @@ module.exports = (api, options) => {
         }
       }
       function buildApp (skip) {
-        if (skip) return
+        if (skip) {
+          console.log('Not building app as --skipElectronBuild was passed')
+          return
+        }
         info('Building app with electron-builder:')
         // Build the app using electron builder
         builder
