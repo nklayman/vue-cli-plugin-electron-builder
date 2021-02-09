@@ -218,10 +218,10 @@ module.exports = (api, options) => {
                 )
                 log(formatStats(stats, targetDirShort, api))
 
-                buildApp(skipElectronBuild)
+                buildApp(args.skipElectronBuild)
               })
             } else {
-              buildApp(skipElectronBuild)
+              buildApp(args.skipElectronBuild)
             }
           })
         } else {
@@ -233,7 +233,7 @@ module.exports = (api, options) => {
             api.resolve(mainProcessFile),
             api.resolve(`${outputDir}/bundled/background.js`)
           )
-          buildApp(skipElectronBuild)
+          buildApp(args.skipElectronBuild)
         }
       }
       function buildApp (skip) {
