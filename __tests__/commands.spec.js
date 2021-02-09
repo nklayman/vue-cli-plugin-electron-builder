@@ -228,7 +228,7 @@ describe('electron:build', () => {
     ['--legacy'],
     ['--dashboard'],
     ['--skipBundle'],
-    ['--skipElectronBuild']
+    ['--skipElectronBuild'],
     ['--dest', 'output'],
     ['--report'],
     ['--report-json']
