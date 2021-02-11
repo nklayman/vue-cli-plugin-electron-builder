@@ -118,7 +118,7 @@ module.exports = (api, options) => {
           'report-json': args['report-json']
         }
         // With @vue/cli-service v3.4.1+, we can bypass legacy build
-        process.env.VUE_CLI_MODERN_BUILD = !args.legacy
+        process.env.VUE_CLI_MODERN_BUILD = !args.legacy || ''
         // If the legacy builded is skipped the output dir won't be cleaned
         fs.removeSync(bundleOutputDir)
         fs.ensureDirSync(bundleOutputDir)
