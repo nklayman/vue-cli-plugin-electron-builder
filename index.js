@@ -168,7 +168,7 @@ module.exports = (api, options) => {
         })
         fs.writeFileSync(
           `${outputDir}/bundled/package.json`,
-          JSON.stringify(pkg, 2)
+          JSON.stringify(pkg, null, 2)
         )
         // Prevent electron-builder from installing app deps
         fs.ensureDirSync(`${outputDir}/bundled/node_modules`)
