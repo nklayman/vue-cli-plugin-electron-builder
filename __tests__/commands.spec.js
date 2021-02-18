@@ -380,7 +380,7 @@ describe('electron:build', () => {
         dependencies: {
           external: '^0.0.1'
         }
-      })
+      }, undefined, 2)
     )
   })
 
