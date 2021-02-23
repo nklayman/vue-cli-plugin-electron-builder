@@ -1,4 +1,7 @@
 import { Application, AppConstructorOptions } from 'spectron'
+import { Configuration as ElectronBuilderOptions } from 'electron-builder'
+import * as ChainableWebpackConfig from 'webpack-chain'
+
 interface Options {
   /**
    Do not launch spectron.
@@ -32,3 +35,22 @@ interface Server {
    Used for e2e testing with Spectron.
 */
 export function testWithSpectron(spectron: any, options?: Options): Promise<Server>
+
+  
+export type PluginOptions = {
+  builderOptions?: ElectronBuilderOptions,
+  chainWebpackMainProcess?: (config?: ChainableWebpackConfig) => void,
+  chainWebpackRendererProcess?: (config?: ChainableWebpackConfig) => void,
+  mainProcessFile?: string,
+  rendererProcessFile?: string,
+  mainProcessWatch?: string[],
+  mainProcessArgs?: string[],
+  outputDir?: string,
+  disableMainProcessTypescript?: boolean,
+  mainProcessTypeChecking?: boolean,
+  customFileProtocol?: string,
+  removeElectronJunk?: boolean,
+  externals?: string[],
+  nodeModulesPath?: string[],
+  preload?: string | Record<string, string>
+}
