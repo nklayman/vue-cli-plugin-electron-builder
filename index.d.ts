@@ -11,7 +11,7 @@ interface Options {
   /** Launch server in dev mode, not in production. */
   forceDev: boolean
   /** Custom spectron options.These will be merged with default options. */
-  spectronOptions: Partial<AppConstructorOptions>
+  spectronOptions: AppConstructorOptions
   /** Do not start app or wait for it to load.
    You will have to run app.start() and app.client.waitUntilWindowLoaded() yourself.
    */
