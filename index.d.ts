@@ -11,7 +11,7 @@ interface Options {
   /** Launch server in dev mode, not in production. */
   forceDev: boolean
   /** Custom spectron options.These will be merged with default options. */
-  spectronOptions: AppConstructorOptions
+  spectronOptions: Partial<AppConstructorOptions>
   /** Do not start app or wait for it to load.
    You will have to run app.start() and app.client.waitUntilWindowLoaded() yourself.
    */
@@ -34,7 +34,7 @@ interface Server {
    Run electron:serve, but instead of launching Electron it returns a Spectron Application instance.
    Used for e2e testing with Spectron.
 */
-export function testWithSpectron(spectron: any, options?: Options): Promise<Server>
+export function testWithSpectron(spectron: any, options?: Partial<Options>): Promise<Server>
 
   
 export type PluginOptions = {
