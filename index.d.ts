@@ -34,7 +34,7 @@ interface Server {
    Run electron:serve, but instead of launching Electron it returns a Spectron Application instance.
    Used for e2e testing with Spectron.
 */
-export function testWithSpectron(spectron: any, options?: Options): Promise<Server>
+export function testWithSpectron(spectron: any, options?: Partial<Options>): Promise<Server>
 
   
 export type PluginOptions = {
