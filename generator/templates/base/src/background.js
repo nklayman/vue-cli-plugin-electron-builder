@@ -18,7 +18,7 @@ async function createWindow() {
     webPreferences: {
       <% if (spectronSupport) { %>
       // Required for Spectron testing
-      enableRemoteModule: true,
+      enableRemoteModule: !!process.env.IS_TEST,
       <% } %>
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
