@@ -21,7 +21,7 @@ That's It! You're ready to go!
 
 ## To start a Development Server
 
-If you use [Yarn](https://yarnpkg.com/en/) (strongly recommended):
+If you use [Yarn](https://yarnpkg.com/en/):
 
 `yarn electron:serve`
 
