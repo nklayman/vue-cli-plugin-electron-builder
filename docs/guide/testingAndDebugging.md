@@ -79,3 +79,14 @@ testWithSpectron(
 :::warning
 Make sure to update spectron along with electron. See the [spectron version map](https://github.com/electron-userland/spectron#version-map) to determine what version of spectron you should be using.
 :::
+
+### Regular Unit Tests Using Electron's Version of Node
+
+If you have a native dependency (like better-sqlite3) you might have problems running `jest` and get native dependency node version conflict errors.
+
+To resolve this, run your Jest tests in the same version of node that electron uses. It's a bit hacky, but this works well:
+
+```
+TEST_MODE=1 ELECTRON_RUN_AS_NODE=1 ./node_modules/electron/dist/electron ./node_modules/jest/bin/jest.js
+```
+You can set this as `test:unit` in your package.json to use this by default instead of the default command. This is used by [Beekeeper Studio](https://github.com/beekeeper-studio/beekeeper-studio).
