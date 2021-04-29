@@ -1,0 +1,56 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "13:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: electron
+    versions:
+    - 11.2.1
+    - 12.0.0
+    - 12.0.1
+    - 12.0.2
+    - 12.0.4
+  - dependency-name: typescript
+    versions:
+    - 4.1.3
+    - 4.1.4
+    - 4.1.5
+    - 4.2.2
+    - 4.2.3
+  - dependency-name: webpack
+    versions:
+    - 5.22.0
+    - 5.33.2
+  - dependency-name: vuepress
+    versions:
+    - 1.8.1
+  - dependency-name: "@vue/cli-plugin-eslint"
+    versions:
+    - 4.5.11
+  - dependency-name: "@vue/cli-plugin-typescript"
+    versions:
+    - 4.5.11
+  - dependency-name: "@vue/cli-plugin-babel"
+    versions:
+    - 4.5.11
+  - dependency-name: "@vue/cli-shared-utils"
+    versions:
+    - 4.5.11
+    - 4.5.12
+  - dependency-name: "@vue/cli-test-utils"
+    versions:
+    - 4.5.11
+    - 4.5.12
+  - dependency-name: spectron
+    versions:
+    - 13.0.0
+  - dependency-name: terser-webpack-plugin
+    versions:
+    - 4.2.3
+  - dependency-name: "@vue/cli-service"
+    versions:
+    - 4.5.12
