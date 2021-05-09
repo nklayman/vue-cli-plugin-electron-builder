@@ -76,6 +76,7 @@ module.exports = (api, options) => {
       // Prevent custom args from interfering with electron-builder
       removeArg('--mode', 2, rawArgs)
       removeArg('--dest', 2, rawArgs)
+      removeArg('--skip-plugins', 2, rawArgs)
       removeArg('--legacy', 1, rawArgs)
       removeArg('--dashboard', 1, rawArgs)
       removeArg('--skipBundle', 1, rawArgs)
@@ -115,7 +116,8 @@ module.exports = (api, options) => {
           modern: !args.legacy,
           // --report and --report-json args
           report: args.report,
-          'report-json': args['report-json']
+          'report-json': args['report-json'],
+          skipPlugins: args.skipPlugins
         }
         // With @vue/cli-service v3.4.1+, we can bypass legacy build
         process.env.VUE_CLI_MODERN_BUILD = !args.legacy || ''
@@ -287,6 +289,7 @@ module.exports = (api, options) => {
       const mainProcessArgs = pluginOptions.mainProcessArgs || []
 
       // Don't pass command args to electron
+      removeArg('--skip-plugins', 2, rawArgs)
       removeArg('--dashboard', 1, rawArgs)
       removeArg('--debug', 1, rawArgs)
       removeArg('--headless', 1, rawArgs)
@@ -297,7 +300,8 @@ module.exports = (api, options) => {
         _: rendererProcessFile,
         // Use dashboard if called from ui
         dashboard: args.dashboard,
-        https: args.https
+        https: args.https,
+        skipPlugins: args.skipPlugins
       })
       const outputDir = pluginOptions.outputDir || 'dist_electron'
 

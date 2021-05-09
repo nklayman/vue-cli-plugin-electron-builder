@@ -225,6 +225,7 @@ describe('electron:build', () => {
 
   test.each([
     ['--mode', 'someMode'],
+    ['--skip-plugins', 'somePlugin'],
     ['--legacy'],
     ['--dashboard'],
     ['--skipBundle'],
@@ -376,11 +377,15 @@ describe('electron:build', () => {
 
     expect(fs.writeFileSync).toBeCalledWith(
       'dist_electron/bundled/package.json',
-      JSON.stringify({
-        dependencies: {
-          external: '^0.0.1'
-        }
-      }, undefined, 2)
+      JSON.stringify(
+        {
+          dependencies: {
+            external: '^0.0.1'
+          }
+        },
+        undefined,
+        2
+      )
     )
   })
 
@@ -811,54 +816,52 @@ describe('electron:serve', () => {
     )
   })
 
-  test.each([['--dashboard'], ['--debug'], ['--headless']])(
-    '%s argument is not passed to electron',
-    async (...args) => {
-      await runCommand('electron:serve', {}, {}, [
-        '--keep1',
-        ...args,
-        '--keep2'
-      ])
-      // Custom args should have been removed, and other args kept
-      let calledArgs = execa.mock.calls[0][1]
-      // Remove dist_electron
-      calledArgs.shift()
-      expect(calledArgs).toEqual(['--keep1', '--keep2'])
-      execa.mockClear()
+  test.each([
+    ['--dashboard'],
+    ['--debug'],
+    ['--headless'],
+    ['--skip-plugins', 'somePlugin']
+  ])('%s argument is not passed to electron', async (...args) => {
+    await runCommand('electron:serve', {}, {}, ['--keep1', ...args, '--keep2'])
+    // Custom args should have been removed, and other args kept
+    let calledArgs = execa.mock.calls[0][1]
+    // Remove dist_electron
+    calledArgs.shift()
+    expect(calledArgs).toEqual(['--keep1', '--keep2'])
+    execa.mockClear()
 
-      await runCommand('electron:serve', {}, {}, [...args, '--keep2'])
-      // Custom args should have been removed, and other args kept
-      calledArgs = execa.mock.calls[0][1]
-      // Remove dist_electron
-      calledArgs.shift()
-      expect(calledArgs).toEqual(['--keep2'])
-      execa.mockClear()
+    await runCommand('electron:serve', {}, {}, [...args, '--keep2'])
+    // Custom args should have been removed, and other args kept
+    calledArgs = execa.mock.calls[0][1]
+    // Remove dist_electron
+    calledArgs.shift()
+    expect(calledArgs).toEqual(['--keep2'])
+    execa.mockClear()
 
-      await runCommand('electron:serve', {}, {}, ['--keep1', ...args])
-      // Custom args should have been removed, and other args kept
-      calledArgs = execa.mock.calls[0][1]
-      // Remove dist_electron
-      calledArgs.shift()
-      expect(calledArgs).toEqual(['--keep1'])
-      execa.mockClear()
+    await runCommand('electron:serve', {}, {}, ['--keep1', ...args])
+    // Custom args should have been removed, and other args kept
+    calledArgs = execa.mock.calls[0][1]
+    // Remove dist_electron
+    calledArgs.shift()
+    expect(calledArgs).toEqual(['--keep1'])
+    execa.mockClear()
 
-      await runCommand('electron:serve', {}, {}, args)
-      // Custom args should have been removed
-      calledArgs = execa.mock.calls[0][1]
-      // Remove dist_electron
-      calledArgs.shift()
-      expect(calledArgs).toEqual([])
-      execa.mockClear()
+    await runCommand('electron:serve', {}, {}, args)
+    // Custom args should have been removed
+    calledArgs = execa.mock.calls[0][1]
+    // Remove dist_electron
+    calledArgs.shift()
+    expect(calledArgs).toEqual([])
+    execa.mockClear()
 
-      await runCommand('electron:serve', {}, {}, ['--keep1', '--keep2'])
-      // Nothing should be removed
-      calledArgs = execa.mock.calls[0][1]
-      // Remove dist_electron
-      calledArgs.shift()
-      expect(calledArgs).toEqual(['--keep1', '--keep2'])
-      execa.mockClear()
-    }
-  )
+    await runCommand('electron:serve', {}, {}, ['--keep1', '--keep2'])
+    // Nothing should be removed
+    calledArgs = execa.mock.calls[0][1]
+    // Remove dist_electron
+    calledArgs.shift()
+    expect(calledArgs).toEqual(['--keep1', '--keep2'])
+    execa.mockClear()
+  })
 
   test('Electron is launched with arguments', async () => {
     await runCommand('electron:serve', {}, {}, ['--expected'])
