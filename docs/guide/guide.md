@@ -45,7 +45,7 @@ Available only in Electron, the global variable `__static` is added to the main 
 :::
 
 :::tip Videos
-By default, videos will fail to load from the public folder. There are two solutions to this problem. If you are using Electron 11, simply add `stream: true` to the privileges config on line 10 of your main process file (`background.(js|ts)` by default): `{ scheme: 'app', privileges: { secure: true, standard: true, stream: true } }`. If you do not want to use Electron 11, you will have to configure and use the `local-resource` protocol, see [these docs](./security.html#loading-local-images-resources) for instructions, and [this GitHub issue](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/872) for more details.
+By default, videos will fail to load from the public folder. There are two solutions to this problem. If you are using Electron 11+, simply add `stream: true` to the privileges config on line 10 of your main process file (`background.(js|ts)` by default): `{ scheme: 'app', privileges: { secure: true, standard: true, stream: true } }`. If you do not want to use Electron 11+, you will have to configure and use the `local-resource` protocol, see [these docs](./security.html#loading-local-images-resources) for instructions, and [this GitHub issue](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/872) for more details.
 :::
 
 ### Examples:
