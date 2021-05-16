@@ -2114,11 +2114,11 @@
     vue-jest "^3.0.5"
 
 "@vue/cli-plugin-unit-mocha@^4.0.0":
-  version "4.5.12"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-mocha/-/cli-plugin-unit-mocha-4.5.12.tgz#fe525a5b7a64045462c86460d92cff1ef11041c8"
-  integrity sha512-DLNQWiPJhXCMEniVJPzPa7yAs0tIg3/ebJNaiBUHNglcKocDc3jvwppTKh/nsG4t6Ud0Z7uvn9zGVPjAMB8Isg==
+  version "4.5.13"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-unit-mocha/-/cli-plugin-unit-mocha-4.5.13.tgz#18108c6b0b71ee9b32becfbf764f5cbe4d75dad6"
+  integrity sha512-4o3QAK5sLsqBc5D6E7ya2ptaYMi/Guiq5i7By2++txAh+Os3UukqmCYoyN7TtmdUKyqpgEqBtirPQhbQo0r/Fw==
   dependencies:
-    "@vue/cli-shared-utils" "^4.5.12"
+    "@vue/cli-shared-utils" "^4.5.13"
     jsdom "^15.2.1"
     jsdom-global "^3.0.2"
     mocha "^6.2.2"
