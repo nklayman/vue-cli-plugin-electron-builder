@@ -145,6 +145,34 @@ Now, create a worker like so:
 ```js
 new Worker('./worker.js', { type: 'module' })
 ```
+## Using Yarn Workspaces
+
+If you are using [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) you need to set `nodeModulesPath` to include both the package node_modules, and the workspace node_modules.
+
+You should also move your eslint config to the workspace root or you'll get lots of weird messages.
+
+This is becuase yarn workspaces 'hoists' shared dependencies to the top level and this plugin needs to be able to scan your node_modules to check for native dependencies to externalize.
+
+For example, with this directory structure:
+```
+package.json (in workspace root)
+packages/
+  app/
+  components/
+```
+Inside `packages/app/vue.config.js` add the following line to the plugin config:
+
+```
+module.exports = {
+  pluginOptions: {
+    electronBuilder: {
+      nodeModulesPath: ['./node_modules', '../../node_modules'],
+      ...
+    }
+  }
+}
+```
+
 
 ## How it works
 
