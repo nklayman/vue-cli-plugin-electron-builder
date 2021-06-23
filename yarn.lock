@@ -1023,10 +1023,10 @@
     global-agent "^2.0.2"
     global-tunnel-ng "^2.7.1"
 
-"@electron/remote@^1.0.4":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@electron/remote/-/remote-1.1.0.tgz#167d119c7c03c7778b556fdc4f1f38a44b23f1c2"
-  integrity sha512-yr8gZTkIgJYKbFqExI4QZqMSjn1kL/us9Dl46+TH1EZdhgRtsJ6HDfdsIxu0QEc6Hv+DMAXs69rgquH+8FDk4w==
+"@electron/remote@^1.1.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@electron/remote/-/remote-1.2.0.tgz#772eb4c3ac17aaba5a9cf05a09092f6277f5671f"
+  integrity sha512-C774t2DFVJsa+dxU9Gc2nYzylRZoJ79I0Sxrh8T9cN69fBkntfGbyBEQiD9UfZopqL0CYLzk1anY2Ywhql6h1w==
 
 "@electron/universal@1.0.4":
   version "1.0.4"
@@ -6004,10 +6004,10 @@ electron-builder@^22.2.0:
     update-notifier "^5.1.0"
     yargs "^16.2.0"
 
-electron-chromedriver@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/electron-chromedriver/-/electron-chromedriver-12.0.0.tgz#55bdc451b938b384642d613a05eadacb1fe476ee"
-  integrity sha512-zOs98o9+20Er8Q44z06h90VldwrJaoRCieW3Q8WkdDjA3cMRU5mlmm1kGDhPLMeYNuhq6e39aGMVH/IBFD97HQ==
+electron-chromedriver@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/electron-chromedriver/-/electron-chromedriver-13.0.0.tgz#a553af7743215ac463e1e40e0db14d4a542ef762"
+  integrity sha512-fID1ms8wT7qNfoKkXHNpH0ZE8/Nclb5YmkF3O0w57OxsR8S9PxgE9CJAgaSGroxBgZ+ge1i2OU0Aq/WE/e/Neg==
   dependencies:
     "@electron/get" "^1.12.4"
     extract-zip "^2.0.0"
@@ -6041,10 +6041,10 @@ electron-to-chromium@^1.3.723:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.738.tgz#aec24b091c82acbfabbdcce08076a703941d17ca"
   integrity sha512-vCMf4gDOpEylPSLPLSwAEsz+R3ShP02Y3cAKMZvTqule3XcPp7tgc/0ESI7IS6ZeyBlGClE50N53fIOkcIVnpw==
 
-electron@^12.0.0:
-  version "12.0.9"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-12.0.9.tgz#d582afa8f6fc0c429606f0961a4c89b376994823"
-  integrity sha512-p5aEt1tIh/PYjwN+6MHTc5HtW529XR9r4Qlj9PPcSb5ubkotSsS0BtWJoRPhDenSAN8sgHk3sbZLxXPJtdnRYA==
+electron@^13.1.4:
+  version "13.1.4"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-13.1.4.tgz#6d20d932a0651c3cba9f09a3d08cbaf5b69aa84b"
+  integrity sha512-4qhRZbRvGqHmMWsCG/kRVF4X8VIq9Nujgm+gXZLBSpiR6uUtMHy7ViBTQZl1PGf6O9Ppxhpr9Yz+k6Um9WoP3Q==
   dependencies:
     "@electron/get" "^1.0.1"
     "@types/node" "^14.6.2"
@@ -13539,14 +13539,14 @@ spdy@^4.0.2:
     select-hose "^2.0.0"
     spdy-transport "^3.0.0"
 
-spectron@^14.0.0:
-  version "14.0.0"
-  resolved "https://registry.yarnpkg.com/spectron/-/spectron-14.0.0.tgz#c8160e38c30dcda39734f3e8e809162dc0805d14"
-  integrity sha512-88GM7D1eLiTxjByjtY7lxU7CJcQ92kX1x0WfnADaIXqqYRLbI1KlIWxXz1Xm5UxuMJh5N847K0NONG49mvZtuw==
+spectron@^15.0.0:
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/spectron/-/spectron-15.0.0.tgz#9c0e254b2be3f0725a81b8343092b9d0108439c7"
+  integrity sha512-eErHqymkEVb6H+LPZQoDYvWEv93o3nhxL7HXXdmC61ncV0jBckh8x3Qt6j+As2c1n0C/hKG9A2H1NnwGwD6agg==
   dependencies:
-    "@electron/remote" "^1.0.4"
+    "@electron/remote" "^1.1.0"
     dev-null "^0.1.1"
-    electron-chromedriver "^12.0.0"
+    electron-chromedriver "^13.0.0"
     got "^11.8.0"
     split "^1.0.1"
     webdriverio "^6.9.1"
