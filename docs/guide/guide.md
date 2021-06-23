@@ -10,7 +10,7 @@ sidebarDepth: 2
 
 ## Native Modules
 
-Native modules are supported and should work without any configuration, assuming [nodeIntegration is enabled](./configuration.md#node-integration). If you get errors, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
+Native modules are supported and should work without any configuration, assuming [nodeIntegration is enabled](./security.md#node-integration). If you get errors, you may need to set the native dependency as an [webpack external](https://webpack.js.org/configuration/externals/). It should get found automatically, but it might not. To do this, use the `externals` option:
 
 ```javascript
 // vue.config.js
