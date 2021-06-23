@@ -14,7 +14,8 @@ module.exports = (api, options = {}) => {
   if (!hasBackground) {
     // If user does not have a background file it should be created
     api.render('./templates/base', {
-      spectronSupport: options.electronBuilder.addTests
+      spectronSupport: options.electronBuilder.addTests,
+      vue3: /^(\^?)3/.test(pkg.dependencies.vue)
     })
   }
   // Add tests
