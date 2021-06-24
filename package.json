@@ -1,6 +1,6 @@
 {
   "name": "vue-cli-plugin-electron-builder",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Easily Build Your Vue.js App For Desktop With Electron",
   "main": "index.js",
   "types": "index.d.ts",
