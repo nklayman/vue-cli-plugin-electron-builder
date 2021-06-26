@@ -50,6 +50,16 @@ process.on('unhandledRejection', (error) => {
 })
 ```
 
+## Syntax compatibility
+
+you can try to install and set babel
+
+This bug can be fixed by adding the following code to the entrypoint of your Vue App `src/main.js`:
+
+```javascript
+import 'babel-polyfill'
+```
+
 See [#118](https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/118) for more details. Thanks to [dspangenberg](https://github.com/dspangenberg) for the fix.
 
 ## Other issues
