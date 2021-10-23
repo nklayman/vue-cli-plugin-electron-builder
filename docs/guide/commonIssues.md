@@ -40,6 +40,17 @@ if (isDevelopment && !process.env.IS_TEST) {
 }
 ```
 
+## Build bundle without bundling vue
+
+Sometimes you just need to debug your builder script. You can skip bundling vue by using 
+```
+npm run electron:build -- --skipBundle
+```
+or
+```
+yarn run electron:build -- --skipBundle
+```
+
 ## Exceptions in `async` functions not getting logged to console
 
 This bug can be fixed by adding the following code to the entrypoint of your Vue App `src/main.js`:
