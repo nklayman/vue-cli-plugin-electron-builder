@@ -59,7 +59,7 @@
     "@vue/cli-plugin-unit-mocha": "^4.0.0",
     "@vue/cli-service": "^4.0.0",
     "@vue/cli-test-utils": "^4.0.0",
-    "@vue/eslint-config-typescript": "^7.0.0",
+    "@vue/eslint-config-typescript": "^9.0.1",
     "@vuepress/plugin-google-analytics": "^1.8.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
