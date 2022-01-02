@@ -71,8 +71,8 @@ module.exports = (api, options) => {
       const builder = require('electron-builder')
       const yargs = require('yargs')
       // Import the yargs options from electron-builder
-      const configureBuildCommand = require('electron-builder/out/builder')
-        .configureBuildCommand
+      const configureBuildCommand =
+        require('electron-builder/out/builder').configureBuildCommand
       // Prevent custom args from interfering with electron-builder
       removeArg('--mode', 2, rawArgs)
       removeArg('--dest', 2, rawArgs)
@@ -537,46 +537,6 @@ module.exports = (api, options) => {
       }
     }
   )
-
-  api.registerCommand(
-    'build:electron',
-    {
-      description:
-        '[deprecated, use electron:build instead] build app with electron-builder',
-      usage: 'vue-cli-service build:electron [electron-builder options]',
-      details:
-        'All electron-builder command line options are supported.\n' +
-        'See https://www.electron.build/cli for cli options\n' +
-        'See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.'
-    },
-    (args, rawArgs) => {
-      warn('This command is deprecated. Please use electron:build instead.')
-      return api.service.run(
-        'electron:build',
-        { ...args, _: ['First arg is removed', ...args._] },
-        ['First arg is removed', ...rawArgs]
-      )
-    }
-  )
-
-  api.registerCommand(
-    'serve:electron',
-    {
-      description:
-        '[deprecated, use electron:serve instead] serve app and launch electron',
-      usage: 'vue-cli-service serve:electron',
-      details:
-        'See https://nklayman.github.io/vue-cli-plugin-electron-builder/ for more details about this plugin.'
-    },
-    (args, rawArgs) => {
-      warn('This command is deprecated. Please use electron:serve instead.')
-      return api.service.run(
-        'electron:serve',
-        { ...args, _: ['First arg is removed', ...args._] },
-        ['First arg is removed', ...rawArgs]
-      )
-    }
-  )
 }
 
 function bundleMain ({
@@ -594,10 +554,7 @@ function bundleMain ({
   const isBuild = mode === 'build'
   const NODE_ENV = process.env.NODE_ENV
   const config = new Config()
-  config
-    .mode(NODE_ENV)
-    .node.set('__dirname', false)
-    .set('__filename', false)
+  config.mode(NODE_ENV).node.set('__dirname', false).set('__filename', false)
   // Set externals
   config.externals(getExternals(api, pluginOptions))
 
@@ -702,8 +659,6 @@ function bundleMain ({
 }
 
 module.exports.defaultModes = {
-  'build:electron': 'production',
-  'serve:electron': 'development',
   'electron:build': 'production',
   'electron:serve': 'development'
 }
