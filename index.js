@@ -41,9 +41,6 @@ module.exports = (api, options) => {
     pluginOptions.rendererProcessFile !== undefined
       ? ['First arg is removed', pluginOptions.rendererProcessFile]
       : []
-  if (pluginOptions.experimentalNativeDepCheck) {
-    process.env.VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK = true
-  }
 
   const removeArg = (arg, count, rawArgs) => {
     const index = rawArgs.indexOf(arg)
@@ -142,9 +139,7 @@ module.exports = (api, options) => {
             '[]'
           )
         })
-        // Set the base url so that the app protocol is used
-        options.baseUrl = pluginOptions.customFileProtocol || 'app://./'
-        // Set publicPath as well (replaced baseUrl since @vue/cli 3.3.0)
+        // Set the base url (publicPath) so that the app protocol is used
         options.publicPath = pluginOptions.customFileProtocol || 'app://./'
         info('Bundling render process:')
         // Build the render process with the custom args
@@ -464,13 +459,13 @@ module.exports = (api, options) => {
             'Not launching electron as debug argument was passed. You must launch electron through your debugger.'
           )
           info(
-            'If you are using Spectron, make sure to set the IS_TEST env variable to true.'
+            'If you are using Playwright, make sure to set the IS_TEST env variable to true.'
           )
           info(
             'Learn more about debugging the main process at https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/testingAndDebugging.html#debugging.'
           )
         } else if (args.headless) {
-          // Log information for spectron
+          // Log information for playwright
           console.log(`$outputDir=${outputDir}`)
           console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
         } else {
@@ -642,9 +637,7 @@ function bundleMain ({
 }
 
 module.exports.defaultModes = {
-  'build:electron': 'production',
-  'serve:electron': 'development',
   'electron:build': 'production',
   'electron:serve': 'development'
 }
-module.exports.testWithSpectron = require('./lib/testWithSpectron')
+module.exports.testWithPlaywright = require('./lib/testWithPlaywright')
