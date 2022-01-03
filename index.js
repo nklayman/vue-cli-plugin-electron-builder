@@ -16,7 +16,7 @@ const {
 } = require('@vue/cli-shared-utils')
 const formatStats = require('@vue/cli-service/lib/commands/build/formatStats')
 const { chainWebpack, getExternals } = require('./lib/webpackConfig')
-const webpackMerge = require('webpack-merge')
+const { merge: webpackMerge } = require('webpack-merge')
 
 module.exports = (api, options) => {
   // If plugin options are provided in vue.config.js, those will be used. Otherwise it is empty object
