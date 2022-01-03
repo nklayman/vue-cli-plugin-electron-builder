@@ -1,56 +1,49 @@
-import { Application, AppConstructorOptions } from 'spectron'
+import { ElectronApplication } from 'playwright-core'
 import { Configuration as ElectronBuilderOptions } from 'electron-builder'
 import * as ChainableWebpackConfig from 'webpack-chain'
 
 interface Options {
   /**
-   Do not launch spectron.
-   You will have to launch it on your own.
-   */
-  noSpectron: boolean
-  /** Launch server in dev mode, not in production. */
-  forceDev: boolean
-  /** Custom spectron options.These will be merged with default options. */
-  spectronOptions: AppConstructorOptions
-  /** Do not start app or wait for it to load.
-   You will have to run app.start() and app.client.waitUntilWindowLoaded() yourself.
-   */
-  noStart: boolean
-  /** Set custom Vue env mode. Defaults to 'test' */
-  mode: string
+    Do not launch Playwright.
+    You will have to launch it on your own.
+  */
+  noPlaywright?: boolean
+  /** Custom Playwright launch options. These will be merged with default options. */
+  launchOptions?: Object
+  /** Set custom Vue env mode. Defaults to 'production' */
+  mode?: string
 }
-interface Server {
-  /** Spectron instance. */
-  app: Application
+interface ElectronInstance {
+  /** Playwright application instance. */
+  app: ElectronApplication
+  /** Close app instance and stop dev server (must be called to prevent continued async operations). */
+  stop: () => Promise<ElectronApplication>
   /** URL of dev server. */
-  url: string
-  /** Close spectron and stop dev server (must be called to prevent continued async operations). */
-  stopServe: () => Promise<Application>
+  serverUrl: string
   /** Log of dev server. */
-  stdout: string
+  serverStdout: string
 }
 
 /**
-   Run electron:serve, but instead of launching Electron it returns a Spectron Application instance.
-   Used for e2e testing with Spectron.
+  Run electron:serve, but instead of launching Electron it returns a Playwright Application instance.
+  Used for e2e testing with Playwright.
 */
-export function testWithSpectron(spectron: any, options?: Partial<Options>): Promise<Server>
+export function testWithPlaywright(options?: Options): Promise<ElectronInstance>
 
-  
 export type PluginOptions = {
-  builderOptions?: ElectronBuilderOptions,
-  chainWebpackMainProcess?: (config?: ChainableWebpackConfig) => void,
-  chainWebpackRendererProcess?: (config?: ChainableWebpackConfig) => void,
-  mainProcessFile?: string,
-  rendererProcessFile?: string,
-  mainProcessWatch?: string[],
-  mainProcessArgs?: string[],
-  outputDir?: string,
-  disableMainProcessTypescript?: boolean,
-  mainProcessTypeChecking?: boolean,
-  customFileProtocol?: string,
-  removeElectronJunk?: boolean,
-  externals?: string[],
-  nodeModulesPath?: string[],
+  builderOptions?: ElectronBuilderOptions
+  chainWebpackMainProcess?: (config?: ChainableWebpackConfig) => void
+  chainWebpackRendererProcess?: (config?: ChainableWebpackConfig) => void
+  mainProcessFile?: string
+  rendererProcessFile?: string
+  mainProcessWatch?: string[]
+  mainProcessArgs?: string[]
+  outputDir?: string
+  disableMainProcessTypescript?: boolean
+  mainProcessTypeChecking?: boolean
+  customFileProtocol?: string
+  externals?: string[]
+  nodeModulesPath?: string[]
   preload?: string | Record<string, string>
+  nodeIntegration?: boolean
 }
