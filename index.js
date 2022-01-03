@@ -99,7 +99,7 @@ module.exports = (api, options) => {
       if (args.skipBundle) {
         console.log('Not bundling app as --skipBundle was passed')
         // Build with electron-builder
-        buildApp(args.skipElectronBuild)
+        buildApp()
       } else {
         const bundleOutputDir = path.join(outputDir, 'bundled')
         // Arguments to be passed to renderer build
@@ -215,10 +215,10 @@ module.exports = (api, options) => {
                 )
                 log(formatStats(stats, targetDirShort, api))
 
-                buildApp(args.skipElectronBuild)
+                buildApp()
               })
             } else {
-              buildApp(args.skipElectronBuild)
+              buildApp()
             }
           })
         } else {
@@ -230,11 +230,11 @@ module.exports = (api, options) => {
             api.resolve(mainProcessFile),
             api.resolve(`${outputDir}/bundled/index.js`)
           )
-          buildApp(args.skipElectronBuild)
+          buildApp()
         }
       }
-      function buildApp (skip) {
-        if (skip) {
+      function buildApp () {
+        if (args.skipElectronBuild) {
           console.log('Not building app as --skipElectronBuild was passed')
           return
         }
