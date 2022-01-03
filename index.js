@@ -589,7 +589,7 @@ function bundleMain ({
   } = require('@vue/cli-service/lib/util/resolveLoaderError')
   config
     .plugin('friendly-errors')
-    .use(require('friendly-errors-webpack-plugin'), [
+    .use(require('@soda/friendly-errors-webpack-plugin'), [
       {
         additionalTransformers: [transformer],
         additionalFormatters: [formatter]

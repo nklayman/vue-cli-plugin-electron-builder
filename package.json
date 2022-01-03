@@ -28,6 +28,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@soda/friendly-errors-webpack-plugin": "^1.8.1",
     "@vue/cli-shared-utils": "^5.0.0-rc.1",
     "chokidar": "^3.0.2",
     "electron-builder": "^22.2.0",
