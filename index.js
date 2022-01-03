@@ -233,7 +233,7 @@ module.exports = (api, options) => {
           // Copy main process file instead of bundling it
           fs.copySync(
             api.resolve(mainProcessFile),
-            api.resolve(`${outputDir}/bundled/background.js`)
+            api.resolve(`${outputDir}/bundled/index.js`)
           )
           buildApp(args.skipElectronBuild)
         }
@@ -560,8 +560,7 @@ function bundleMain ({
 
   config.output
     .path(api.resolve(outputDir + (isBuild ? '/bundled' : '')))
-    // Electron will not detect background.js on dev server, only index.js
-    .filename('[name].js')
+    .filename('index.js')
   const envVars = {}
   if (isBuild) {
     // Set __static to __dirname (files in public get copied here)
@@ -633,9 +632,7 @@ function bundleMain ({
   let preloadConfig = new Config()
 
   mainConfig.target('electron-main')
-  mainConfig
-    .entry(isBuild ? 'background' : 'index')
-    .add(api.resolve(mainProcessFile))
+  mainConfig.entry('index').add(api.resolve(mainProcessFile))
 
   preloadConfig.target('electron-preload')
   let preload = pluginOptions.preload

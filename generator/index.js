@@ -115,7 +115,6 @@ module.exports = (api, options = {}) => {
   api.extendPackage({
     scripts,
     dependencies,
-    devDependencies,
-    main: 'background.js'
+    devDependencies
   })
 }
