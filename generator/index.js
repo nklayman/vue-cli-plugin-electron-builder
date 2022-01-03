@@ -14,7 +14,6 @@ module.exports = (api, options = {}) => {
   if (!hasBackground) {
     // If user does not have a background file it should be created
     api.render('./templates/base', {
-      spectronSupport: options.electronBuilder.addTests,
       vue3: /^(\^?)3/.test(((pkg || {}).dependencies || {}).vue)
     })
   }
@@ -99,22 +98,11 @@ module.exports = (api, options = {}) => {
   if (usesTS) {
     devDependencies['@types/electron-devtools-installer'] = '^2.2.0'
   }
-  const dependencies = {}
-  if (testFramework) {
-    // Spectron version should be electron version + 2
-    devDependencies.spectron =
-      parseInt(
-        (electronVersion || pkg.devDependencies.electron).match(/^\^(\d*)\./)[1]
-      ) +
-      2 +
-      '.0.0'
-  }
   if (testFramework === 'mocha') {
     devDependencies['chai-as-promised'] = '^7.1.1'
   }
   api.extendPackage({
     scripts,
-    dependencies,
     devDependencies
   })
 }

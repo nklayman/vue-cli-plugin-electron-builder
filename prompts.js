@@ -38,7 +38,7 @@ module.exports = [
   {
     name: 'electronBuilder.addTests',
     type: 'confirm',
-    message: 'Add tests with Spectron to your project?',
+    message: 'Add tests with Playwright to your project?',
     when: () => {
       try {
         // Attempt to read package.json
