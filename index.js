@@ -541,7 +541,7 @@ function bundleMain ({
 
   config.output
     .path(api.resolve(outputDir + (isBuild ? '/bundled' : '')))
-    .filename('index.js')
+    .filename('[name].js')
   const envVars = {}
   if (isBuild) {
     // Set __static to __dirname (files in public get copied here)
