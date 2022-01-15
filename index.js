@@ -482,7 +482,7 @@ module.exports = (api, options) => {
             info('Launching Electron...')
           }
 
-          const stdioConfig = [null, null, null]
+          const stdioConfig = ['inherit', 'inherit', 'inherit']
 
           // Use an IPC on Windows for graceful exit
           if (process.platform === 'win32') stdioConfig.push('ipc')
