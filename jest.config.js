@@ -10,7 +10,7 @@ module.exports = {
   collectCoverageFrom: [
     'index.js',
     'generator/index.js',
-    'lib/testWithSpectron.js',
+    'lib/testWithPlaywright.js',
     'lib/webpackConfig.js'
   ]
 }
