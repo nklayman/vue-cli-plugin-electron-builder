@@ -1,5 +1,5 @@
-const DefinePlugin = require.requireActual('webpack').DefinePlugin
-const EnvironmentPlugin = require.requireActual('webpack').EnvironmentPlugin
+const DefinePlugin = jest.requireActual('webpack').DefinePlugin
+const EnvironmentPlugin = jest.requireActual('webpack').EnvironmentPlugin
 // Mock webpack function
 const webpack = jest.genMockFromModule('webpack')
 //  Use unmocked plugins plugins are real
