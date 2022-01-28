@@ -7,7 +7,7 @@ module.exports = async testRunner => {
   const plugins = {}
   plugins[`@vue/cli-plugin-unit-${testRunner}`] = {}
   const { project } = await createProject(
-    `spectron-${testRunner}`,
+    `playwright-${testRunner}`,
     false,
     plugins
   )
