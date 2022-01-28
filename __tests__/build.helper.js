@@ -1,10 +1,8 @@
 const create = require('./createProject.helper.js')
 const path = require('path')
-const Application = require('spectron').Application
-const portfinder = require('portfinder')
+const { _electron: electron } = require('playwright-core');
 const checkLogs = require('./checkLogs.helper.js')
 
-portfinder.basePort = 9515
 const runTests = async (useTS) => {
   const { project, projectName } = await create('build', useTS)
 
@@ -38,15 +36,13 @@ const runTests = async (useTS) => {
     project.has(`dist_electron/${projectName}-0.1.0-x86_64.AppImage`)
   ).toBe(false)
   expect(project.has(`dist_electron/${projectName}_0.1.0_amd64`)).toBe(false)
-  // Launch app with spectron
-  const app = new Application({
-    path: `./__tests__/projects/${projectName}/dist_electron/${
+  // Launch app with Playwright
+  const app = await electron.launch({
+    executablePath: `./__tests__/projects/${projectName}/dist_electron/${
       isWin ? 'win' : 'linux'
     }-unpacked/${projectName}${isWin ? '.exe' : ''}`,
-    // Make sure tests do not interfere with each other
-    port: await portfinder.getPortPromise(),
     // Increase wait timeout for parallel testing
-    waitTimeout: 10000
+    timeout: 10000
   })
   await app.start()
   const win = app.browserWindow

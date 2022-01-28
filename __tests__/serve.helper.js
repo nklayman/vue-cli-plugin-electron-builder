@@ -1,11 +1,9 @@
 const create = require('./createProject.helper.js')
 const path = require('path')
-const Application = require('spectron').Application
+const { _electron: electron } = require('playwright-core');
 const electronPath = require('electron')
-const portfinder = require('portfinder')
 const checkLogs = require('./checkLogs.helper.js')
 
-portfinder.basePort = 9515
 const serve = (project, notifyUpdate) =>
   new Promise((resolve, reject) => {
     // --debug to prevent Electron from being launched
@@ -46,18 +44,16 @@ const runTests = async (useTS) => {
   // Wait for dev server to start
   const { stopServe } = await serve(project)
   expect(project.has('dist_electron/index.js')).toBe(true)
-  // Launch app with spectron
-  const app = new Application({
-    path: electronPath,
+  // Launch app with playwright
+  const app = await electron.launch({
+    executablePath: electronPath,
     args: [projectPath('dist_electron')],
     env: {
       IS_TEST: true
     },
     cwd: projectPath(''),
-    // Make sure tests do not interfere with each other
-    port: await portfinder.getPortPromise(),
     // Increase wait timeout for parallel testing
-    waitTimeout: 10000
+    timeout: 10000
   })
 
   await app.start()
