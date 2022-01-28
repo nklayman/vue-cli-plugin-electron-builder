@@ -43,7 +43,7 @@ module.exports = [
       try {
         // Attempt to read package.json
         const pkg = require(path.join(process.cwd(), 'package.json'))
-        // Don't show if electron version is already set
+        // Don't show if jest or mocha unit plugin is already set
         return (
           pkg.devDependencies['@vue/cli-plugin-unit-jest'] ||
           pkg.devDependencies['@vue/cli-plugin-unit-mocha']
