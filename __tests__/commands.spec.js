@@ -21,7 +21,6 @@ jest.mock('yargs', () => ({ command: mockYargsCommand }))
 jest.mock('@vue/cli-service/lib/commands/build')
 jest.mock('fs-extra')
 jest.mock('@vue/cli-service/lib/commands/build/formatStats')
-jest.mock('../lib/removeJunk.js', () => jest.fn(() => 'removeJunk'))
 jest.mock('electron-builder')
 const mockInstallAppDeps = jest.fn()
 jest.mock('electron-builder/out/cli/install-app-deps.js', () => ({
@@ -765,7 +764,7 @@ describe('electron:serve', () => {
     await runCommand('electron:serve')
 
     // Junk is removed
-    expect(mockExeca.stderr.pipe).toBeCalledWith('removeJunk')
+    expect(mockExeca.stderr.pipe).toBeCalledWith('removeJunk') // Is this still needed after removing the removeJunk func?
     expect(mockExeca.stdout.pipe).toBeCalledWith('removeJunk')
     // Output is piped to console
     expect(mockPipe).toBeCalledWith(process.stderr)
