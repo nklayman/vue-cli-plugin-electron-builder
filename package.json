@@ -7,7 +7,7 @@
   "homepage": "https://nklayman.github.io/vue-cli-plugin-electron-builder/",
   "funding": "https://github.com/sponsors/nklayman",
   "scripts": {
-    "test": "jest",
+    "test": "VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK=true jest",
     "pretest": "rimraf __tests__/projects/*",
     "lint": "eslint .",
     "docs:dev": "vuepress dev docs",
