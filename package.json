@@ -7,7 +7,7 @@
   "homepage": "https://nklayman.github.io/vue-cli-plugin-electron-builder/",
   "funding": "https://github.com/sponsors/nklayman",
   "scripts": {
-    "test": "VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK=true jest",
+    "test": "cross-env VCPEB_EXPERIMENTAL_NATIVE_DEP_CHECK=true jest",
     "pretest": "rimraf __tests__/projects/*",
     "lint": "eslint .",
     "docs:dev": "vuepress dev docs",
@@ -63,6 +63,7 @@
     "@vuepress/plugin-google-analytics": "^1.8.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "cross-env": "^7.0.3",
     "electron": "^13.1.4",
     "electron-devtools-installer": "^3.1.0",
     "eslint": "^7.2.0",
