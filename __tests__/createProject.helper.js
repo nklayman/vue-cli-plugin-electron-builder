@@ -24,6 +24,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
   preset.plugins['vue-cli-plugin-electron-builder'] = {
     // electron-builder requires that an exact version of electron is provided,
     // unless electron is already installed
+    version: 'file:' + process.cwd(),
     electronBuilder: { electronVersion: '13.0.0' }
   }
   preset.plugins = { ...preset.plugins, ...customPlugins }
