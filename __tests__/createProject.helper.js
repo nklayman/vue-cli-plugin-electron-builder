@@ -85,7 +85,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
 
   // Add a fake package that should be an external
   const externalPkg = {
-    binary: 'because of this field, it will be marked as an external'
+    binary: { msg: 'because of this field, it will be marked as an external' }
   }
   fs.ensureDirSync(projectPath('node_modules/mockExternal'))
   fs.writeFileSync(
