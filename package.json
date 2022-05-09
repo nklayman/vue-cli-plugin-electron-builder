@@ -31,7 +31,7 @@
     "@soda/friendly-errors-webpack-plugin": "^1.8.1",
     "@vue/cli-shared-utils": "^5.0.0-rc.1",
     "chokidar": "^3.0.2",
-    "electron-builder": "^22.2.0",
+    "electron-builder": "^22.11.4",
     "execa": "^5.0.0",
     "fs-extra": "^10.0.0",
     "lodash.merge": "^4.6.1",

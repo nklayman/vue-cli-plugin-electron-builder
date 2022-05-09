@@ -2,9 +2,7 @@ name: Node CI
 
 on:
   push:
-    branches: [master]
   pull_request:
-    branches: [master]
 
 jobs:
   build:
@@ -12,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node: [ '14', '12' ]
+        node: [ '14', '16' ]
         include:
         - os: windows-latest
           commandPrefix: ''
