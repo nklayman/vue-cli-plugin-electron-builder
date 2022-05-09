@@ -5,4 +5,7 @@ updates:
   schedule:
     interval: daily
     time: "13:00"
+  ignore:
+    - dependency-name: "*"
+      update-types: ["version-update:semver-patch"]
   open-pull-requests-limit: 10
