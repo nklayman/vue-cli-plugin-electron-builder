@@ -56,7 +56,7 @@
     "@vue/cli-plugin-eslint": "^4.0.0",
     "@vue/cli-plugin-typescript": "^4.0.0",
     "@vue/cli-plugin-unit-jest": "^4.0.0",
-    "@vue/cli-plugin-unit-mocha": "^4.0.0",
+    "@vue/cli-plugin-unit-mocha": "^5.0.4",
     "@vue/cli-service": "^4.0.0",
     "@vue/cli-test-utils": "^4.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
@@ -76,7 +76,7 @@
     "rimraf": "^3.0.0",
     "spectron": "^15.0.0",
     "terminal-tasks": "^0.0.5",
-    "typescript": "^3.9.5",
+    "typescript": "^4.7.2",
     "vue": "^2.5.20",
     "vue-template-compiler": "^2.5.20",
     "vuepress": "^1.5.1"
