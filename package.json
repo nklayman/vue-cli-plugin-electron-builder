@@ -40,7 +40,7 @@
     "pumpify": "^2.0.1",
     "semver": "^7.3.2",
     "shebang-loader": "^0.0.1",
-    "split2": "^3.0.0",
+    "split2": "^4.1.0",
     "terser-webpack-plugin": "^4.2.3",
     "through2-filter": "^3.0.0",
     "through2-map": "^3.0.0",
