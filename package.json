@@ -51,7 +51,7 @@
     "yargs": "^17.5.1"
   },
   "devDependencies": {
-    "@vue/cli": "^4.0.0",
+    "@vue/cli": "^5.0.7",
     "@vue/cli-plugin-babel": "^4.0.0",
     "@vue/cli-plugin-eslint": "^5.0.0",
     "@vue/cli-plugin-typescript": "^4.0.0",
