@@ -8,6 +8,7 @@ jobs:
   build:
     name: is-sponsor-label
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: JasonEtco/is-sponsor-label-action@v1
         env:
