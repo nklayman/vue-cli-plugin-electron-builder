@@ -54,7 +54,7 @@
     "@vue/cli": "^4.0.0",
     "@vue/cli-plugin-babel": "^4.0.0",
     "@vue/cli-plugin-eslint": "^5.0.0",
-    "@vue/cli-plugin-typescript": "^4.0.0",
+    "@vue/cli-plugin-typescript": "^5.0.8",
     "@vue/cli-plugin-unit-jest": "^4.0.0",
     "@vue/cli-plugin-unit-mocha": "^5.0.0",
     "@vue/cli-service": "^4.0.0",
