@@ -74,7 +74,7 @@
     "jest": "^26.0.0",
     "lnk": "^1.1.0",
     "rimraf": "^3.0.0",
-    "spectron": "^15.0.0",
+    "spectron": "^19.0.0",
     "terminal-tasks": "^0.0.5",
     "typescript": "^4.7.2",
     "vue": "^2.5.20",
