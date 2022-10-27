@@ -25,7 +25,7 @@ jobs:
         node-version: ${{ matrix.node }}
     - name: Get yarn cache dir
       id: yarn-cache
-      run: echo "dir=$(yarn cache dir)" >> ${Env:GITHUB_OUTPUT}
+      run: echo "dir=$(yarn cache dir)" >> $env:GITHUB_OUTPUT
     - name: Yarn cache
       uses: actions/cache@v3
       with:
