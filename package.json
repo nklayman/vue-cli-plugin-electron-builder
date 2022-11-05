@@ -51,6 +51,7 @@
     "yargs": "^17.5.1"
   },
   "devDependencies": {
+    "@electron/remote": "^2.0.1",
     "@vue/cli": "^4.0.0",
     "@vue/cli-plugin-babel": "^4.0.0",
     "@vue/cli-plugin-eslint": "^5.0.0",
@@ -63,7 +64,7 @@
     "@vuepress/plugin-google-analytics": "^1.8.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "electron": "^13.1.4",
+    "electron": "^17.0.0",
     "electron-devtools-installer": "^3.1.0",
     "eslint": "^7.2.0",
     "eslint-config-standard": "^16.0.2",
@@ -74,7 +75,7 @@
     "jest": "^26.0.0",
     "lnk": "^1.1.0",
     "rimraf": "^3.0.0",
-    "spectron": "^15.0.0",
+    "spectron": "^19.0.0",
     "terminal-tasks": "^0.0.5",
     "typescript": "^4.7.2",
     "vue": "^2.7.0",

@@ -25,7 +25,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
     // electron-builder requires that an exact version of electron is provided,
     // unless electron is already installed
     version: 'file:' + process.cwd(),
-    electronBuilder: { electronVersion: '13.0.0' }
+    electronBuilder: { electronVersion: '17.0.0', addTests: true }
   }
   preset.plugins = { ...preset.plugins, ...customPlugins }
   const projectPath = (p) =>
