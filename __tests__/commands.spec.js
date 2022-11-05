@@ -383,7 +383,7 @@ describe('electron:build', () => {
             external: '^0.0.1'
           }
         },
-        undefined,
+        null,
         2
       )
     )
