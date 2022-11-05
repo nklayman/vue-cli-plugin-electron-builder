@@ -3,6 +3,15 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS<% if (vue3) { %>3<%}%>_DEVTOOLS } from 'electron-devtools-installer'
+<% if (spectronSupport) { %>
+<% if (useTS) { %>
+import * as remote from '@electron/remote/main'
+<% } %>
+<% if (!useTS) { %>
+const remote = require('@electron/remote/main')
+<% } %>
+remote.initialize()
+<% } %>
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -26,6 +35,11 @@ async function createWindow() {
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION
     }
   })
+
+  <% if (spectronSupport) { %>
+  // Required for Spectron testing
+  remote.enable(win.webContents)
+  <% } %>
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
