@@ -80,7 +80,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
   fs.ensureDirSync(projectPath('node_modules/vue'))
   fs.writeFileSync(
     projectPath('node_modules/vue/package.json'),
-    JSON.stringify(vuePkg)
+    JSON.stringify(vuePkg, null, 2)
   )
 
   // Add a fake package that should be an external
@@ -90,7 +90,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
   fs.ensureDirSync(projectPath('node_modules/mockExternal'))
   fs.writeFileSync(
     projectPath('node_modules/mockExternal/package.json'),
-    JSON.stringify(externalPkg)
+    JSON.stringify(externalPkg, null, 2)
   )
   // Add mockExternal to app's package.json so that it is detected as external
   const appPkg = JSON.parse(
@@ -99,7 +99,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
   appPkg.dependencies.mockExternal = 'mockExternal'
   // Enable nodeIntegration
   appPkg.vue.pluginOptions = { electronBuilder: { nodeIntegration: true } }
-  fs.writeFileSync(projectPath('package.json'), JSON.stringify(appPkg))
+  fs.writeFileSync(projectPath('package.json'), JSON.stringify(appPkg, null, 2))
 
   return { project, projectName }
 }
