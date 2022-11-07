@@ -57,8 +57,7 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
         console.log('mockExternalPath=' + require.resolve('mockExternal'))
         if (process.env.WEBPACK_DEV_SERVER_URL) {`
     )
-    // Spectron requires the remote module to be enabled
-    .replace('webPreferences: {', 'webPreferences: {enableRemoteModule:true,')
+
   // Have render process log __static and BASE_URL to console to make sure they are correct
   mainFile = mainFile.replace(
     "import App from './App.vue'",
