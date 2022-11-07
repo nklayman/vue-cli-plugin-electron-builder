@@ -43,6 +43,9 @@ const runTests = async (useTS) => {
     path: `./__tests__/projects/${projectName}/dist_electron/${
       isWin ? 'win' : 'linux'
     }-unpacked/${projectName}${isWin ? '.exe' : ''}`,
+    env: {
+      IS_TEST: true
+    },
     // Make sure tests do not interfere with each other
     port: await portfinder.getPortPromise(),
     // Increase wait timeout for parallel testing

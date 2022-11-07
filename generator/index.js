@@ -101,7 +101,7 @@ module.exports = (api, options = {}) => {
     devDependencies['@types/electron-devtools-installer'] = '^2.2.0'
   }
   const dependencies = {}
-  if (testFramework) {
+  if (options.electronBuilder.addTests) {
     // Spectron version should be electron version + 2
     devDependencies.spectron =
       '^' +
@@ -110,6 +110,7 @@ module.exports = (api, options = {}) => {
       ) +
       2 +
       '.0.0'
+    devDependencies['@electron/remote'] = '^2.0.1'
   }
   if (testFramework === 'mocha') {
     devDependencies['chai-as-promised'] = '^7.1.1'
