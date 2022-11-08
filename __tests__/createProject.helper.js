@@ -52,21 +52,21 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
     )
     .replace(
       'if (process.env.WEBPACK_DEV_SERVER_URL) {',
-      `
-        console.log('__static=' + __static)
-        console.log('mockExternalPath=' + require.resolve('mockExternal'))
-        if (process.env.WEBPACK_DEV_SERVER_URL) {`
+  `
+  console.log('__static=' + __static)
+  console.log('mockExternalPath=' + require.resolve('mockExternal'))
+  if (process.env.WEBPACK_DEV_SERVER_URL) {`
     )
 
   // Have render process log __static and BASE_URL to console to make sure they are correct
   mainFile = mainFile.replace(
     "import App from './App.vue'",
     `import App from './App.vue'
-      ${useTS ? 'declare var __static: string' : ''}
-      window.BASE_URL = process.env.BASE_URL
-      window.__static = __static 
-      window.vuePath = require.resolve('vue')
-      window.mockExternalPath = require.resolve('mockExternal')`
+${useTS ? 'declare var __static: string' : ''}
+window.BASE_URL = process.env.BASE_URL
+window.__static = __static
+window.vuePath = require.resolve('vue')
+window.mockExternalPath = require.resolve('mockExternal')`
   )
   fs.writeFileSync(
     projectPath(`src/background.${useTS ? 'ts' : 'js'}`),
