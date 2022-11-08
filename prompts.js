@@ -8,21 +8,6 @@ module.exports = [
     default: '^17.0.0',
     choices: [
       {
-        name: '^11.0.0',
-        value: '^11.0.0',
-        short: '^11.0.0'
-      },
-      {
-        name: '^12.0.0',
-        value: '^12.0.0',
-        short: '^12.0.0'
-      },
-      {
-        name: '^13.0.0',
-        value: '^13.0.0',
-        short: '^13.0.0'
-      },
-      {
         name: '^14.0.0',
         value: '^14.0.0',
         short: '^14.0.0'
