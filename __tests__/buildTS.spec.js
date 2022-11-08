@@ -6,6 +6,6 @@ const runTests = require('./build.helper.js').runTests
 
 test('electron:build-ts', async () => {
   // Prevent build/build-ts tests from overlapping
-  await sleep(2000)
+  await sleep(5000)
   await runTests(true)
 })
