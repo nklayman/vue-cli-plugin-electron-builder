@@ -105,10 +105,10 @@ module.exports = (api, options = {}) => {
     // Spectron version should be electron version + 2
     devDependencies.spectron =
       '^' +
-      parseInt(
+      (parseInt(
         (electronVersion || pkg.devDependencies.electron).match(/^\^?(\d*)\./)[1]
       ) +
-      2 +
+      2) +
       '.0.0'
     devDependencies['@electron/remote'] = '^2.0.1'
   }
