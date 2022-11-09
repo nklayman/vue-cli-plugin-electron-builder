@@ -1,6 +1,7 @@
 // #region Imports
 const pluginIndex = require('../index.js')
 const testWithSpectron = pluginIndex.testWithSpectron
+const testWithPlaywright = pluginIndex.testWithPlaywright
 const webpack = require('webpack')
 const builder = require('electron-builder')
 const fs = require('fs-extra')

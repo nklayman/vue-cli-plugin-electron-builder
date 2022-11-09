@@ -77,6 +77,7 @@
     "eslint-plugin-vue": "^9.0.0",
     "jest": "^26.0.0",
     "lnk": "^1.1.0",
+    "playwright-core": "^1.27.1",
     "rimraf": "^3.0.0",
     "spectron": "^19.0.0",
     "terminal-tasks": "^0.0.5",

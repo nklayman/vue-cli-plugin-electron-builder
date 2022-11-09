@@ -7,14 +7,14 @@ module.exports = async testRunner => {
   const plugins = {}
   plugins[`@vue/cli-plugin-unit-${testRunner}`] = {}
   const { project } = await createProject(
-    `spectron-${testRunner}`,
+    `playwright-${testRunner}`,
     false,
     plugins
   )
   // Remove example test
   await project.rm('tests/unit/example.spec.js')
   // TEMP while developing
-  await project.rm('tests/unit/playwright.spec.js')
+  await project.rm('tests/unit/electron.spec.js')
 
   // If there is not a second test file, the `serve:electron --headless` process cannot be killed on Windows
   // One of the weirdest bugs I've ever seen

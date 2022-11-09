@@ -22,9 +22,7 @@ describe('Application launch', function () {
   })
 
   afterEach(function () {
-    if (this.app && this.app.isRunning()) {
-      return this.stopServe()
-    }
+    return this.stopServe()
   })
 
   it('opens a window', function () {
