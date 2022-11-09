@@ -12,6 +12,7 @@ const Application = require('spectron').Application
 const { chainWebpack, getExternals } = require('../lib/webpackConfig')
 const chokidar = require('chokidar')
 const spectron = require('spectron')
+const { _electron: electron } = require('playwright-core')
 // #endregion
 
 // #region Mocks
@@ -67,6 +68,11 @@ jest.mock('spectron', () => ({
     client: { waitUntilWindowLoaded: mockWait }
   }))
 }))
+
+jest.mock('playwright-core', () => ({
+  _electron: { launch: jest.fn().mockResolvedValue().mockName('electron.launch') }
+}))
+
 // Prevent console.log statements from index
 console.log = jest.fn()
 beforeEach(() => {
@@ -1054,6 +1060,94 @@ describe('testWithSpectron', () => {
 
   test('returns stdout of command', async () => {
     const { stdout } = await runSpectron({}, { customLog: 'shouldBeInLog' })
+    // Mock stdout is included
+    expect(stdout.indexOf('shouldBeInLog')).not.toBe(-1)
+  })
+})
+
+describe('testWithPlaywright', () => {
+  const runPlaywright = async (playwrightOptions, launchOptions = {}) => {
+    let sendData
+    execa.mockReturnValueOnce({
+      on: jest.fn(),
+      stdout: {
+        on: (event, callback) => {
+          if (event === 'data') {
+            // Save callback to be called later
+            sendData = callback
+          }
+        }
+      }
+    })
+    const testPromise = testWithPlaywright(playwrightOptions)
+    // Mock console.log from electron:serve
+    if (launchOptions.customLog) await sendData(launchOptions.customLog)
+    await sendData(`$outputDir=${launchOptions.outputDir || 'dist_electron'}`)
+    await sendData(
+      `$WEBPACK_DEV_SERVER_URL=${launchOptions.url || 'http://localhost:8080/'}`
+    )
+    return testPromise
+  }
+
+  test('uses custom output dir and url', async () => {
+    const { url } = await runPlaywright(
+      {},
+      {
+        url: 'http://localhost:1234/',
+        outputDir: 'customOutput'
+      }
+    )
+    // Proper URL is returned
+    expect(url).toBe('http://localhost:1234/')
+    const appArgs = electron.launch.mock.calls[0][0]
+    // Spectron is launched with proper path to output dir
+    expect(appArgs.args).toEqual([path.join('customOutput', 'index.js')])
+  })
+
+  test("doesn't launch spectron if noSpectron option is provided", async () => {
+    await runPlaywright({ noPlaywright: true })
+    // Spectron instance should not be created
+    expect(electron.launch).not.toBeCalled()
+  })
+
+  test('uses custom spectron options if provided', async () => {
+    await runPlaywright({ launchOptions: { testKey: 'expected' } })
+    // Custom spectron option is passed through
+    expect(electron.launch.mock.calls[0][0].testKey).toBe('expected')
+  })
+
+  test('launches dev server in production mode if forceDev argument is not provided', async () => {
+    await runPlaywright()
+
+    // Node env was set to production
+    expect(execa.mock.calls[0][2].env.NODE_ENV).toBe('production')
+  })
+
+  test('launches dev server in dev mode if forceDev argument is provided', async () => {
+    await runPlaywright({ forceDev: true })
+
+    // Node env was set to development
+    expect(execa.mock.calls[0][2].env.NODE_ENV).toBe('development')
+  })
+
+  test('default vue mode is test', async () => {
+    await runPlaywright()
+
+    // Mode argument was set to test
+    expect(execa.mock.calls[0][1].join(' ').indexOf('--mode test')).not.toBe(-1)
+  })
+
+  test('custom vue mode is used if provided', async () => {
+    await runPlaywright({ mode: 'expected' })
+
+    // Mode argument was set to expected
+    expect(
+      execa.mock.calls[0][1].join(' ').indexOf('--mode expected')
+    ).not.toBe(-1)
+  })
+
+  test('returns stdout of command', async () => {
+    const { stdout } = await runPlaywright({}, { customLog: 'shouldBeInLog' })
     // Mock stdout is included
     expect(stdout.indexOf('shouldBeInLog')).not.toBe(-1)
   })
