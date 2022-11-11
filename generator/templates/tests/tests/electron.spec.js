@@ -1,8 +1,6 @@
-/**
- * @jest-environment node
- */
 import { testWithPlaywright } from 'vue-cli-plugin-electron-builder'
-jest.setTimeout(50000)
+import { expect, test } from '@playwright/test'
+test.setTimeout(600000)
 
 test('Window Loads Properly', async () => {
   // Wait for dev server to start
@@ -32,11 +30,8 @@ test('Window Loads Properly', async () => {
   expect(width).toBeGreaterThan(0)
   expect(height).toBeGreaterThan(0)
   // App is loaded properly
-  expect(
-    /Welcome to Your Vue\.js (\+ TypeScript )?App/.test(
-      await (await win.$('#app')).innerHTML()
-    )
-  ).toBe(true)
+  expect(await (await win.waitForSelector('#app')).innerHTML()
+  ).toMatch(/Welcome to Your Vue\.js (\+ TypeScript )?App/)
 
   await stop()
 })

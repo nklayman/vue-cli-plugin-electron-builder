@@ -1,3 +1,5 @@
+// const { expect } = require('@playwright/test')
+
 const path = require('path')
 
 module.exports = async ({ client, projectPath, projectName, mode }) => {

@@ -3,6 +3,7 @@ module.exports = {
   setupFiles: ['<rootDir>/__tests__/setup.helper.js'],
   testPathIgnorePatterns: [
     '/node_modules/',
+    '/__tests__/playwright/',
     '/__tests__/projects/',
     '/generator/templates',
     '.*.helper.js'
@@ -10,8 +11,7 @@ module.exports = {
   collectCoverageFrom: [
     'index.js',
     'generator/index.js',
-    'lib/testWithPlaywright.js',
-    'lib/testWithSpectron.js',
+    'lib/testWithPlaywright.helper.js',
     'lib/webpackConfig.js'
   ]
 }

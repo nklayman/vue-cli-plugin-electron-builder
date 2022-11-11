@@ -1,11 +1,8 @@
 const create = require('./createProject.helper.js')
 const path = require('path')
-const Application = require('spectron').Application
-const electronPath = require('electron')
-const portfinder = require('portfinder')
+// const { _electron: electron } = require('playwright-core')
 const checkLogs = require('./checkLogs.helper.js')
 
-portfinder.basePort = 9515
 const serve = (project, notifyUpdate) =>
   new Promise((resolve, reject) => {
     // --debug to prevent Electron from being launched
@@ -40,51 +37,14 @@ const serve = (project, notifyUpdate) =>
     })
   })
 const runTests = async (useTS) => {
-  const { project, projectName } = await create('serve', useTS)
-  const projectPath = (p) =>
-    path.join(process.cwd(), '__tests__/projects/' + projectName, p)
+  const { project } = await create('serve', useTS)
+
   // Wait for dev server to start
   const { stopServe } = await serve(project)
-  expect(project.has('dist_electron/index.js')).toBe(true)
-  // Launch app with spectron
-  const app = new Application({
-    path: electronPath,
-    args: [projectPath('dist_electron')],
-    env: {
-      IS_TEST: true
-    },
-    cwd: projectPath(''),
-    // Make sure tests do not interfere with each other
-    port: await portfinder.getPortPromise(),
-    // Increase wait timeout for parallel testing
-    waitTimeout: 10000
-  })
+  expect(project.has(path.join('dist_electron', 'index.js'))).toBe(true)
+  await stopServe()
 
-  await app.start()
-  const win = app.browserWindow
-  const client = app.client
-  await client.waitUntilWindowLoaded()
-
-  // Check that proper info was logged
-  await checkLogs({ client, projectName, projectPath, mode: 'serve', useTS })
-
-  // Window was created
-  expect(await client.getWindowCount()).toBe(1)
-  // It is not minimized
-  expect(await win.isMinimized()).toBe(false)
-  // Window is visible
-  expect(await win.isVisible()).toBe(true)
-  // Size is correct
-  const { width, height } = await win.getBounds()
-  expect(width).toBeGreaterThan(0)
-  expect(height).toBeGreaterThan(0)
-  // App is loaded properly
-  expect(await (await app.client.$('#app')).getHTML()).toContain(
-    `Welcome to Your Vue.js ${useTS ? '+ TypeScript ' : ''}App`
-  )
-
-  stopServe()
-  await app.stop()
+  // Launch app with playwright is done in with Playwright runner
 }
 
 module.exports.runTests = runTests

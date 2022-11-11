@@ -14,17 +14,14 @@ module.exports = (api, options = {}) => {
   if (!hasBackground) {
     // If user does not have a background file it should be created
     api.render('./templates/base', {
-      spectronSupport: options.electronBuilder.addTests,
+      testSupport: options.electronBuilder.addTests,
       useTS: usesTS,
       vue3: /^(\^?)3/.test(((pkg || {}).dependencies || {}).vue)
     })
   }
   // Add tests
-  let testFramework
   if (options.electronBuilder.addTests) {
-    if (api.hasPlugin('unit-mocha')) testFramework = 'mocha'
-    if (api.hasPlugin('unit-jest')) testFramework = 'jest'
-    if (testFramework) api.render(`./templates/tests-${testFramework}`)
+    api.render('./templates/tests')
   }
   api.onCreateComplete(() => {
     // Update .gitignore if it exists
@@ -102,18 +99,9 @@ module.exports = (api, options = {}) => {
   }
   const dependencies = {}
   if (options.electronBuilder.addTests) {
-    // Spectron version should be electron version + 2
-    devDependencies.spectron =
-      '^' +
-      (parseInt(
-        (electronVersion || pkg.devDependencies.electron).match(/^\^?(\d*)\./)[1]
-      ) +
-      2) +
-      '.0.0'
-    devDependencies['@electron/remote'] = '^2.0.1'
-  }
-  if (testFramework === 'mocha') {
-    devDependencies['chai-as-promised'] = '^7.1.1'
+    addScript('test', 'playwright test')
+    devDependencies['@playwright/test'] = '^1.30.0'
+    devDependencies['playwright-core'] = '^1.30.0'
   }
   api.extendPackage({
     scripts,

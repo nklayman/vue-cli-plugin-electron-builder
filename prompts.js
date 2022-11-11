@@ -43,16 +43,13 @@ module.exports = [
   {
     name: 'electronBuilder.addTests',
     type: 'confirm',
-    message: 'Add tests with Spectron to your project?',
+    message: 'Add tests with Playwright to your project?',
     when: () => {
       try {
         // Attempt to read package.json
         const pkg = require(path.join(process.cwd(), 'package.json'))
         // Don't show if electron version is already set
-        return (
-          pkg.devDependencies['@vue/cli-plugin-unit-jest'] ||
-          pkg.devDependencies['@vue/cli-plugin-unit-mocha']
-        )
+        return (pkg.devDependencies['@playwright/test'])
       } catch (e) {
         console.log('Unable to read package.json')
         return false

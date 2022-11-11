@@ -19,7 +19,7 @@ const { chainWebpack, getExternals } = require('./lib/webpackConfig')
 const webpackMerge = require('webpack-merge')
 
 module.exports = (api, options) => {
-  // If plugin options are provided in vue.config.js, those will be used. Otherwise it is empty object
+  // If plugin options are provided in vue.config.js, those will be used. Otherwise, it is empty object
   const pluginOptions =
     options.pluginOptions && options.pluginOptions.electronBuilder
       ? options.pluginOptions.electronBuilder
@@ -661,5 +661,4 @@ module.exports.defaultModes = {
   'electron:build': 'production',
   'electron:serve': 'development'
 }
-module.exports.testWithSpectron = require('./lib/testWithSpectron')
 module.exports.testWithPlaywright = require('./lib/testWithPlaywright')
