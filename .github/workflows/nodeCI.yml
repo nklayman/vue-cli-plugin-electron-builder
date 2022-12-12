@@ -14,7 +14,7 @@ jobs:
         include:
         - os: windows-latest
           commandPrefix: ''
-        - os: ubuntu-latest
+        - os: ubuntu-20.04
           commandPrefix: xvfb-run
     runs-on: ${{ matrix.os }}
     steps:
