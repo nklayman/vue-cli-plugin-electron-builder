@@ -72,7 +72,9 @@ On Linux/MacOS:
 
 On Windows:
 
-`set GH_TOKEN=TOKEN-GOES-HERE`
+CMD: `set GH_TOKEN=TOKEN-GOES-HERE`
+
+Powershell: `$env:GH_TOKEN = 'TOKEN-GOES-HERE'`
 
 ### Upload Release to GitHub
 
