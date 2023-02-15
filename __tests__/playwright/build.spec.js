@@ -1,4 +1,4 @@
-import { test } from '@playwright/test'
+const { test } = require('@playwright/test')
 test.setTimeout(100000)
 
 const runTests = require('./build.helper.js').runTests
