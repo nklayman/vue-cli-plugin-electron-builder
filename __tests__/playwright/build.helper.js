@@ -45,7 +45,9 @@ const runTests = async (useTS) => {
   expect(project.has(`dist_electron/${projectName}_0.1.0_amd64`)).toBe(false)
 
   // Launch app with playwright
-  const latestBuild = findLatestBuild(projectPath('dist_electron'))
+  // Temp: as findLatestBuild is not working with absolute paths in Windows
+  const latestBuild = findLatestBuild(path.join('__tests__', 'projects', projectName, 'dist_electron'))
+  // const latestBuild = findLatestBuild(projectPath('dist_electron'))
   const appInfo = parseElectronApp(latestBuild)
 
   const app = await electron.launch({
