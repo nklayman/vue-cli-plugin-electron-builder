@@ -31,7 +31,7 @@ jobs:
       env:
         CI: true
     - name: Upload coverage to Codecov
-      if: runner.os == 'Linux'
+      if: runner.os == 'Linux' && ${{ matrix.node }} == 16
       uses: codecov/codecov-action@v3
       with:
         token: ${{secrets.CODECOV_TOKEN}}
