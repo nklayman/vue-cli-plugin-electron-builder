@@ -9,7 +9,7 @@ const runTests = async (useTS) => {
   const projectName = useTS ? 'build-ts' : 'build'
 
   const projectPath = (p) =>
-    path.join(process.cwd(), '__tests__/projects/' + projectName, p)
+    path.join(process.cwd(), '__tests__', 'projects', projectName, p)
 
   const project = getProject(projectName, projectPath('.'))
 
