@@ -7,9 +7,11 @@
   "homepage": "https://nklayman.github.io/vue-cli-plugin-electron-builder/",
   "funding": "https://github.com/sponsors/nklayman",
   "scripts": {
+    "test:ci": "yarn run test:jest --runInBand --coverage && yarn run test:playwright",
     "test:jest": "jest",
     "test:playwright": "playwright test",
     "test": "yarn run test:jest && yarn run test:playwright",
+    "pretest:ci": "yarn run pretest",
     "pretest": "rimraf __tests__/projects/*",
     "lint": "eslint .",
     "docs:dev": "vuepress dev docs",

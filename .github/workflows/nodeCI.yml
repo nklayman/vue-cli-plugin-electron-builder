@@ -27,7 +27,7 @@ jobs:
     - name: yarn install
       run: yarn install
     - name: yarn test
-      run: ${{ matrix.commandPrefix }} yarn test --runInBand --coverage
+      run: ${{ matrix.commandPrefix }} yarn run test:ci
       env:
         CI: true
     - name: Upload coverage to Codecov
