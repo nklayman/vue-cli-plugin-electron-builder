@@ -464,13 +464,10 @@ module.exports = (api, options) => {
             'Not launching electron as debug argument was passed. You must launch electron through your debugger.'
           )
           info(
-            'If you are using Spectron, make sure to set the IS_TEST env variable to true.'
-          )
-          info(
             'Learn more about debugging the main process at https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/testingAndDebugging.html#debugging.'
           )
         } else if (args.headless) {
-          // Log information for spectron
+          // Log information for Playwright
           console.log(`$outputDir=${outputDir}`)
           console.log(`$WEBPACK_DEV_SERVER_URL=${server.url}`)
         } else {

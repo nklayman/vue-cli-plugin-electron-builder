@@ -21,7 +21,7 @@ footer: MIT Licensed | Copyright © 2018-present Noah Klayman
   </div>
   <div class="feature">
     <h2>Testing and Debugging Support</h2>
-    <p>VCP Electron Builder provides tools for easy debugging and testing, powered by <a href="https://github.com/electron/spectron" target="_blank">Spectron</a>.</p>
+    <p>VCP Electron Builder provides tools for easy debugging and testing, powered by <a href="https://github.com/microsoft/playwright" target="_blank">Playwright</a>.</p>
   </div>
 </div>
 <div style="text-align:center">
