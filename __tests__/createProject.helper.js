@@ -63,7 +63,7 @@ import path from 'path'`
     .replace(
       'webPreferences: {',
       `webPreferences: {
-      preload: path.join(__dirname, 'preload.${useTS ? 'ts' : 'js'}'),`
+      preload: path.join(__dirname, 'preload.js'),` // Also use preload.js for TS, because it needs the compiled file
     )
     .concat(
       'let rendererPromiseResolve\n',
