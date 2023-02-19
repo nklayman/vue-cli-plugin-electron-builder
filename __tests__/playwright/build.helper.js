@@ -3,7 +3,7 @@ const { _electron: electron } = require('playwright-core')
 const { findLatestBuild, parseElectronApp } = require('electron-playwright-helpers')
 const path = require('path')
 const getProject = require('./getProject.helper.js')
-// const checkLogs = require('./checkLogs.helper.js')
+const checkInternals = require('./checkInternals.helper')
 
 const runTests = async (useTS) => {
   const projectName = useTS ? 'build-ts' : 'build'
@@ -57,22 +57,8 @@ const runTests = async (useTS) => {
     timeout: 10000
   })
 
-  // Check that proper info was logged
-  // await checkLogs({ client, projectName, projectPath, mode: 'build' })
-
-  // app.on('window', async (page) => {
-  //   const filename = page.url()?.split('/').pop()
-  //   console.log(`Window opened: ${filename}`)
-  //
-  //   // capture errors
-  //   page.on('pageerror', (error) => {
-  //     console.error(error)
-  //   })
-  //   // capture console messages
-  //   page.on('console', (msg) => {
-  //     console.log(msg.text())
-  //   })
-  // })
+  // Check that paths are set correctly
+  await checkInternals({ app, projectName, projectPath, mode: 'build' })
 
   const win = await app.firstWindow()
   const browserWindow = await app.browserWindow(win)

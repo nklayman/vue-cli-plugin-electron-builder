@@ -1,7 +1,5 @@
 const create = require('./createProject.helper.js')
 const path = require('path')
-// const { _electron: electron } = require('playwright-core')
-const checkLogs = require('./checkLogs.helper.js')
 
 const serve = (project, notifyUpdate) =>
   new Promise((resolve, reject) => {

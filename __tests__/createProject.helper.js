@@ -43,36 +43,85 @@ const createProject = async (projectName, useTS, customPlugins = {}) => {
     projectPath(`src/main.${useTS ? 'ts' : 'js'}`),
     'utf8'
   )
-  // Have main process log __static to console to make sure it is correct
+  // Have main process log __static and mockExternalPath via IPC to make sure it is correct
   backgroundFile = backgroundFile
     .replace(
-      `let mainWindow${useTS ? ': any' : ''}`,
-      `let mainWindow${useTS ? ': any' : ''}
-      ${useTS ? 'declare var __static: string' : ''}`
+      '\'use strict\'',
+      '/* global __static */\n\'use strict\'')
+    .replace(
+      'import { app, protocol, BrowserWindow } from \'electron\'',
+      'import { app, protocol, BrowserWindow, ipcMain } from \'electron\'')
+    .replace( // ToDo: adapt to Vue2/3
+      'import installExtension, { VUEJS_DEVTOOLS } from \'electron-devtools-installer\'',
+      `import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import path from 'path'`
     )
     .replace(
-      'if (process.env.WEBPACK_DEV_SERVER_URL) {',
-  `
-  console.log('__static=' + __static)
-  console.log('mockExternalPath=' + require.resolve('mockExternal'))
-  if (process.env.WEBPACK_DEV_SERVER_URL) {`
+      'const isDevelopment = process.env.NODE_ENV !== \'production\'',
+      `${useTS ? 'declare var __static: string\n' : ''}const isDevelopment = process.env.NODE_ENV !== 'production'`
+    )
+    .replace(
+      'webPreferences: {',
+      `webPreferences: {
+      preload: path.join(__dirname, 'preload.${useTS ? 'ts' : 'js'}'),`
+    )
+    .concat(
+      'let rendererPromiseResolve\n',
+      'const renderer_data_promise = new Promise((resolve) => {\n',
+      ' rendererPromiseResolve = resolve\n',
+      '})\n',
+      '\n',
+      'ipcMain.handle(\'renderer-data-to-main\', (event, data) => {\n',
+      '  rendererPromiseResolve(data)\n',
+      '})\n',
+      '\n',
+      'ipcMain.handle(\'get-renderer-data\', async () => {\n',
+      '  // Wait for received window data\n',
+      '  return await renderer_data_promise\n',
+      '})\n',
+      '',
+      'ipcMain.handle(\'get-main-data\', () => {\n',
+      '  return [__static,require.resolve(\'mockExternal\')]\n',
+      '})\n'
     )
 
-  // Have render process log __static and BASE_URL to console to make sure they are correct
-  mainFile = mainFile.replace(
-    "import App from './App.vue'",
-    `import App from './App.vue'
+  // Have render process log __static and BASE_URL via IPC to make sure they are correct
+  mainFile = mainFile
+    .replace(
+      'import Vue from \'vue\'',
+      '/* global __static */\nimport Vue from \'vue\''
+    )
+    .replace(
+      'import App from \'./App.vue\'',
+      `import App from './App.vue'
 ${useTS ? 'declare var __static: string' : ''}
-window.BASE_URL = process.env.BASE_URL
 window.__static = __static
 window.vuePath = require.resolve('vue')
-window.mockExternalPath = require.resolve('mockExternal')`
-  )
+window.mockExternalPath = require.resolve('mockExternal')
+window.BASE_URL = process.env.BASE_URL
+
+const getData = function() {
+  return [window.__static,window.vuePath,window.mockExternalPath,window.BASE_URL]
+}
+const send_data = async (data) => {
+  await window.send_data(data)
+}
+send_data(getData())`
+    )
+
+  const preloadFile = ''
+    .concat(
+      'const { ipcRenderer } = require(\'electron\')\n',
+      '\n',
+      'window.send_data = (data) => ipcRenderer.invoke(\'renderer-data-to-main\', data)\n'
+    )
   fs.writeFileSync(
-    projectPath(`src/background.${useTS ? 'ts' : 'js'}`),
+    projectPath(path.join('src', `background.${useTS ? 'ts' : 'js'}`)),
     backgroundFile
   )
-  fs.writeFileSync(projectPath(`src/main.${useTS ? 'ts' : 'js'}`), mainFile)
+  fs.writeFileSync(projectPath(path.join('src', `main.${useTS ? 'ts' : 'js'}`)), mainFile)
+
+  fs.writeFileSync(projectPath(path.join('src', `preload.${useTS ? 'ts' : 'js'}`)), preloadFile)
 
   // So we can test Vue isn't in externals
   const vuePkg = { main: 'dist/vue.esm.js' }
@@ -96,8 +145,8 @@ window.mockExternalPath = require.resolve('mockExternal')`
     fs.readFileSync(projectPath('package.json'), 'utf8')
   )
   appPkg.dependencies.mockExternal = 'mockExternal'
-  // Enable nodeIntegration
-  appPkg.vue.pluginOptions = { electronBuilder: { nodeIntegration: true } }
+  // Enable nodeIntegration and add preload file
+  appPkg.vue.pluginOptions = { electronBuilder: { nodeIntegration: true, preload: path.join('src', `preload.${useTS ? 'ts' : 'js'}`)} }
   fs.writeFileSync(projectPath('package.json'), JSON.stringify(appPkg, null, 2))
 
   return { project, projectName }
