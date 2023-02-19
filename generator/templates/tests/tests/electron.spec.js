@@ -1,37 +1,47 @@
 import { testWithPlaywright } from 'vue-cli-plugin-electron-builder'
 import { expect, test } from '@playwright/test'
-test.setTimeout(600000)
+test.setTimeout(60000)
 
-test('Window Loads Properly', async () => {
-  // Wait for dev server to start
-  const { app, stop } = await testWithPlaywright()
-  const win = await app.firstWindow()
-  const browserWindow = await app.browserWindow(win)
-  const {
-    isMinimized,
-    isVisible,
-    height,
-    width
-  } = await browserWindow.evaluate((browserWindow) => {
-    return {
-      isMinimized: browserWindow.isMinimized(),
-      isVisible: browserWindow.isVisible(),
-      ...browserWindow.getBounds()
+test.describe('Window Loads Properly', async () => {
+  let app, stop, win, browserWindow
+
+  test.beforeAll(async () => {
+    // Wait for dev server to start
+    const { app: _app, stop: _stop } = await testWithPlaywright()
+    app = _app
+    stop = _stop
+    win = await app.firstWindow()
+    browserWindow = await app.browserWindow(win)
+  })
+
+  test.afterAll(async () => {
+    if (app) {
+      return await stop()
     }
   })
 
-  // Window was created
-  expect(app.windows().length).toBe(1)
-  // It is not minimized
-  expect(isMinimized).toBe(false)
-  // Window is visible
-  expect(isVisible).toBe(true)
-  // Size is correct
-  expect(width).toBeGreaterThan(0)
-  expect(height).toBeGreaterThan(0)
-  // App is loaded properly
-  expect(await (await win.waitForSelector('#app')).innerHTML()
-  ).toMatch(/Welcome to Your Vue\.js (\+ TypeScript )?App/)
+  test('Window count is one', () => {
+    expect(app.windows().length).toBe(1)
+  })
 
-  await stop()
+  test('Window is not minimized', async () => {
+    const isMinimized = await browserWindow.evaluate((browserWindow) => { return browserWindow.isMinimized() })
+    expect(isMinimized).toBe(false)
+  })
+
+  test('Window is visible', async () => {
+    const isVisible = await browserWindow.evaluate((browserWindow) => { return browserWindow.isVisible() })
+    expect(isVisible).toBe(true)
+  })
+
+  test('Window bounds are correct', async () => {
+    const { height, width } = await browserWindow.evaluate((browserWindow) => { return { ...browserWindow.getBounds() } })
+    expect(width).toBeGreaterThan(0)
+    expect(height).toBeGreaterThan(0)
+  })
+
+  test('Content is shown', async () => {
+    const innerHTML = await (await win.waitForSelector('#app')).innerHTML()
+    expect(innerHTML).toMatch(/Welcome to Your Vue\.js (\+ TypeScript )?App/)
+  })
 })
