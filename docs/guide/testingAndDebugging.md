@@ -48,7 +48,6 @@ test('Window Loads Properly', async () => {
   // Window count needs to be one
   expect(app.windows().length).toBe(1)
 
-
   // Window bounds are correct
   const { height, width } = await browserWindow.evaluate((browserWindow) => { return { ...browserWindow.getBounds() } })
   expect(width).toBeGreaterThan(0)
