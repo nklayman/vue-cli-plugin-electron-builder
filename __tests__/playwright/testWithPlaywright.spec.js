@@ -1,5 +1,7 @@
 import { test } from '@playwright/test'
-test.setTimeout(100000)
+const isWin = process.platform === 'win32'
+test.setTimeout(20000)
+test.slow(isWin)
 
 const runTestWithPlaywright = require('./testWithPlaywright.helper.js')
 
