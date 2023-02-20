@@ -26,8 +26,8 @@ footer: MIT Licensed | Copyright © 2018-present Noah Klayman
 </div>
 <div style="text-align:center">
 Build status:
-  <a href="https://github.com/nklayman/vue-cli-plugin-electron-builder/actions" target="_blank">
-    <img src="https://github.com/nklayman/vue-cli-plugin-electron-builder/workflows/Node%20CI/badge.svg" />
+  <a href="https://github.com/nklayman/vue-cli-plugin-electron-builder/actions/workflows/nodeCI.yml" target="_blank">
+    <img src="https://github.com/nklayman/vue-cli-plugin-electron-builder/actions/workflows/nodeCI.yml/badge.svg" />
   </a>
 </div>
 
