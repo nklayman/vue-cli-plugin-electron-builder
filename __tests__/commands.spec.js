@@ -56,11 +56,16 @@ fs.readFileSync.mockReturnValue(
     dependencies: {}
   })
 )
-const mockWait = jest.fn().mockResolvedValue()
-const mockStart = jest.fn()
-
+const mockFirstWindow = jest.fn().mockResolvedValue()
+const mockElectronApplication = jest.fn().mockImplementation(() => {
+  return { firstWindow: mockFirstWindow }
+})
 jest.mock('playwright-core', () => ({
-  _electron: { launch: jest.fn().mockResolvedValue().mockName('electron.launch') }
+  _electron: {
+    launch: jest.fn().mockImplementation(() => {
+      return Promise.resolve(mockElectronApplication())
+    }).mockName('electron.launch')
+  }
 }))
 
 // Prevent console.log statements from index
@@ -994,6 +999,7 @@ describe('testWithPlaywright', () => {
     await runPlaywright({ noPlaywright: true })
     // Playwright instance should not be created
     expect(electron.launch).not.toBeCalled()
+    expect(mockFirstWindow).not.toBeCalled()
   })
 
   test('uses custom playwright options if provided', async () => {
