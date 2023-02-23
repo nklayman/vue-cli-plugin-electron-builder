@@ -8,8 +8,8 @@
   "funding": "https://github.com/sponsors/nklayman",
   "scripts": {
     "test:ci": "yarn run test:jest --runInBand --coverage && yarn run test:playwright",
-    "test:jest": "jest",
-    "test:playwright": "playwright test",
+    "test:jest": "cross-env env NODE_OPTIONS=--openssl-legacy-provider jest",
+    "test:playwright": "cross-env env NODE_OPTIONS=--openssl-legacy-provider playwright test",
     "test": "yarn run test:jest && yarn run test:playwright",
     "pretest:ci": "yarn run pretest",
     "pretest": "rimraf __tests__/projects/*",
@@ -36,6 +36,7 @@
     "@playwright/test": "^1.30.0",
     "@vue/cli-shared-utils": "^5.0.5",
     "chokidar": "^3.0.2",
+    "cross-env": "^7.0.3",
     "electron-builder": "^23.0.3",
     "execa": "^5.0.0",
     "friendly-errors-webpack-plugin": "^1.7.0",
