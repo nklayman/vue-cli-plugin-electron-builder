@@ -8,7 +8,7 @@
   "funding": "https://github.com/sponsors/nklayman",
   "scripts": {
     "test": "jest",
-    "pretest": "rimraf __tests__/projects/*",
+    "pretest": "rimraf --glob __tests__/projects/*",
     "lint": "eslint .",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
